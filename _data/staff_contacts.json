@@ -1,0 +1,8 @@
+{
+  "contacts": [
+    { "name": "Dr. Patricia Walsh", "role": "Principal", "email": "p.walsh@mcgrath.nsw.edu.au", "ext": "Ext. 100", "emoji": "🏫", "bg": "#e8f7fd", "color": "#0e6fa0" },
+    { "name": "Mr. James Okafor", "role": "Deputy Principal", "email": "j.okafor@mcgrath.nsw.edu.au", "ext": "Ext. 101", "emoji": "👨‍💼", "bg": "#fdecea", "color": "#a02020" },
+    { "name": "ICT Department", "role": "Technical Support", "email": "ict@mcgrath.nsw.edu.au", "ext": "Ext. 210", "emoji": "💻", "bg": "#e8f7fd", "color": "#0e6fa0" },
+    { "name": "School Counsellor", "role": "Student Wellbeing", "email": "counsellor@mcgrath.nsw.edu.au", "ext": "Ext. 305", "emoji": "🩺", "bg": "#f2eeff", "color": "#5027b0" }
+  ]
+}

@@ -1,0 +1,168 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+site_url: "/"
+display_url: "McGrath High School Portal"
+logo_url: "/images/crest.png"
+
+collections:
+
+  - name: "settings"
+    label: "⚙️ School Settings"
+    files:
+      - name: "general"
+        label: "General Settings"
+        file: "_data/settings.json"
+        fields:
+          - { label: "School Name", name: "school_name", widget: "string" }
+          - { label: "School Motto", name: "motto", widget: "string" }
+          - { label: "Current Term", name: "current_term", widget: "string", hint: "e.g. Term 1 · 2026" }
+          - { label: "Student Count", name: "students", widget: "string" }
+          - { label: "Staff Count", name: "staff", widget: "string" }
+          - { label: "Co-curriculars Count", name: "cocurriculars", widget: "string" }
+          - { label: "Street Address", name: "address", widget: "string" }
+          - { label: "Phone Number", name: "phone", widget: "string" }
+          - { label: "Email Address", name: "email", widget: "string" }
+          - { label: "Office Hours", name: "office_hours", widget: "string" }
+          - { label: "Staff Portal Username", name: "staff_username", widget: "string" }
+          - { label: "Staff Portal Password", name: "staff_password", widget: "string" }
+
+  - name: "ticker"
+    label: "📡 Live Ticker"
+    folder: "_data/ticker"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Announcement", name: "text", widget: "string" }
+      - { label: "Active", name: "active", widget: "boolean", default: true }
+
+  - name: "bulletins"
+    label: "📋 Public Bulletins"
+    folder: "_data/bulletins"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options: ["General", "Academic", "Community", "Important", "Arts", "Achievement"]
+      - { label: "Body", name: "body", widget: "text" }
+      - { label: "Featured (show on homepage)", name: "featured", widget: "boolean", default: true }
+      - { label: "Achievement (dark blue card)", name: "achievement", widget: "boolean", default: false }
+
+  - name: "sports"
+    label: "🏆 Sports & Competition Results"
+    folder: "_data/sports"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Sport / Competition Name", name: "sport", widget: "string" }
+      - { label: "Sport Emoji", name: "emoji", widget: "string", hint: "e.g. 🏊 or 🏀" }
+      - { label: "Event Name & Date", name: "event", widget: "string" }
+      - { label: "Our Team / Student", name: "our_team", widget: "string" }
+      - { label: "Opponent / Category", name: "opponent", widget: "string" }
+      - { label: "Score / Result", name: "score", widget: "string", hint: "e.g. 1st 🥇 or 3 - 1 or WIN" }
+      - label: "Outcome"
+        name: "outcome"
+        widget: "select"
+        options: ["win", "loss", "draw", "placed"]
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Date", name: "date", widget: "datetime" }
+
+  - name: "events"
+    label: "📅 Upcoming Events"
+    folder: "_data/events"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Event Name", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Time & Location", name: "meta", widget: "string", hint: "e.g. 6:30pm · School Library" }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options: ["School", "Academic", "Cultural", "Community", "Sports"]
+      - { label: "Highlight (gold date box)", name: "highlight", widget: "boolean", default: false }
+
+  - name: "notices"
+    label: "⚠️ Important Notices"
+    folder: "_data/notices"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Body", name: "body", widget: "text" }
+      - { label: "Urgent", name: "urgent", widget: "boolean", default: false }
+      - { label: "Active", name: "active", widget: "boolean", default: true }
+
+  - name: "newsletter"
+    label: "📰 Newsletter Issues"
+    folder: "_data/newsletter"
+    create: true
+    slug: "{{year}}-{{month}}-{{slug}}"
+    fields:
+      - { label: "Issue Title", name: "title", widget: "string", hint: "e.g. The McGrath Torch — Term 1 2026" }
+      - { label: "Publication Date", name: "date", widget: "datetime" }
+      - { label: "PDF File", name: "pdf", widget: "file", hint: "Upload the newsletter PDF" }
+
+  - name: "gallery"
+    label: "🖼️ Photo Gallery"
+    folder: "_data/gallery"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Caption", name: "caption", widget: "string" }
+      - { label: "Photo", name: "image", widget: "image" }
+      - { label: "Emoji (fallback if no photo)", name: "emoji", widget: "string", default: "📷" }
+      - label: "Background Colour (fallback)"
+        name: "bg"
+        widget: "select"
+        options: ["blue", "gold", "green", "purple", "red", "navy"]
+
+  - name: "staff_settings"
+    label: "🔒 Staff Portal Settings"
+    files:
+      - name: "contacts"
+        label: "Staff Contacts"
+        file: "_data/staff_contacts.json"
+        fields:
+          - label: "Contacts"
+            name: "contacts"
+            widget: "list"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Role", name: "role", widget: "string" }
+              - { label: "Email", name: "email", widget: "string" }
+              - { label: "Extension", name: "ext", widget: "string" }
+              - { label: "Emoji", name: "emoji", widget: "string", default: "👤" }
+              - { label: "Avatar Background", name: "bg", widget: "string", default: "#e8f7fd" }
+              - { label: "Avatar Text Colour", name: "color", widget: "string", default: "#0e6fa0" }
+
+  - name: "staff_bulletins"
+    label: "🔒 Staff Bulletins (Internal)"
+    folder: "_data/staff_bulletins"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Category", name: "category", widget: "string", hint: "e.g. Admin, ICT Department, Executive" }
+      - { label: "Body", name: "body", widget: "text" }
+      - { label: "Urgent", name: "urgent", widget: "boolean", default: false }
+
+  - name: "resources"
+    label: "📁 Staff Resource Library"
+    folder: "_data/resources"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Document Name", name: "name", widget: "string" }
+      - { label: "File Details", name: "meta", widget: "string", hint: "e.g. PDF · 2.4 MB · Updated Feb 2026" }
+      - { label: "Emoji Icon", name: "emoji", widget: "string", default: "📄" }
+      - { label: "File / URL", name: "url", widget: "file", hint: "Upload the file or paste a URL" }

@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>McGrath High School — Community Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky:#38b6e8;--sky-dark:#1a8fc4;--sky-deeper:#0e6fa0;
+  --sky-pale:#e8f7fd;--sky-mid:#b8e4f7;--white:#fff;--off-white:#f4fafd;
+  --gold:#f0a500;--gold-light:#ffd060;--gold-pale:#fff9e6;
+  --text:#0d1b2a;--text-mid:#3a5068;--text-muted:#7a96aa;--border:#d4eaf5;
+  --success:#18a06b;--danger:#d63031;
+  --card-shadow:0 2px 20px rgba(56,182,232,.10);
+  --card-shadow-hover:0 8px 40px rgba(56,182,232,.22);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--off-white);color:var(--text);overflow-x:hidden}
+
+/* TICKER */
+.ticker-wrap{background:var(--sky-deeper);overflow:hidden;position:relative;padding:8px 0}
+.ticker-pill{position:absolute;left:0;top:0;bottom:0;z-index:2;background:var(--gold);color:var(--text);display:flex;align-items:center;padding:0 20px;font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,0 100%);min-width:90px}
+.ticker-scroll{display:flex;white-space:nowrap;animation:scrollTicker 45s linear infinite;padding-left:110px;color:rgba(255,255,255,.88);font-size:.78rem;font-family:'DM Mono',monospace}
+.ticker-scroll span{padding:0 44px}
+.ticker-scroll span::before{content:'◆ ';color:var(--gold-light);font-size:.6em;vertical-align:middle}
+@keyframes scrollTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* HEADER */
+header{background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:2px solid var(--sky-mid);position:sticky;top:0;z-index:200;box-shadow:0 2px 24px rgba(56,182,232,.12)}
+.header-inner{max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:72px}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none}
+.brand img{height:52px;width:52px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(56,182,232,.25))}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--sky-deeper)}
+.brand-motto{font-size:.65rem;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase}
+nav{display:flex;align-items:center;gap:2px}
+nav a{color:var(--text-mid);text-decoration:none;font-size:.85rem;font-weight:700;padding:8px 14px;border-radius:8px;transition:all .2s}
+nav a:hover{color:var(--sky-deeper);background:var(--sky-pale)}
+.nav-staff{background:var(--sky-deeper)!important;color:white!important;margin-left:10px;padding:8px 18px!important;border-radius:8px;display:flex;align-items:center;gap:6px}
+.nav-staff:hover{background:var(--sky-dark)!important;transform:translateY(-1px);box-shadow:0 4px 16px rgba(14,111,160,.35)!important}
+.search-wrap{display:flex;align-items:center;gap:8px;background:var(--sky-pale);border:1.5px solid var(--sky-mid);border-radius:20px;padding:7px 16px;margin-right:8px}
+.search-wrap input{background:none;border:none;outline:none;font-size:.82rem;font-family:inherit;color:var(--text);width:160px}
+.search-wrap input::placeholder{color:var(--text-muted)}
+
+/* HERO */
+.hero{background:linear-gradient(145deg,var(--sky-deeper) 0%,var(--sky) 55%,#5ecdef 100%);color:white;padding:80px 28px 120px;position:relative;overflow:hidden;clip-path:polygon(0 0,100% 0,100% 88%,0 100%)}
+.hero-pattern{position:absolute;inset:0;opacity:.06;background-image:radial-gradient(circle,white 1px,transparent 1px);background-size:32px 32px}
+.hero-crest-bg{position:absolute;right:-60px;top:50%;transform:translateY(-50%);width:480px;height:480px;background:url('./images/crest.png') center/contain no-repeat;opacity:.08;pointer-events:none}
+.hero-inner{max-width:1320px;margin:0 auto;position:relative;z-index:2}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.9);padding:5px 16px;border-radius:20px;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:22px}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:700;line-height:1.08;margin-bottom:18px;text-shadow:0 2px 24px rgba(0,0,0,.12)}
+.hero h1 em{font-style:normal;color:var(--gold-light)}
+.hero p{font-size:1.05rem;opacity:.85;max-width:540px;line-height:1.7;margin-bottom:32px}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:10px;font-weight:800;font-size:.88rem;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:all .22s;letter-spacing:.02em}
+.btn-gold{background:var(--gold);color:var(--text)}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 6px 24px rgba(240,165,0,.45)}
+.btn-ghost{background:rgba(255,255,255,.12);color:white;border:2px solid rgba(255,255,255,.3)}
+.btn-ghost:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.7)}
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap;margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,.2)}
+.hstat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold-light);line-height:1}
+.hstat-label{font-size:.72rem;opacity:.65;text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+
+/* MAIN */
+main{max-width:1320px;margin:0 auto;padding:60px 28px 40px}
+.sec{margin-bottom:64px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:700;color:var(--sky-deeper);display:flex;align-items:center;gap:12px}
+.sec-title::before{content:'';display:block;width:5px;height:26px;background:linear-gradient(var(--sky),var(--gold));border-radius:3px}
+.see-all{font-size:.8rem;color:var(--sky-dark);text-decoration:none;font-weight:700;border-bottom:1.5px solid var(--sky-mid);padding-bottom:1px;transition:color .2s}
+.see-all:hover{color:var(--sky-deeper)}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:22px}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.card{background:white;border-radius:16px;box-shadow:var(--card-shadow);overflow:hidden;transition:box-shadow .25s,transform .25s}
+.card:hover{box-shadow:var(--card-shadow-hover);transform:translateY(-3px)}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:3px 10px;border-radius:12px;margin-bottom:10px}
+.t-sky{background:var(--sky-pale);color:var(--sky-deeper)}
+.t-gold{background:var(--gold-pale);color:#7a4d00}
+.t-green{background:#e5f8f0;color:#0f6b40}
+.t-red{background:#fdecea;color:#b02020}
+.t-purple{background:#f2eeff;color:#5027b0}
+
+/* BULLETIN CARDS */
+.bc{padding:26px}
+.bc-date{font-size:.72rem;color:var(--text-muted);font-family:'DM Mono',monospace;margin-bottom:8px;letter-spacing:.04em}
+.bc-title{font-family:'Cormorant Garamond',serif;font-size:1.18rem;font-weight:700;color:var(--text);margin-bottom:9px;line-height:1.28}
+.bc-body{font-size:.86rem;color:var(--text-mid);line-height:1.65}
+.bc-link{display:inline-flex;align-items:center;gap:5px;margin-top:14px;font-size:.78rem;font-weight:800;color:var(--sky-dark);text-decoration:none;border-bottom:2px solid var(--sky-mid);padding-bottom:1px;transition:all .2s}
+.bc-link:hover{color:var(--sky-deeper);border-color:var(--sky)}
+.ach-card{padding:26px;border-radius:16px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--sky-deeper),var(--sky-dark));color:white}
+.ach-card::after{content:'🏆';position:absolute;right:-14px;top:-14px;font-size:90px;opacity:.07;transform:rotate(12deg);pointer-events:none}
+.ach-card .bc-date{color:rgba(255,255,255,.5)}
+.ach-card .bc-title{color:white}
+.ach-card .bc-body{color:rgba(255,255,255,.75)}
+.ach-card .bc-link{color:var(--gold-light);border-color:rgba(255,211,96,.3)}
+
+/* QUICK LINKS */
+.ql{background:white;border-radius:14px;padding:22px 16px;text-align:center;text-decoration:none;color:var(--text);box-shadow:var(--card-shadow);transition:all .22s;display:flex;flex-direction:column;align-items:center;gap:10px;border:2px solid transparent}
+.ql:hover{box-shadow:var(--card-shadow-hover);transform:translateY(-3px);border-color:var(--sky-mid);color:var(--sky-deeper)}
+.ql-icon{font-size:1.9rem}
+.ql-label{font-size:.78rem;font-weight:800;letter-spacing:.02em}
+
+/* EVENTS */
+.ev-list{display:flex;flex-direction:column}
+.ev{display:flex;align-items:center;gap:16px;padding:16px 22px;border-bottom:1px solid var(--border);transition:background .18s}
+.ev:hover{background:var(--sky-pale)}
+.ev:last-child{border-bottom:none}
+.ev-box{min-width:54px;text-align:center;background:linear-gradient(135deg,var(--sky-deeper),var(--sky-dark));color:white;border-radius:12px;padding:9px 6px}
+.ev-box.highlight{background:linear-gradient(135deg,var(--gold),var(--gold-light))}
+.ev-box.highlight .ev-day,.ev-box.highlight .ev-month{color:var(--text)}
+.ev-day{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;line-height:1}
+.ev-month{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;opacity:.8}
+.ev-info{flex:1}
+.ev-name{font-weight:800;font-size:.9rem;color:var(--text)}
+.ev-meta{font-size:.76rem;color:var(--text-muted);margin-top:2px}
+
+/* SPORTS */
+.sport-card{padding:22px 24px}
+.match{display:flex;align-items:center;gap:14px;margin:16px 0 12px}
+.match-team{flex:1;text-align:center}
+.match-name{font-weight:800;font-size:.86rem}
+.match-sub{font-size:.72rem;color:var(--text-muted)}
+.match-score{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--sky-deeper);min-width:84px;text-align:center}
+.match-score.win{color:var(--success)}
+.match-score.loss{color:var(--danger)}
+.match-desc{font-size:.81rem;color:var(--text-muted);line-height:1.6}
+
+/* NOTICES */
+.notice{padding:16px 20px;border-left:4px solid var(--sky);background:var(--sky-pale);border-radius:0 12px 12px 0;margin-bottom:10px}
+.notice.urgent{border-left-color:var(--danger);background:#fef5f5}
+.notice-title{font-weight:800;font-size:.9rem;margin-bottom:4px;color:var(--text)}
+.notice-body{font-size:.83rem;color:var(--text-mid);line-height:1.6}
+
+/* GALLERY */
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.gitem{border-radius:12px;overflow:hidden;aspect-ratio:1;position:relative;cursor:pointer}
+.gitem:first-child{grid-column:span 2;grid-row:span 2}
+.gitem-inner{width:100%;height:100%;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;transition:transform .28s}
+.gitem:hover .gitem-inner{transform:scale(1.05)}
+.gitem-inner span:first-child{font-size:1.8rem}
+.gitem img{width:100%;height:100%;object-fit:cover;transition:transform .28s}
+.gitem:hover img{transform:scale(1.05)}
+
+/* NEWSLETTER */
+.newsletter-section{background:linear-gradient(135deg,var(--sky-deeper) 0%,var(--sky-dark) 60%,var(--sky) 100%);border-radius:24px;padding:56px 48px;color:white;position:relative;overflow:hidden;margin-bottom:64px}
+.newsletter-section::before{content:'';position:absolute;top:-60px;right:-60px;width:320px;height:320px;background:url('./images/crest.png') center/contain no-repeat;opacity:.07;pointer-events:none}
+.newsletter-section::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.04) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.nl-inner{position:relative;z-index:2;display:flex;gap:56px;align-items:center;flex-wrap:wrap}
+.nl-text{flex:1;min-width:260px}
+.nl-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:var(--gold-light);padding:4px 14px;border-radius:20px;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.nl-title{font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:700;line-height:1.12;margin-bottom:12px}
+.nl-title em{font-style:normal;color:var(--gold-light)}
+.nl-sub{font-size:.92rem;opacity:.82;line-height:1.7;max-width:420px}
+.nl-form{flex:1;min-width:280px}
+.nl-card{background:white;border-radius:18px;padding:30px}
+.nl-card h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--sky-deeper);margin-bottom:4px;font-weight:700}
+.nl-card p{font-size:.82rem;color:var(--text-muted);margin-bottom:18px}
+.nl-field{margin-bottom:12px}
+.nl-field label{display:block;font-size:.76rem;font-weight:800;color:var(--text);margin-bottom:5px;letter-spacing:.04em}
+.nl-field input,.nl-field select{width:100%;padding:11px 14px;border-radius:9px;border:2px solid var(--border);font-size:.86rem;font-family:inherit;outline:none;transition:border-color .2s;color:var(--text)}
+.nl-field input:focus,.nl-field select:focus{border-color:var(--sky)}
+.nl-check{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.nl-check label{display:flex;align-items:center;gap:9px;font-size:.82rem;color:var(--text-mid);cursor:pointer;font-weight:600}
+.nl-check input[type=checkbox]{accent-color:var(--sky-dark);width:15px;height:15px}
+.btn-nl{width:100%;background:var(--sky-deeper);color:white;border:none;padding:13px;border-radius:10px;font-family:inherit;font-size:.9rem;font-weight:800;cursor:pointer;transition:background .2s,transform .2s;letter-spacing:.02em}
+.btn-nl:hover{background:var(--sky-dark);transform:translateY(-1px)}
+.nl-success{display:none;text-align:center;padding:16px}
+.nl-success.show{display:block}
+.nl-issues{margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.nl-issues h4{font-size:.8rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+.nl-issue-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;background:var(--sky-pale);margin-bottom:8px;text-decoration:none;transition:background .2s}
+.nl-issue-item:hover{background:var(--sky-mid)}
+.nl-issue-icon{font-size:1.2rem}
+.nl-issue-info{flex:1}
+.nl-issue-name{font-size:.84rem;font-weight:800;color:var(--sky-deeper)}
+.nl-issue-date{font-size:.72rem;color:var(--text-muted);font-family:'DM Mono',monospace}
+.nl-dl{font-size:.7rem;font-weight:700;color:var(--sky-dark);white-space:nowrap}
+
+/* CONTACT BAND */
+.contact-band{background:var(--sky-deeper);color:white;padding:40px 28px}
+.cb-inner{max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between}
+.cb-item{display:flex;align-items:center;gap:13px}
+.cb-icon{font-size:1.5rem}
+.cb-label{font-size:.68rem;opacity:.55;text-transform:uppercase;letter-spacing:.09em}
+.cb-val{font-weight:700;font-size:.9rem}
+.cb-crest{height:56px;opacity:.25;filter:brightness(10)}
+
+footer{background:var(--text);color:rgba(255,255,255,.55);padding:28px;text-align:center;font-size:.8rem}
+footer strong{color:white}
+
+/* STAFF LOGIN */
+#staffLogin{display:none;background:var(--off-white);min-height:calc(100vh - 120px);padding-bottom:60px}
+.login-wrap{max-width:460px;margin:0 auto;padding:80px 24px 0}
+.login-card{background:white;border-radius:22px;box-shadow:0 24px 64px rgba(56,182,232,.18);padding:52px 44px;text-align:center}
+.lc-crest{height:72px;margin-bottom:18px}
+.lc-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--sky-deeper);margin-bottom:6px}
+.lc-sub{font-size:.85rem;color:var(--text-muted);margin-bottom:28px}
+.lc-error{background:#fdecea;color:var(--danger);border-radius:9px;padding:10px 14px;font-size:.82rem;margin-bottom:16px;display:none;font-weight:600}
+.lc-error.show{display:block}
+.lf{margin-bottom:16px;text-align:left}
+.lf label{display:block;font-size:.78rem;font-weight:800;color:var(--text);margin-bottom:5px;letter-spacing:.05em}
+.lf input{width:100%;padding:12px 16px;border-radius:10px;border:2px solid var(--border);font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s}
+.lf input:focus{border-color:var(--sky)}
+.btn-signin{width:100%;background:var(--sky-deeper);color:white;border:none;padding:14px;border-radius:10px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.03em;transition:background .2s,transform .2s;margin-top:6px}
+.btn-signin:hover{background:var(--sky-dark);transform:translateY(-1px)}
+.lc-hint{font-size:.74rem;color:var(--text-muted);margin-top:14px;line-height:1.6}
+.back-link{display:inline-flex;align-items:center;gap:5px;font-size:.8rem;color:var(--sky-dark);text-decoration:none;font-weight:700;margin-top:18px}
+
+/* STAFF DASHBOARD */
+#staffDash{display:none}
+.sd-header{background:linear-gradient(135deg,var(--sky-deeper),var(--sky));color:white;padding:32px 28px}
+.sd-head-inner{max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.sd-welcome{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700}
+.sd-welcome em{font-style:normal;color:var(--gold-light)}
+.sd-badge{display:inline-block;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);padding:4px 14px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-top:6px}
+.btn-signout{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);color:white;padding:9px 20px;border-radius:9px;cursor:pointer;font-size:.83rem;font-weight:700;font-family:inherit;transition:background .2s}
+.btn-signout:hover{background:rgba(255,255,255,.2)}
+.sq{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:13px;margin-bottom:36px}
+.sqa{background:white;border-radius:14px;padding:20px 14px;text-align:center;box-shadow:var(--card-shadow);cursor:pointer;transition:all .22s;border:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:9px}
+.sqa:hover{border-color:var(--sky);transform:translateY(-2px);box-shadow:var(--card-shadow-hover)}
+.sqa-icon{font-size:1.7rem}
+.sqa-label{font-size:.76rem;font-weight:800;color:var(--text)}
+.compose{background:white;border-radius:16px;box-shadow:var(--card-shadow);padding:28px}
+.compose h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--sky-deeper);margin-bottom:18px;font-weight:700}
+.cf{display:flex;gap:12px;margin-bottom:13px;flex-wrap:wrap}
+.cf input,.cf select,.cf textarea{flex:1;min-width:180px;padding:10px 14px;border-radius:9px;border:2px solid var(--border);font-size:.86rem;font-family:inherit;outline:none;transition:border-color .2s}
+.cf input:focus,.cf select:focus,.cf textarea:focus{border-color:var(--sky)}
+.cf textarea{min-height:82px;resize:vertical}
+.btn-post{background:var(--sky-deeper);color:white;border:none;padding:10px 22px;border-radius:9px;font-weight:800;font-size:.86rem;cursor:pointer;font-family:inherit;transition:background .2s}
+.btn-post:hover{background:var(--sky-dark)}
+.res{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);transition:background .18s}
+.res:hover{background:var(--sky-pale)}
+.res:last-child{border-bottom:none}
+.res-icon{font-size:1.4rem;min-width:36px;text-align:center}
+.res-name{font-weight:700;font-size:.88rem;flex:1;color:var(--text)}
+.res-meta{font-size:.72rem;color:var(--text-muted)}
+.btn-dl{font-size:.73rem;font-weight:800;color:var(--sky-deeper);text-decoration:none;padding:4px 12px;border-radius:7px;border:1.5px solid var(--sky-mid);transition:all .2s;white-space:nowrap}
+.btn-dl:hover{background:var(--sky-deeper);color:white;border-color:var(--sky-deeper)}
+.scon{display:flex;align-items:center;gap:14px;padding:16px 20px;background:white;border-radius:13px;box-shadow:var(--card-shadow)}
+.scon-av{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.scon-name{font-weight:800;font-size:.88rem;color:var(--text)}
+.scon-role{font-size:.74rem;color:var(--text-muted)}
+.scon-email{font-size:.74rem;color:var(--sky-dark)}
+.scon-ext{font-size:.73rem;color:var(--text-muted);white-space:nowrap}
+.nl-staff-compose{background:white;border-radius:16px;box-shadow:var(--card-shadow);padding:28px}
+.nl-staff-compose h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--sky-deeper);margin-bottom:6px;font-weight:700}
+.nl-staff-compose p{font-size:.82rem;color:var(--text-muted);margin-bottom:18px}
+.btn-canva{display:inline-flex;align-items:center;gap:9px;background:#7b2ff7;color:white;border:none;padding:12px 22px;border-radius:10px;font-weight:800;font-size:.86rem;cursor:pointer;font-family:inherit;transition:all .22s;text-decoration:none;margin-right:10px;margin-top:4px}
+.btn-canva:hover{background:#6420d4;transform:translateY(-1px);box-shadow:0 4px 16px rgba(123,47,247,.35)}
+
+/* CMS ADMIN LINK */
+.cms-bar{background:var(--gold-pale);border-bottom:2px solid var(--gold);padding:8px 28px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:.8rem;color:#7a4d00;font-weight:700}
+.cms-bar a{color:var(--sky-deeper);font-weight:800;text-decoration:none;border-bottom:1.5px solid var(--sky-mid)}
+.cms-bar a:hover{color:var(--sky-dark)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .5s ease both}
+
+@media(max-width:768px){
+  nav a:not(.nav-staff){display:none}
+  .search-wrap{display:none}
+  .gallery{grid-template-columns:repeat(2,1fr)}
+  .gitem:first-child{grid-column:span 2}
+  .g2{grid-template-columns:1fr}
+  .nl-inner{flex-direction:column}
+  .newsletter-section{padding:36px 24px}
+  .login-card{padding:36px 24px}
+}
+</style>
+</head>
+<body>
+
+<!-- CMS ADMIN BAR (only shown when logged in via Netlify Identity) -->
+<div class="cms-bar" id="cmsBar" style="display:none">
+  ✏️ You are logged in as a site editor — <a href="/admin/" target="_blank">Open Content Manager</a> to update the site
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-pill">📡 Live</div>
+  <div class="ticker-scroll" id="tickerEl"></div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a class="brand" href="#" onclick="showPublic();return false;">
+      <img src="./images/crest.png" alt="McGrath HS Crest">
+      <div>
+        <div class="brand-name" id="hdr-name"></div>
+        <div class="brand-motto" id="hdr-motto"></div>
+      </div>
+    </a>
+    <nav>
+      <div class="search-wrap">
+        <span style="color:var(--text-muted)">🔍</span>
+        <input type="text" placeholder="Search…" oninput="handleSearch(this.value)">
+      </div>
+      <a href="#news">News</a>
+      <a href="#sports">Sports</a>
+      <a href="#events">Events</a>
+      <a href="#newsletter">Newsletter</a>
+      <a href="#" class="nav-staff" onclick="showStaffLogin();return false;">🔒 Staff Portal</a>
+    </nav>
+  </div>
+</header>
+
+<!-- PUBLIC VIEW -->
+<div id="publicView">
+
+<section class="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-crest-bg"></div>
+  <div class="hero-inner fu">
+    <div class="hero-eyebrow" id="hero-eyebrow"></div>
+    <h1>Welcome to<br><em id="hero-name"></em></h1>
+    <p>Your one-stop hub for school news, sports results, events, and community updates — keeping every family informed and every student celebrated.</p>
+    <div class="hero-ctas">
+      <a href="#news" class="btn btn-gold">📋 Latest Bulletins</a>
+      <a href="#newsletter" class="btn btn-ghost">📬 Subscribe to Newsletter</a>
+    </div>
+    <div class="hero-stats" id="heroStats"></div>
+  </div>
+</section>
+
+<main>
+
+<!-- QUICK LINKS -->
+<section class="sec" style="margin-top:0;padding-top:52px">
+  <div class="g4">
+    <a href="#" class="ql"><div class="ql-icon">📅</div><div class="ql-label">School Calendar</div></a>
+    <a href="#" class="ql"><div class="ql-icon">📞</div><div class="ql-label">Contact Us</div></a>
+    <a href="#" class="ql"><div class="ql-icon">📋</div><div class="ql-label">Enrolment Info</div></a>
+    <a href="#" class="ql"><div class="ql-icon">🎒</div><div class="ql-label">Uniform Shop</div></a>
+    <a href="#" class="ql"><div class="ql-icon">📊</div><div class="ql-label">Parent Portal</div></a>
+    <a href="#" class="ql"><div class="ql-icon">🚌</div><div class="ql-label">Bus Timetables</div></a>
+    <a href="#" class="ql"><div class="ql-icon">🍽️</div><div class="ql-label">Canteen Menu</div></a>
+    <a href="#newsletter" class="ql"><div class="ql-icon">📰</div><div class="ql-label">Newsletter</div></a>
+  </div>
+</section>
+
+<!-- BULLETINS -->
+<section class="sec" id="news">
+  <div class="sec-head">
+    <div class="sec-title">Latest Bulletins</div>
+    <a href="#" class="see-all">View all →</a>
+  </div>
+  <div class="g3" id="bulletinsEl"></div>
+</section>
+
+<!-- SPORTS -->
+<section class="sec" id="sports">
+  <div class="sec-head">
+    <div class="sec-title">Sports &amp; Competition Results</div>
+    <a href="#" class="see-all">Full results →</a>
+  </div>
+  <div class="g3" id="sportsEl"></div>
+</section>
+
+<!-- EVENTS + NOTICES -->
+<section class="sec" id="events">
+  <div class="g2">
+    <div>
+      <div class="sec-head"><div class="sec-title">Upcoming Events</div><a href="#" class="see-all">Full calendar →</a></div>
+      <div class="card ev-list" id="eventsEl"></div>
+    </div>
+    <div>
+      <div class="sec-head"><div class="sec-title">Important Notices</div></div>
+      <div id="noticesEl"></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="sec" id="gallery">
+  <div class="sec-head"><div class="sec-title">School Life Gallery</div><a href="#" class="see-all">View all photos →</a></div>
+  <div class="gallery" id="galleryEl"></div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="sec" id="newsletter">
+  <div class="newsletter-section">
+    <div class="nl-inner">
+      <div class="nl-text">
+        <div class="nl-eyebrow">📬 Stay Informed</div>
+        <div class="nl-title">The <em id="nl-name"></em><br>School Newsletter</div>
+        <div class="nl-sub" id="nl-sub"></div>
+        <div style="margin-top:24px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="font-size:1.1rem">✅</span><span style="font-size:.88rem;opacity:.85">Published every last Friday of the month</span></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="font-size:1.1rem">✅</span><span style="font-size:.88rem;opacity:.85">Beautifully designed — available as PDF download</span></div>
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.1rem">✅</span><span style="font-size:.88rem;opacity:.85">Unsubscribe anytime · No spam, ever</span></div>
+        </div>
+      </div>
+      <div class="nl-form">
+        <div class="nl-card">
+          <div id="nlForm">
+            <h3>📬 Subscribe to Our Newsletter</h3>
+            <p>Join our school community — never miss an update.</p>
+            <div class="nl-field"><label>Full Name</label><input type="text" id="nl_name" placeholder="Your name"></div>
+            <div class="nl-field"><label>Email Address</label><input type="email" id="nl_email" placeholder="your@email.com"></div>
+            <div class="nl-field"><label>Relationship to School</label>
+              <select id="nl_role">
+                <option value="">— Select —</option>
+                <option>Parent / Carer</option><option>Student</option>
+                <option>Community Member</option><option>Alumni</option>
+                <option>Local Business / Organisation</option>
+              </select>
+            </div>
+            <div style="margin-bottom:14px">
+              <div style="font-size:.76rem;font-weight:800;margin-bottom:8px;letter-spacing:.04em">INTERESTS (optional)</div>
+              <div class="nl-check">
+                <label><input type="checkbox" checked> Academic &amp; Curriculum updates</label>
+                <label><input type="checkbox" checked> Sports &amp; Competitions</label>
+                <label><input type="checkbox"> Arts &amp; Cultural events</label>
+                <label><input type="checkbox"> P&amp;C &amp; Community news</label>
+              </div>
+            </div>
+            <button class="btn-nl" onclick="nlSubscribe()">Subscribe to Our Newsletter 🔥</button>
+            <div style="font-size:.72rem;color:var(--text-muted);margin-top:10px;text-align:center">Your email is kept private.</div>
+          </div>
+          <div class="nl-success" id="nlSuccess">
+            <div style="font-size:2.5rem;margin-bottom:8px">🎉</div>
+            <h3 style="font-family:'Cormorant Garamond',serif;color:var(--sky-deeper);margin-bottom:8px">You're subscribed!</h3>
+            <p style="font-size:.88rem;color:var(--text-mid)">Welcome to our newsletter family. Your first issue will arrive on the next publication date.</p>
+          </div>
+          <div class="nl-issues" id="nlIssuesEl">
+            <h4>📰 Past Issues</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- CONTACT BAND -->
+<div class="contact-band">
+  <div class="cb-inner">
+    <div class="cb-item"><img src="./images/crest.png" class="cb-crest" alt=""></div>
+    <div class="cb-item"><div class="cb-icon">📍</div><div><div class="cb-label">Address</div><div class="cb-val" id="cb-address"></div></div></div>
+    <div class="cb-item"><div class="cb-icon">📞</div><div><div class="cb-label">Phone</div><div class="cb-val" id="cb-phone"></div></div></div>
+    <div class="cb-item"><div class="cb-icon">✉️</div><div><div class="cb-label">Email</div><div class="cb-val" id="cb-email"></div></div></div>
+    <div class="cb-item"><div class="cb-icon">🕐</div><div><div class="cb-label">Office Hours</div><div class="cb-val" id="cb-hours"></div></div></div>
+  </div>
+</div>
+
+</div><!-- /publicView -->
+
+<!-- STAFF LOGIN -->
+<div id="staffLogin">
+  <div class="login-wrap">
+    <div class="login-card">
+      <img src="./images/crest.png" class="lc-crest" alt="">
+      <div class="lc-title">Staff Portal</div>
+      <div class="lc-sub">Sign in with your McGrath HS staff credentials to access internal resources and post bulletins.</div>
+      <div class="lc-error" id="lErr">Incorrect username or password. Please try again.</div>
+      <div class="lf"><label>Staff Username</label><input type="text" id="lu" placeholder="Enter username" autocomplete="username"></div>
+      <div class="lf"><label>Password</label><input type="password" id="lp" placeholder="Enter password" autocomplete="current-password"></div>
+      <button class="btn-signin" onclick="doLogin()">Sign In to Staff Portal</button>
+      <div class="lc-hint">Contact the ICT Department on Ext. 210 if you have trouble signing in.</div>
+      <a href="#" class="back-link" onclick="showPublic();return false;">← Back to public site</a>
+    </div>
+  </div>
+</div>
+
+<!-- STAFF DASHBOARD -->
+<div id="staffDash">
+  <div class="sd-header">
+    <div class="sd-head-inner">
+      <div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">
+          <img src="./images/crest.png" style="height:44px;opacity:.9;filter:drop-shadow(0 2px 6px rgba(0,0,0,.2))" alt="">
+          <div>
+            <div class="sd-welcome">Welcome back, <em>Staff Member</em> 👋</div>
+            <div class="sd-badge">🔒 Staff Portal · Internal Access Only</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a href="/admin/" target="_blank" style="background:var(--gold);color:var(--text);border:none;padding:9px 20px;border-radius:9px;font-size:.83rem;font-weight:800;font-family:inherit;text-decoration:none;display:flex;align-items:center;gap:6px">✏️ Content Manager</a>
+        <button class="btn-signout" onclick="doLogout()">Sign Out</button>
+      </div>
+    </div>
+  </div>
+  <main>
+    <section class="sec" style="padding-top:36px">
+      <div class="sec-head"><div class="sec-title">⚠️ Urgent Staff Notices</div></div>
+      <div id="staffNoticesEl"></div>
+    </section>
+    <section class="sec">
+      <div class="sec-head"><div class="sec-title">Quick Actions</div></div>
+      <div class="sq">
+        <div class="sqa" onclick="window.open('/admin/','_blank')"><div class="sqa-icon">✏️</div><div class="sqa-label">Edit Site Content</div></div>
+        <div class="sqa" onclick="alert('Opening lesson plan portal…')"><div class="sqa-icon">📝</div><div class="sqa-label">Submit Lesson Plan</div></div>
+        <div class="sqa" onclick="alert('Opening reports portal…')"><div class="sqa-icon">📊</div><div class="sqa-label">Student Reports</div></div>
+        <div class="sqa" onclick="alert('Opening lab booking…')"><div class="sqa-icon">🔬</div><div class="sqa-label">Book a Lab / Room</div></div>
+        <div class="sqa" onclick="alert('Opening ICT support…')"><div class="sqa-icon">💻</div><div class="sqa-label">ICT Support</div></div>
+        <div class="sqa" onclick="alert('Opening leave request…')"><div class="sqa-icon">📅</div><div class="sqa-label">Request Leave</div></div>
+        <div class="sqa" onclick="alert('Opening welfare referral…')"><div class="sqa-icon">💙</div><div class="sqa-label">Welfare Referral</div></div>
+        <div class="sqa" onclick="alert('Opening excursion forms…')"><div class="sqa-icon">🚌</div><div class="sqa-label">Excursion Forms</div></div>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="g2">
+        <div>
+          <div class="sec-head"><div class="sec-title">Staff Bulletins</div></div>
+          <div class="card" style="padding:0" id="staffBulletsEl"></div>
+        </div>
+        <div>
+          <div class="sec-head"><div class="sec-title">Post a Quick Bulletin</div></div>
+          <div class="compose">
+            <h3>Post a Staff Bulletin</h3>
+            <div class="cf"><input type="text" id="bt" placeholder="Bulletin title…"></div>
+            <div class="cf">
+              <select id="bc_"><option>Admin</option><option>ICT Department</option><option>Executive</option><option>Welfare</option><option>Curriculum</option><option>HR &amp; Staffing</option><option>Finance</option><option>General</option></select>
+              <select id="baud"><option>All Staff</option><option>Teaching Staff Only</option><option>Executive Only</option><option>Department Heads</option><option>Support Staff</option></select>
+            </div>
+            <div class="cf"><textarea id="bb" placeholder="Write your bulletin content here…"></textarea></div>
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+              <button class="btn-post" onclick="postBulletin()">📢 Post Bulletin</button>
+              <label style="font-size:.8rem;color:var(--text-muted);display:flex;align-items:center;gap:7px;cursor:pointer;font-weight:700"><input type="checkbox" id="bq"> Mark as Urgent</label>
+            </div>
+            <div style="margin-top:16px;padding:14px;background:var(--sky-pale);border-radius:10px;font-size:.82rem;color:var(--text-mid);line-height:1.7">
+              💡 For bulletins that should <strong>persist on the site</strong>, use the <a href="/admin/" target="_blank" style="color:var(--sky-deeper);font-weight:800">Content Manager</a> instead. Quick bulletins above are session-only.
+            </div>
+          </div>
+          <div class="sec-head" style="margin-top:28px"><div class="sec-title">📰 Newsletter Editor</div></div>
+          <div class="nl-staff-compose">
+            <h3>Design This Month's Newsletter</h3>
+            <p>Use Canva to design a beautifully branded issue, then upload the PDF via the Content Manager.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+              <a href="https://www.canva.com/create/newsletters/" target="_blank" class="btn-canva"><span style="font-size:1.1rem">🎨</span> Design in Canva</a>
+              <a href="/admin/#/collections/newsletter/new" target="_blank" class="btn-post" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">📤 Upload PDF Issue</a>
+            </div>
+            <div style="margin-top:16px;padding:14px;background:var(--sky-pale);border-radius:10px;font-size:.82rem;color:var(--text-mid);line-height:1.7">
+              <strong style="color:var(--sky-deeper)">💡 Canva Tip:</strong> Use Sky Blue <code>#38b6e8</code> and Gold <code>#f0a500</code> as your brand colours. Upload the crest PNG from the Resource Library.
+            </div>
+          </div>
+          <div class="sec-head" style="margin-top:28px"><div class="sec-title">Key Contacts</div></div>
+          <div style="display:flex;flex-direction:column;gap:10px" id="staffContactsEl"></div>
+        </div>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="sec-head"><div class="sec-title">Resource Library</div><a href="/admin/#/collections/resources" target="_blank" class="see-all">Manage →</a></div>
+      <div class="card" style="padding:0" id="resourcesEl"></div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <img src="./images/crest.png" style="height:36px;opacity:.25;display:block;margin:0 auto 12px" alt="">
+  <strong id="footer-name"></strong> · Community Portal · © 2026 · All content is for official school use<br>
+  <span style="font-size:.72rem;opacity:.45;display:block;margin-top:6px">Designed &amp; maintained by the ICT Department · <em id="footer-motto"></em></span>
+</footer>
+
+<!-- NETLIFY IDENTITY -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA LOADER — reads all JSON files from _data/
+// ═══════════════════════════════════════════════════
+const DATA = {};
+
+async function loadJSON(path) {
+  try {
+    const r = await fetch(path);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+}
+
+async function loadDir(path) {
+  // Netlify CMS creates an index listing - we fetch a manifest
+  try {
+    const r = await fetch(path);
+    if (!r.ok) return [];
+    const text = await r.text();
+    // Parse href links from directory listing
+    const matches = [...text.matchAll(/href="([^"]+\.json)"/g)];
+    const results = [];
+    for (const m of matches) {
+      const item = await loadJSON(path + '/' + m[1].split('/').pop());
+      if (item) results.push(item);
+    }
+    return results;
+  } catch { return []; }
+}
+
+// ═══════════════════════════════════════════════════
+// INLINE DATA — All placeholder content lives here.
+// When CMS is connected, this is replaced by fetched data.
+// ═══════════════════════════════════════════════════
+const SITE = {
+  settings: {
+    school_name: "McGrath High School",
+    motto: "Striving Toward Perfection",
+    current_term: "Term 1 · 2026",
+    students: "1,240",
+    staff: "87",
+    cocurriculars: "34",
+    address: "1 School Road, McGrath Heights NSW 2000",
+    phone: "(02) 9000 0000",
+    email: "admin@mcgrath.nsw.edu.au",
+    office_hours: "Mon–Fri 8:00am – 4:00pm",
+    staff_username: "staff",
+    staff_password: "mcgrath2026",
+    newsletter_name: "The McGrath Torch",
+    newsletter_sub: "Our monthly newsletter delivers the best of McGrath High School directly to your inbox — achievements, events, curriculum highlights, and community news."
+  },
+  ticker: [
+    "McGrath HS wins Regional Swimming Championships — 3 gold medals!",
+    "Year 12 Trial Exams: 14–25 April 2026",
+    "Science Olympiad Team advances to State Finals — May 2026",
+    "P&C Meeting: Thursday 27 March, 6:30pm · School Library",
+    "Harmony Day this Friday — wear something orange 🧡",
+    "Debating team defeats St James College · Quarter-Finals next month",
+    "Drama auditions open — \"Into The Woods\" · See Ms Chen"
+  ],
+  bulletins: [
+    { date:"MON 18 MAR 2026", category:"General", title:"Harmony Day — Friday 21 March", body:"All students and staff are invited to celebrate Harmony Day this Friday. Wear something orange to show our school's commitment to belonging and respect for every culture represented in our community.", achievement:false },
+    { date:"FRI 14 MAR 2026", category:"Academic", title:"Year 12 Assessment Schedules Now Available", body:"The full Year 12 assessment schedule for Term 2 has been posted on the student portal. Students should review all deadlines carefully and speak to subject teachers with any concerns well in advance.", achievement:false },
+    { date:"WED 12 MAR 2026", category:"Community", title:"P&C Association Meeting — 27 March", body:"All parents and carers are warmly invited to the next P&C meeting on Thursday 27 March at 6:30pm in the school library. Agenda includes the canteen redevelopment proposal and planning for the 2026 fete.", achievement:false },
+    { date:"TUE 11 MAR 2026", category:"Important", title:"Car Park Safety Reminder — Pick-up & Drop-off", body:"We remind all families to use designated drop-off zones and not park in the bus bay during school hours. Please follow the one-way system and be patient during peak times for the safety of all students.", achievement:false },
+    { date:"MON 10 MAR 2026", category:"Arts", title:"Drama Auditions Open — \"Into The Woods\"", body:"Auditions for this year's major drama production will be held during Weeks 5–6 of Term 1. All students Years 7–12 are welcome. No prior experience needed — just enthusiasm! See Ms Chen for details.", achievement:false },
+    { date:"FRI 7 MAR 2026", category:"Achievement", title:"Science Olympiad Team Advances to State Finals!", body:"Our Science Olympiad team placed 2nd at the Regional round, earning their place at the NSW State Finals in May. Huge congratulations to all four team members — we are incredibly proud of you!", achievement:true }
+  ],
+  sports: [
+    { emoji:"🏊", sport:"Swimming", event:"REGIONAL CHAMPIONSHIPS · 15 MAR", our_team:"McGrath HS", opponent:"3 Gold Medals · Regional Champions", score:"1st 🥇", outcome:"win", description:"Outstanding relay team performance plus individual gold in 100m freestyle and 200m backstroke. Our best regional result in 6 years." },
+    { emoji:"🗣️", sport:"Debating", event:"ROUND 4 · PREMIER'S DEBATING CHALLENGE", our_team:"McGrath HS", opponent:"St James College", score:"WIN", outcome:"win", description:"Our team argued the affirmative with precision and eloquence. They now advance to the Quarter-Finals in April." },
+    { emoji:"⚽", sport:"Football", event:"NORTHERN DISTRICT CUP · 12 MAR", our_team:"McGrath HS", opponent:"Hillside SHS", score:"1 – 2", outcome:"loss", description:"A hard-fought game against a strong opponent. The team shows real character and plays again next week in the final qualifying round." },
+    { emoji:"🎤", sport:"Public Speaking", event:"ROTARY YOUTH SPEAKS · 8 MAR", our_team:"Aisha Rahman — Year 10", opponent:"District Winner", score:"🥇", outcome:"win", description:"A powerful speech on climate policy earning a perfect score. Aisha represents our district at the State competition in May." },
+    { emoji:"🏀", sport:"Basketball", event:"ZONE KNOCKOUT · 5 MAR", our_team:"McGrath HS", opponent:"Riverview Academy", score:"68 – 51", outcome:"win", description:"Boys' Basketball cruised through to the semi-finals with a dominant 17-point victory. Semi-final date to be confirmed." },
+    { emoji:"🔬", sport:"Science", event:"SCIENCE OLYMPIAD · REGIONAL · 1 MAR", our_team:"McGrath HS", opponent:"State Finals — Qualified!", score:"2nd ✓", outcome:"win", description:"Runner-up at regionals earns our team a spot at the NSW State Science Olympiad Finals in Sydney, May 2026." }
+  ],
+  events: [
+    { day:"21", month:"Mar", title:"Harmony Day Celebration", meta:"All day · Whole school · Wear orange 🧡", category:"Cultural", highlight:false },
+    { day:"27", month:"Mar", title:"P&C Association Meeting", meta:"6:30pm · School Library", category:"Community", highlight:false },
+    { day:"4", month:"Apr", title:"Last Day of Term 1 · 2026", meta:"Early finish 12:30pm", category:"School", highlight:true },
+    { day:"14", month:"Apr", title:"Year 12 Trial Exams Begin", meta:"14–25 April · Students attend exam sessions only", category:"Academic", highlight:false },
+    { day:"22", month:"Apr", title:"Term 2 Commences", meta:"Normal start 8:30am", category:"School", highlight:false },
+    { day:"15", month:"May", title:"Science Olympiad — State Finals", meta:"Sydney · McGrath HS team competing 🔬", category:"Academic", highlight:false },
+    { day:"7", month:"Jun", title:"Annual School Fete 🎪", meta:"10am–4pm · School Grounds · All welcome!", category:"Community", highlight:false }
+  ],
+  notices: [
+    { title:"⚠️ Nut-Free School Policy Reminder", body:"McGrath HS is a nut-free school. Please ensure all food from home does not contain nuts or nut products. This is a life-safety measure for students with severe allergies.", urgent:true },
+    { title:"📱 Mobile Phone Policy Update — Term 1", body:"Phones must be switched off and stored in bags during all class time. Violations result in devices being held at the front office until end of day.", urgent:false },
+    { title:"🔧 Main Oval Closed — Grounds Maintenance", body:"The main oval will be closed Mon 24 – Fri 28 March for turf renovation. Students should use basketball courts and covered outdoor areas during lunch.", urgent:false },
+    { title:"📸 School Photo Day — Week 4, Term 2", body:"Full formal uniform is required. Photo packs will be available via the parent portal from 14 April.", urgent:false },
+    { title:"🎓 Year 10 Subject Selection — Opens April", body:"Year 10 students selecting Stage 6 subjects will be guided through the process in Term 2. Parent information evenings will be held in Week 2.", urgent:false }
+  ],
+  gallery: [
+    { caption:"Swimming Championships", emoji:"🏊", image:null, bg:"blue" },
+    { caption:"Drama Rehearsal", emoji:"🎭", image:null, bg:"gold" },
+    { caption:"Science Lab", emoji:"🔬", image:null, bg:"green" },
+    { caption:"Art Exhibition", emoji:"🎨", image:null, bg:"purple" },
+    { caption:"Basketball Finals", emoji:"🏀", image:null, bg:"red" },
+    { caption:"Graduation Ceremony", emoji:"🎓", image:null, bg:"navy" }
+  ],
+  newsletter: [
+    { title:"The McGrath Torch — March 2026", date:"28 Feb 2026", pdf:"#" },
+    { title:"The McGrath Torch — February 2026", date:"31 Jan 2026", pdf:"#" },
+    { title:"The McGrath Torch — December 2025", date:"19 Dec 2025", pdf:"#" }
+  ],
+  staff_contacts: [
+    { name:"Dr. Patricia Walsh", role:"Principal", email:"p.walsh@mcgrath.nsw.edu.au", ext:"Ext. 100", emoji:"🏫", bg:"#e8f7fd", color:"#0e6fa0" },
+    { name:"Mr. James Okafor", role:"Deputy Principal", email:"j.okafor@mcgrath.nsw.edu.au", ext:"Ext. 101", emoji:"👨‍💼", bg:"#fdecea", color:"#a02020" },
+    { name:"ICT Department", role:"Technical Support", email:"ict@mcgrath.nsw.edu.au", ext:"Ext. 210", emoji:"💻", bg:"#e8f7fd", color:"#0e6fa0" },
+    { name:"School Counsellor", role:"Student Wellbeing", email:"counsellor@mcgrath.nsw.edu.au", ext:"Ext. 305", emoji:"🩺", bg:"#f2eeff", color:"#5027b0" }
+  ],
+  staff_bulletins: [
+    { date:"MON 18 MAR 2026", category:"Admin", title:"Updated Child Protection Reporting — All Staff Must Read", body:"The DoE has updated mandatory reporting guidelines. All staff must complete the refresher module by 31 March. Non-completion will be escalated to HR.", urgent:false },
+    { date:"FRI 14 MAR 2026", category:"ICT Department", title:"New Device Loan Procedure — Effective Immediately", body:"All device loans must now be logged in the ICT Asset Management System. Paper loan forms are retired. Contact ICT for a walkthrough.", urgent:false },
+    { date:"WED 12 MAR 2026", category:"Executive", title:"2026–27 Budget Submissions Due — Dept Heads", body:"Department heads must submit 2026–27 budget proposals by COB Friday 28 March. Templates are in the Shared Drive under Finance > Budget 2026-27.", urgent:false }
+  ],
+  staff_notices: [
+    { title:"Staff Meeting — Monday 24 March, 3:30pm, Hall · All Teaching Staff Required", body:"Agenda: NAPLAN preparation, Stage 6 moderation schedule, updated mandatory reporting procedures. Please bring your laptop. Catering will be provided.", urgent:true },
+    { title:"📋 Attendance Roll Submissions — Daily Reminder", body:"All Period 1 rolls must be submitted by 9:15am daily. Contact Deputy Principal Mr Okafor on Ext. 101 with any system issues.", urgent:false }
+  ],
+  resources: [
+    { emoji:"📄", name:"2026 Staff Handbook", meta:"PDF · 2.4 MB · Updated Feb 2026", url:"#" },
+    { emoji:"📊", name:"2026–27 Budget Template", meta:"XLSX · 184 KB · Finance Dept", url:"#" },
+    { emoji:"📋", name:"Mandatory Reporting Procedures — DoE", meta:"PDF · 1.1 MB · Updated Mar 2026", url:"#" },
+    { emoji:"🖼️", name:"McGrath HS Brand Assets (Logo Pack)", meta:"ZIP · 8.2 MB · Comms Office", url:"#" },
+    { emoji:"📝", name:"Lesson Plan Template — 2026", meta:"DOCX · 92 KB · Curriculum Team", url:"#" },
+    { emoji:"📱", name:"Mobile Phone Policy — Parent Brochure", meta:"PDF · 640 KB · For distribution", url:"#" },
+    { emoji:"🔒", name:"ICT Acceptable Use Policy (Staff)", meta:"PDF · 310 KB · ICT Dept · 2026", url:"#" },
+    { emoji:"🎓", name:"HSC Moderation Schedule — Term 2", meta:"PDF · 880 KB · Curriculum Office", url:"#" }
+  ]
+};
+
+// ═══════════════════════════════════════════════════
+// TAG HELPERS
+// ═══════════════════════════════════════════════════
+const catTag = { General:"t-gold", Academic:"t-sky", Community:"t-green", Important:"t-red", Arts:"t-purple", Achievement:"t-gold", Sports:"t-sky" };
+const catEmoji = { General:"📢", Academic:"🎓", Community:"🌱", Important:"⚠️", Arts:"🎨", Achievement:"🏆" };
+const bgColors = {
+  blue:"linear-gradient(135deg,#0e6fa0,#38b6e8)", gold:"linear-gradient(135deg,#f0a500,#ffd060)",
+  green:"linear-gradient(135deg,#18a06b,#34d399)", purple:"linear-gradient(135deg,#7c3aed,#a78bfa)",
+  red:"linear-gradient(135deg,#d63031,#ff7675)", navy:"linear-gradient(135deg,#0e6fa0,#1a8fc4)"
+};
+const bgText = { blue:"white", gold:"#6b3a00", green:"white", purple:"white", red:"white", navy:"white" };
+const evCatTag = { School:"t-sky", Academic:"t-red", Cultural:"t-green", Community:"t-gold", Sports:"t-sky" };
+
+// ═══════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════════════════
+function renderSettings(s) {
+  document.getElementById('hdr-name').textContent = s.school_name;
+  document.getElementById('hdr-motto').textContent = s.motto;
+  document.getElementById('hero-name').textContent = s.school_name;
+  document.getElementById('hero-eyebrow').textContent = `📢 Community Portal · ${s.current_term}`;
+  document.getElementById('footer-name').textContent = s.school_name;
+  document.getElementById('footer-motto').textContent = s.motto;
+  document.getElementById('cb-address').textContent = s.address;
+  document.getElementById('cb-phone').textContent = s.phone;
+  document.getElementById('cb-email').textContent = s.email;
+  document.getElementById('cb-hours').textContent = s.office_hours;
+  document.getElementById('nl-name').textContent = s.newsletter_name || 'School Newsletter';
+  document.getElementById('nl-sub').textContent = s.newsletter_sub || '';
+  document.title = s.school_name + ' — Community Portal';
+  document.getElementById('heroStats').innerHTML = `
+    <div class="hstat"><div class="hstat-num">${s.students}</div><div class="hstat-label">Students</div></div>
+    <div class="hstat"><div class="hstat-num">${s.staff}</div><div class="hstat-label">Staff</div></div>
+    <div class="hstat"><div class="hstat-num">${s.cocurriculars}</div><div class="hstat-label">Co-curriculars</div></div>
+    <div class="hstat"><div class="hstat-num">${s.current_term.split('·')[0].trim()}</div><div class="hstat-label">Current Term</div></div>`;
+}
+
+function renderTicker(items) {
+  const doubled = [...items, ...items];
+  document.getElementById('tickerEl').innerHTML = doubled.map(t => `<span>${t}</span>`).join('');
+}
+
+function renderBulletins(items) {
+  document.getElementById('bulletinsEl').innerHTML = items.slice(0,6).map(b => {
+    if (b.achievement) return `
+      <div class="ach-card">
+        <div class="tag" style="background:rgba(255,211,96,.2);color:#ffd060">🏆 Achievement</div>
+        <div class="bc-date">${b.date}</div>
+        <div class="bc-title">${b.title}</div>
+        <div class="bc-body">${b.body}</div>
+        <a href="#" class="bc-link">Read more →</a>
+      </div>`;
+    const tc = catTag[b.category]||'t-sky';
+    const em = catEmoji[b.category]||'📋';
+    return `<div class="card bc">
+      <div class="tag ${tc}">${em} ${b.category}</div>
+      <div class="bc-date">${b.date}</div>
+      <div class="bc-title">${b.title}</div>
+      <div class="bc-body">${b.body}</div>
+      <a href="#" class="bc-link">Read more →</a>
+    </div>`;
+  }).join('');
+}
+
+function renderSports(items) {
+  document.getElementById('sportsEl').innerHTML = items.slice(0,6).map(s => {
+    const sc = s.outcome === 'win' ? 'win' : s.outcome === 'loss' ? 'loss' : '';
+    return `<div class="card sport-card">
+      <div class="tag t-sky">${s.emoji} ${s.sport}</div>
+      <div style="font-size:.7rem;color:var(--text-muted);font-family:'DM Mono',monospace">${s.event}</div>
+      <div class="match">
+        <div class="match-team"><div class="match-name">${s.our_team}</div></div>
+        <div class="match-score ${sc}">${s.score}</div>
+        <div class="match-team"><div class="match-name">${s.opponent}</div></div>
+      </div>
+      <div class="match-desc">${s.description}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderEvents(items) {
+  document.getElementById('eventsEl').innerHTML = items.map(e => {
+    const tc = evCatTag[e.category]||'t-sky';
+    return `<div class="ev">
+      <div class="ev-box${e.highlight?' highlight':''}"><div class="ev-day">${e.day}</div><div class="ev-month">${e.month}</div></div>
+      <div class="ev-info"><div class="ev-name">${e.title}</div><div class="ev-meta">${e.meta}</div></div>
+      <div class="tag ${tc}" style="margin:0">${e.category}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderNotices(items) {
+  document.getElementById('noticesEl').innerHTML = items.map(n =>
+    `<div class="notice${n.urgent?' urgent':''}">
+      <div class="notice-title">${n.title}</div>
+      <div class="notice-body">${n.body}</div>
+    </div>`
+  ).join('');
+}
+
+function renderGallery(items) {
+  document.getElementById('galleryEl').innerHTML = items.map(g => {
+    if (g.image) return `<div class="gitem"><img src="${g.image}" alt="${g.caption}"></div>`;
+    return `<div class="gitem"><div class="gitem-inner" style="background:${bgColors[g.bg]||bgColors.blue};color:${bgText[g.bg]||'white'}"><span>${g.emoji}</span><span>${g.caption}</span></div></div>`;
+  }).join('');
+}
+
+function renderNewsletter(items) {
+  document.getElementById('nlIssuesEl').innerHTML = `<h4>📰 Past Issues</h4>` +
+    items.map(n => `<a href="${n.pdf||'#'}" class="nl-issue-item" ${n.pdf && n.pdf!=='#'?'target="_blank"':''}>
+      <div class="nl-issue-icon">📄</div>
+      <div class="nl-issue-info"><div class="nl-issue-name">${n.title}</div><div class="nl-issue-date">${n.date}</div></div>
+      <div class="nl-dl">Download PDF ↓</div>
+    </a>`).join('');
+}
+
+function renderStaffContacts(items) {
+  document.getElementById('staffContactsEl').innerHTML = items.map(c =>
+    `<div class="scon">
+      <div class="scon-av" style="background:${c.bg};color:${c.color}">${c.emoji}</div>
+      <div class="scon-info"><div class="scon-name">${c.name}</div><div class="scon-role">${c.role}</div><div class="scon-email">${c.email}</div></div>
+      <div class="scon-ext">${c.ext}</div>
+    </div>`
+  ).join('');
+}
+
+function renderStaffBulletins(items) {
+  const tagMap = { Admin:'t-red', 'ICT Department':'t-sky', Executive:'t-gold', Welfare:'t-purple', Curriculum:'t-green', HR:'t-purple', Finance:'t-gold', General:'t-sky' };
+  document.getElementById('staffBulletsEl').innerHTML = items.map((b,i) =>
+    `<div class="bc" style="padding:22px 24px${i>0?';border-top:1px solid var(--border)':''}">
+      <div class="tag ${tagMap[b.category]||'t-sky'}">📋 ${b.category}</div>
+      <div class="bc-date">${b.date}</div>
+      <div class="bc-title">${b.title}</div>
+      <div class="bc-body">${b.body}</div>
+    </div>`
+  ).join('') + '<div id="postedBulletins"></div>';
+}
+
+function renderStaffNotices(items) {
+  document.getElementById('staffNoticesEl').innerHTML = items.map(n =>
+    `<div class="notice${n.urgent?' urgent':''}"><div class="notice-title">${n.title}</div><div class="notice-body">${n.body}</div></div>`
+  ).join('');
+}
+
+function renderResources(items) {
+  document.getElementById('resourcesEl').innerHTML = items.map((r,i) =>
+    `<div class="res"${i===items.length-1?' style="border-bottom:none"':''}>
+      <div class="res-icon">${r.emoji}</div>
+      <div><div class="res-name">${r.name}</div><div class="res-meta">${r.meta}</div></div>
+      <a href="${r.url||'#'}" class="btn-dl" ${r.url && r.url!=='#'?'target="_blank"':''}>Download</a>
+    </div>`
+  ).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// INIT — try to load from CMS JSON files, fall back to inline data
+// ═══════════════════════════════════════════════════
+async function init() {
+  // Try loading settings from CMS
+  const cmsSettings = await loadJSON('/_data/settings.json');
+  if (cmsSettings) Object.assign(SITE.settings, cmsSettings);
+
+  const cmsContacts = await loadJSON('/_data/staff_contacts.json');
+  if (cmsContacts?.contacts) SITE.staff_contacts = cmsContacts.contacts;
+
+  renderSettings(SITE.settings);
+  renderTicker(SITE.ticker);
+  renderBulletins(SITE.bulletins);
+  renderSports(SITE.sports);
+  renderEvents(SITE.events);
+  renderNotices(SITE.notices);
+  renderGallery(SITE.gallery);
+  renderNewsletter(SITE.newsletter);
+  renderStaffContacts(SITE.staff_contacts);
+  renderStaffBulletins(SITE.staff_bulletins);
+  renderStaffNotices(SITE.staff_notices);
+  renderResources(SITE.resources);
+}
+
+// ═══════════════════════════════════════════════════
+// VIEW SWITCHING
+// ═══════════════════════════════════════════════════
+function showPublic() {
+  document.getElementById('publicView').style.display='block';
+  document.getElementById('staffLogin').style.display='none';
+  document.getElementById('staffDash').style.display='none';
+  window.scrollTo(0,0);
+}
+function showStaffLogin() {
+  document.getElementById('publicView').style.display='none';
+  document.getElementById('staffLogin').style.display='block';
+  document.getElementById('staffDash').style.display='none';
+  document.getElementById('lErr').classList.remove('show');
+  document.getElementById('lu').value='';
+  document.getElementById('lp').value='';
+  window.scrollTo(0,0);
+}
+function showStaffDash() {
+  document.getElementById('publicView').style.display='none';
+  document.getElementById('staffLogin').style.display='none';
+  document.getElementById('staffDash').style.display='block';
+  window.scrollTo(0,0);
+}
+function doLogout() { showPublic(); }
+
+function doLogin() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value.trim();
+  if (u === SITE.settings.staff_username && p === SITE.settings.staff_password) {
+    showStaffDash();
+  } else {
+    document.getElementById('lErr').classList.add('show');
+    document.getElementById('lp').value='';
+  }
+}
+document.getElementById('lp').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+// ═══════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════
+function handleSearch(q) {
+  if (!q.trim()) { renderBulletins(SITE.bulletins); return; }
+  const filtered = SITE.bulletins.filter(b =>
+    b.title.toLowerCase().includes(q.toLowerCase()) ||
+    b.body.toLowerCase().includes(q.toLowerCase())
+  );
+  renderBulletins(filtered.length ? filtered : SITE.bulletins);
+}
+
+// ═══════════════════════════════════════════════════
+// NEWSLETTER SUBSCRIBE
+// ═══════════════════════════════════════════════════
+function nlSubscribe() {
+  const name = document.getElementById('nl_name').value.trim();
+  const email = document.getElementById('nl_email').value.trim();
+  const role = document.getElementById('nl_role').value;
+  if (!name||!email||!role) { alert('Please fill in your name, email, and relationship to the school.'); return; }
+  if (!email.includes('@')) { alert('Please enter a valid email address.'); return; }
+  document.getElementById('nlForm').style.display='none';
+  document.getElementById('nlIssuesEl').style.display='none';
+  document.getElementById('nlSuccess').classList.add('show');
+}
+
+// ═══════════════════════════════════════════════════
+// POST BULLETIN (session only)
+// ═══════════════════════════════════════════════════
+function postBulletin() {
+  const title = document.getElementById('bt').value.trim();
+  const body = document.getElementById('bb').value.trim();
+  const cat = document.getElementById('bc_').value;
+  const urgent = document.getElementById('bq').checked;
+  if (!title||!body) { alert('Please fill in the title and content.'); return; }
+  const container = document.getElementById('postedBulletins');
+  const d = document.createElement('div');
+  d.style.borderTop='1px solid var(--border)';
+  d.className='bc'; d.style.padding='22px 24px';
+  const now = new Date().toLocaleString('en-AU',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  d.innerHTML = `<div class="tag ${urgent?'t-red':'t-sky'}">${urgent?'🔴 URGENT · ':'📋 '}${cat}</div><div class="bc-date">JUST NOW · ${now}</div><div class="bc-title">${title}</div><div class="bc-body">${body}</div>`;
+  container.prepend(d);
+  document.getElementById('bt').value='';
+  document.getElementById('bb').value='';
+  document.getElementById('bq').checked=false;
+}
+
+// ═══════════════════════════════════════════════════
+// NETLIFY IDENTITY — show CMS bar when logged in
+// ═══════════════════════════════════════════════════
+if (window.netlifyIdentity) {
+  window.netlifyIdentity.on('init', user => {
+    if (user) document.getElementById('cmsBar').style.display='flex';
+  });
+  window.netlifyIdentity.on('login', () => {
+    document.getElementById('cmsBar').style.display='flex';
+    window.netlifyIdentity.close();
+  });
+  window.netlifyIdentity.on('logout', () => {
+    document.getElementById('cmsBar').style.display='none';
+  });
+}
+
+init();
+</script>
+</body>
+</html>
