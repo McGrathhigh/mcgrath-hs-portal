@@ -332,7 +332,7 @@ footer strong{color:white}
       <div class="lf"><label>Username</label><input type="text" id="lu" placeholder="Enter username" autocomplete="username"></div>
       <div class="lf"><label>Password</label><input type="password" id="lp" placeholder="Enter password" autocomplete="current-password"></div>
       <button class="btn-signin" onclick="doLogin()">Sign In to Staff Portal</button>
-      <div class="lc-hint">Contact ICT on Ext. 210 if you have trouble signing in.</div>
+      <div class="lc-hint">Contact ICT if you have trouble signing in.</div>
       <a href="#" class="back-link" onclick="showPublic();return false;">← Back to public site</a>
     </div>
   </div>
@@ -403,7 +403,7 @@ footer strong{color:white}
             <p>Design in Canva then upload the PDF via the Content Manager.</p>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
               <a href="https://www.canva.com/create/newsletters/" target="_blank" class="btn-canva">🎨 Design in Canva</a>
-              <a href="/admin/#/collections/newsletter/new" target="_blank" class="btn-post">📤 Upload PDF Issue</a>
+              <a href="/admin/#/collections/newsletter" target="_blank" class="btn-post">📤 Upload PDF Issue</a>
             </div>
             <div style="margin-top:14px;padding:12px;background:var(--sky-pale);border-radius:9px;font-size:.8rem;color:var(--text-mid)">
               💡 Brand colours: Sky Blue <code>#38b6e8</code> · Gold <code>#f0a500</code>
@@ -429,7 +429,7 @@ footer strong{color:white}
 
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
-// ── HELPERS ──────────────────────────────────────────
+// ── CONSTANTS ─────────────────────────────────────────
 const catTag  ={General:'t-gold',Academic:'t-sky',Community:'t-green',Important:'t-red',Arts:'t-purple',Achievement:'t-gold'};
 const catEmoji={General:'📢',Academic:'🎓',Community:'🌱',Important:'⚠️',Arts:'🎨',Achievement:'🏆'};
 const evTag   ={School:'t-sky',Academic:'t-red',Cultural:'t-green',Community:'t-gold',Sports:'t-sky'};
@@ -437,46 +437,37 @@ const bgMap   ={blue:'linear-gradient(135deg,#0e6fa0,#38b6e8)',gold:'linear-grad
 const bgText  ={blue:'white',gold:'#6b3a00',green:'white',purple:'white',red:'white',navy:'white'};
 
 function empty(icon,msg){return`<div class="empty-state"><span class="ei">${icon}</span><p>${msg}</p></div>`}
-function fmtDate(iso){try{return new Date(iso).toLocaleDateString('en-AU',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).toUpperCase()}catch{return iso}}
+function fmtDate(iso){try{return new Date(iso).toLocaleDateString('en-AU',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}).toUpperCase()}catch{return iso||''}}
 function set(id,val){const e=document.getElementById(id);if(e)e.textContent=val}
 
-// ── FETCH HELPERS ─────────────────────────────────────
-async function fetchJSON(path){
-  try{const r=await fetch(path+'?v='+Date.now());if(!r.ok)return null;return await r.json()}catch{return null}
-}
-
-// Decap CMS saves each collection entry as its own JSON file.
-// We fetch the folder listing and parse out the file names.
-async function fetchCollection(folder){
+// ── FETCH A SINGLE JSON FILE ──────────────────────────
+// All collections are now single JSON files — simple, reliable, no directory scanning.
+async function getJSON(path){
   try{
-    const r=await fetch(`/_data/${folder}/?v=`+Date.now());
-    if(!r.ok)return[];
-    const html=await r.text();
-    const files=[...html.matchAll(/href="([^"]+\.json)"/g)].map(m=>m[1].split('/').pop());
-    if(!files.length)return[];
-    const items=await Promise.all(files.map(f=>fetchJSON(`/_data/${folder}/${f}`)));
-    return items.filter(Boolean);
-  }catch{return[]}
+    const r=await fetch(path+'?v='+Date.now(),{cache:'no-store'});
+    if(!r.ok)return null;
+    return await r.json();
+  }catch{return null}
 }
 
-// ── AUTH STATE ────────────────────────────────────────
-let STAFF_USER='staff', STAFF_PASS='mcgrath2026';
+// ── AUTH ──────────────────────────────────────────────
+let STAFF_USER='staff',STAFF_PASS='mcgrath2026';
 
 // ── SETTINGS ──────────────────────────────────────────
 async function loadSettings(){
-  const s=await fetchJSON('/_data/settings.json');
+  const s=await getJSON('/_data/settings.json');
   if(!s)return;
   if(s.staff_username)STAFF_USER=s.staff_username;
   if(s.staff_password)STAFF_PASS=s.staff_password;
   const name=s.school_name||'McGrath High School';
   const motto=s.motto||'Striving Toward Perfection';
-  set('hdrName',name); set('hdrMotto',motto);
-  set('heroName',name); set('footerName',name); set('footerMotto',motto);
+  set('hdrName',name);set('hdrMotto',motto);set('heroName',name);
+  set('footerName',name);set('footerMotto',motto);
   document.title=name+' — Community Portal';
-  const eyebrow=document.getElementById('heroEyebrow');
-  if(eyebrow)eyebrow.textContent='📢 Community Portal'+(s.current_term?' · '+s.current_term:'');
-  set('cbAddress',s.address||'—'); set('cbPhone',s.phone||'—');
-  set('cbEmail',s.email||'—'); set('cbHours',s.office_hours||'—');
+  const ey=document.getElementById('heroEyebrow');
+  if(ey)ey.textContent='📢 Community Portal'+(s.current_term?' · '+s.current_term:'');
+  set('cbAddress',s.address||'—');set('cbPhone',s.phone||'—');
+  set('cbEmail',s.email||'—');set('cbHours',s.office_hours||'—');
   set('nlName',s.newsletter_name||'School Newsletter');
   if(s.newsletter_sub)set('nlSub',s.newsletter_sub);
   const stats=[[s.students,'Students'],[s.staff,'Staff'],[s.cocurriculars,'Co-curriculars']].filter(x=>x[0]);
@@ -484,19 +475,21 @@ async function loadSettings(){
 }
 
 // ── TICKER ────────────────────────────────────────────
+// Reads from /_data/ticker.json → { items: [{text, active}] }
 async function loadTicker(){
-  const items=await fetchCollection('ticker');
-  const active=items.filter(i=>i.active!==false&&i.text);
-  if(!active.length)return;
-  const doubled=[...active,...active];
+  const data=await getJSON('/_data/ticker.json');
+  const items=(data?.items||[]).filter(i=>i.active!==false&&i.text);
+  if(!items.length)return;
+  const doubled=[...items,...items];
   document.getElementById('tickerEl').innerHTML=doubled.map(i=>`<span>${i.text}</span>`).join('');
 }
 
 // ── BULLETINS ─────────────────────────────────────────
+// Reads from /_data/bulletins.json → { items: [...] }
 let allBulletins=[];
 async function loadBulletins(){
-  const items=await fetchCollection('bulletins');
-  allBulletins=items.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const data=await getJSON('/_data/bulletins.json');
+  allBulletins=(data?.items||[]).sort((a,b)=>new Date(b.date)-new Date(a.date));
   renderBulletins(allBulletins);
 }
 function renderBulletins(items){
@@ -508,62 +501,68 @@ function renderBulletins(items){
 }
 
 // ── SPORTS ────────────────────────────────────────────
+// Reads from /_data/sports.json → { items: [...] }
 async function loadSports(){
-  const items=await fetchCollection('sports');
+  const data=await getJSON('/_data/sports.json');
+  const items=(data?.items||[]).sort((a,b)=>new Date(b.date)-new Date(a.date));
   if(!items.length){document.getElementById('sportsEl').innerHTML=empty('🏆','No results posted yet.');return}
-  const sorted=items.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('sportsEl').innerHTML='<div class="g3">'+sorted.slice(0,6).map(s=>`
+  document.getElementById('sportsEl').innerHTML='<div class="g3">'+items.slice(0,6).map(s=>`
     <div class="card sport-card">
       <div class="tag t-sky">${s.emoji||'🏅'} ${s.sport}</div>
-      <div style="font-size:.7rem;color:var(--text-muted);font-family:'DM Mono',monospace">${s.event}</div>
+      <div style="font-size:.7rem;color:var(--text-muted);font-family:'DM Mono',monospace">${s.event||''}</div>
       <div class="match">
-        <div class="match-team"><div class="match-name">${s.our_team}</div></div>
-        <div class="match-score ${s.outcome==='win'?'win':s.outcome==='loss'?'loss':''}">${s.score}</div>
-        <div class="match-team"><div class="match-name">${s.opponent}</div></div>
+        <div class="match-team"><div class="match-name">${s.our_team||''}</div></div>
+        <div class="match-score ${s.outcome==='win'?'win':s.outcome==='loss'?'loss':''}">${s.score||''}</div>
+        <div class="match-team"><div class="match-name">${s.opponent||''}</div></div>
       </div>
-      <div class="match-desc">${s.description}</div>
+      <div class="match-desc">${s.description||''}</div>
     </div>`).join('')+'</div>';
 }
 
 // ── EVENTS ────────────────────────────────────────────
+// Reads from /_data/events.json → { items: [...] }
 async function loadEvents(){
-  const items=await fetchCollection('events');
+  const data=await getJSON('/_data/events.json');
+  const items=(data?.items||[]).sort((a,b)=>new Date(a.date)-new Date(b.date));
   if(!items.length){document.getElementById('eventsEl').innerHTML=empty('📅','No upcoming events yet.');return}
-  const sorted=items.sort((a,b)=>new Date(a.date)-new Date(b.date));
-  document.getElementById('eventsEl').innerHTML=sorted.map(e=>{
+  document.getElementById('eventsEl').innerHTML=items.map(e=>{
     const d=new Date(e.date);
     return`<div class="ev">
       <div class="ev-box${e.highlight?' highlight':''}"><div class="ev-day">${d.getDate()}</div><div class="ev-month">${d.toLocaleDateString('en-AU',{month:'short'})}</div></div>
       <div class="ev-info"><div class="ev-name">${e.title}</div><div class="ev-meta">${e.meta||''}</div></div>
-      <div class="tag ${evTag[e.category]||'t-sky'}" style="margin:0">${e.category}</div>
+      <div class="tag ${evTag[e.category]||'t-sky'}" style="margin:0">${e.category||''}</div>
     </div>`;
   }).join('');
 }
 
 // ── NOTICES ───────────────────────────────────────────
+// Reads from /_data/notices.json → { items: [...] }
 async function loadNotices(){
-  const items=await fetchCollection('notices');
-  const active=items.filter(i=>i.active!==false);
-  if(!active.length){document.getElementById('noticesEl').innerHTML=empty('⚠️','No notices at this time.');return}
-  document.getElementById('noticesEl').innerHTML=active.map(n=>`<div class="notice${n.urgent?' urgent':''}"><div class="notice-title">${n.title}</div><div class="notice-body">${n.body}</div></div>`).join('');
+  const data=await getJSON('/_data/notices.json');
+  const items=(data?.items||[]).filter(i=>i.active!==false);
+  if(!items.length){document.getElementById('noticesEl').innerHTML=empty('⚠️','No notices at this time.');return}
+  document.getElementById('noticesEl').innerHTML=items.map(n=>`<div class="notice${n.urgent?' urgent':''}"><div class="notice-title">${n.title}</div><div class="notice-body">${n.body}</div></div>`).join('');
 }
 
 // ── GALLERY ───────────────────────────────────────────
+// Reads from /_data/gallery.json → { items: [...] }
 async function loadGallery(){
-  const items=await fetchCollection('gallery');
+  const data=await getJSON('/_data/gallery.json');
+  const items=data?.items||[];
   if(!items.length){document.getElementById('galleryEl').innerHTML=empty('🖼️','No photos yet. Add some via the Content Manager.');return}
   document.getElementById('galleryEl').innerHTML='<div class="gallery">'+items.map(g=>{
-    if(g.image)return`<div class="gitem"><img src="${g.image}" alt="${g.caption}"></div>`;
-    return`<div class="gitem"><div class="gitem-inner" style="background:${bgMap[g.bg]||bgMap.blue};color:${bgText[g.bg]||'white'}"><span>${g.emoji||'📷'}</span><span>${g.caption}</span></div></div>`;
+    if(g.image)return`<div class="gitem"><img src="${g.image}" alt="${g.caption||''}"></div>`;
+    return`<div class="gitem"><div class="gitem-inner" style="background:${bgMap[g.bg]||bgMap.blue};color:${bgText[g.bg]||'white'}"><span>${g.emoji||'📷'}</span><span>${g.caption||''}</span></div></div>`;
   }).join('')+'</div>';
 }
 
 // ── NEWSLETTER ────────────────────────────────────────
+// Reads from /_data/newsletter.json → { items: [...] }
 async function loadNewsletter(){
-  const items=await fetchCollection('newsletter');
+  const data=await getJSON('/_data/newsletter.json');
+  const items=(data?.items||[]).sort((a,b)=>new Date(b.date)-new Date(a.date));
   if(!items.length)return;
-  const sorted=items.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('nlIssuesEl').innerHTML='<h4>📰 Past Issues</h4>'+sorted.map(n=>`
+  document.getElementById('nlIssuesEl').innerHTML='<h4>📰 Past Issues</h4>'+items.map(n=>`
     <a href="${n.pdf||'#'}" class="nl-issue-item" ${n.pdf&&n.pdf!=='#'?'target="_blank"':''}>
       <div class="nl-issue-icon">📄</div>
       <div class="nl-issue-info"><div class="nl-issue-name">${n.title}</div><div class="nl-issue-date">${fmtDate(n.date)}</div></div>
@@ -573,9 +572,9 @@ async function loadNewsletter(){
 
 // ── STAFF DATA ────────────────────────────────────────
 async function loadStaffContacts(){
-  const data=await fetchJSON('/_data/staff_contacts.json');
+  const data=await getJSON('/_data/staff_contacts.json');
   const contacts=data?.contacts||[];
-  if(!contacts.length){document.getElementById('staffContactsEl').innerHTML=empty('👥','No contacts added yet. Use Content Manager → Staff Portal Settings.');return}
+  if(!contacts.length){document.getElementById('staffContactsEl').innerHTML=empty('👥','No contacts yet. Use Content Manager → Staff Portal Settings.');return}
   document.getElementById('staffContactsEl').innerHTML=contacts.map(c=>`
     <div class="scon">
       <div class="scon-av" style="background:${c.bg||'#e8f7fd'};color:${c.color||'#0e6fa0'}">${c.emoji||'👤'}</div>
@@ -585,13 +584,13 @@ async function loadStaffContacts(){
 }
 
 async function loadStaffBulletins(){
-  const items=await fetchCollection('staff_bulletins');
+  const data=await getJSON('/_data/staff_bulletins.json');
+  const items=(data?.items||[]).sort((a,b)=>new Date(b.date)-new Date(a.date));
   if(!items.length){document.getElementById('staffBulletsEl').innerHTML=empty('📋','No staff bulletins yet. Use Content Manager → Staff Bulletins (Internal).');return}
-  const sorted=items.sort((a,b)=>new Date(b.date)-new Date(a.date));
   const tmap={Admin:'t-red','ICT Department':'t-sky',Executive:'t-gold',Welfare:'t-purple',Curriculum:'t-green',General:'t-sky'};
-  document.getElementById('staffBulletsEl').innerHTML=sorted.slice(0,5).map((b,i)=>`
+  document.getElementById('staffBulletsEl').innerHTML=items.slice(0,5).map((b,i)=>`
     <div class="bc" style="padding:22px 24px${i>0?';border-top:1px solid var(--border)':''}">
-      <div class="tag ${tmap[b.category]||'t-sky'}">📋 ${b.category}</div>
+      <div class="tag ${tmap[b.category]||'t-sky'}">📋 ${b.category||''}</div>
       <div class="bc-date">${fmtDate(b.date)}</div>
       <div class="bc-title">${b.title}</div>
       <div class="bc-body">${b.body}</div>
@@ -599,16 +598,17 @@ async function loadStaffBulletins(){
 }
 
 async function loadStaffNotices(){
-  const items=await fetchCollection('notices');
-  const urgent=items.filter(i=>i.urgent&&i.active!==false);
+  const data=await getJSON('/_data/notices.json');
+  const urgent=(data?.items||[]).filter(i=>i.urgent&&i.active!==false);
   document.getElementById('staffNoticesEl').innerHTML=urgent.length
     ?urgent.map(n=>`<div class="notice urgent"><div class="notice-title">${n.title}</div><div class="notice-body">${n.body}</div></div>`).join('')
     :`<div class="notice"><div class="notice-title">No urgent notices at this time.</div></div>`;
 }
 
 async function loadResources(){
-  const items=await fetchCollection('resources');
-  if(!items.length){document.getElementById('resourcesEl').innerHTML=empty('📁','No resources added yet. Use Content Manager → Staff Resource Library.');return}
+  const data=await getJSON('/_data/resources.json');
+  const items=data?.items||[];
+  if(!items.length){document.getElementById('resourcesEl').innerHTML=empty('📁','No resources yet. Use Content Manager → Staff Resource Library.');return}
   document.getElementById('resourcesEl').innerHTML=items.map((r,i)=>`
     <div class="res"${i===items.length-1?' style="border-bottom:none"':''}>
       <div class="res-icon">${r.emoji||'📄'}</div>
