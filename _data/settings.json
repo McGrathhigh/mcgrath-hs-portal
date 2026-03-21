@@ -1,14 +1,14 @@
 {
-  "school_name": "McGrath High School",
-  "motto": "Striving Toward Perfection",
-  "current_term": "Term 1 · 2026",
-  "students": "1,240",
   "staff": "87",
+  "office_hours": "Mon–Fri 8:30am – 4:00pm",
+  "motto": "Striving Toward Perfection",
+  "phone": "(876)-903-8624",
+  "current_term": "Term 2 · 2026",
   "cocurriculars": "34",
-  "address": "1 School Road, McGrath Heights NSW 2000",
-  "phone": "(02) 9000 0000",
-  "email": "admin@mcgrath.nsw.edu.au",
-  "office_hours": "Mon–Fri 8:00am – 4:00pm",
+  "address": "Treadways District, off Linstead, St. Catherine.",
   "staff_username": "staff",
-  "staff_password": "mcgrath2026"
+  "school_name": "McGrath High School",
+  "students": "1,240",
+  "staff_password": "mcgrath2026",
+  "email": "McGrathhigh@yahoo.com"
 }
