@@ -50,7 +50,11 @@ canvas#gl {
 #scroll-track {
   position: relative;
   z-index: 10;
+  /* Sections clip correctly under fixed nav/dots */
+  isolation: isolate;
 }
+
+
 
 /* ─── SECTION STRUCTURE ─── */
 .scene {
@@ -59,6 +63,7 @@ canvas#gl {
   align-items: center;
   position: relative;
   padding: 0 8vw;
+  overflow: hidden;
 }
 
 /* ─── SECTION 1: INTRO ─── */
@@ -71,8 +76,8 @@ canvas#gl {
 }
 
 .crest-wrap {
-  width: 120px;
-  height: 120px;
+  width: 180px;
+  height: 180px;
   margin: 0 auto 48px;
   opacity: 0;
   transform: scale(0.85);
@@ -375,8 +380,8 @@ canvas#gl {
 }
 .enter-btn:hover .enter-arrow { width: 32px; }
 
-/* ─── FIGURE PLACEHOLDER ─── */
-.figure-zone {
+/* ─── FIGURE PLACEHOLDER — removed ─── */
+.figure-zone { display: none !important; /* removed */ } .figure-zone_UNUSED {
   position: absolute;
   bottom: 0;
   right: 8vw;
@@ -511,7 +516,7 @@ canvas#gl {
 @media (max-width: 768px) {
   .nav-links { display: none; }
   .section-dots { display: none; }
-  .figure-zone { display: none; }
+  .figure-zone { display: none !important; /* removed */ } .figure-zone_UNUSED { display: none; }
   .achievement-grid { grid-template-columns: 1fr; max-width: 320px; }
   .stat-row { gap: 24px; }
   #s2, #s3 { justify-content: center; text-align: center; }
@@ -561,7 +566,7 @@ function crestSVGFull() {
     <a href="#s2">Excellence</a>
     <a href="#s3">Community</a>
     <a href="#s4">Achievement</a>
-    <a href="#portal">Portal</a>
+    <a href="./portal.html">Portal</a>
   </div>
 </nav>
 
@@ -602,27 +607,6 @@ function crestSVGFull() {
         McGrath High School has stood as a beacon of academic excellence and character formation. Every student who passes through these halls carries forward a legacy of striving — not for adequacy, but for perfection.
       </p>
     </div>
-
-    <!-- Student silhouette -->
-    <div class="figure-zone" id="fig2">
-      <div class="figure-silhouette">
-        <svg viewBox="0 0 180 420" xmlns="http://www.w3.org/2000/svg" fill="none">
-          <!-- Head -->
-          <ellipse cx="90" cy="42" rx="28" ry="32" fill="rgba(7,9,15,0.9)"/>
-          <!-- Neck -->
-          <rect x="82" y="70" width="16" height="18" fill="rgba(7,9,15,0.9)"/>
-          <!-- Shoulders/torso -->
-          <path d="M40 88 Q90 78 140 88 L148 200 Q90 210 32 200 Z" fill="rgba(7,9,15,0.9)"/>
-          <!-- Arms -->
-          <path d="M40 90 L18 190 L26 192 L50 98" fill="rgba(7,9,15,0.9)"/>
-          <path d="M140 90 L162 190 L154 192 L130 98" fill="rgba(7,9,15,0.9)"/>
-          <!-- Legs -->
-          <path d="M60 200 L52 340 L70 342 L90 250 L110 342 L128 340 L120 200 Z" fill="rgba(7,9,15,0.9)"/>
-          <!-- Rim light left -->
-          <ellipse cx="90" cy="42" rx="28" ry="32" fill="none" stroke="rgba(43,62,170,0.35)" stroke-width="1.5"/>
-          <path d="M40 88 Q90 78 140 88 L148 200 Q90 210 32 200 Z" fill="none" stroke="rgba(43,62,170,0.2)" stroke-width="1"/>
-        </svg>
-      </div>
     </div>
   </section>
 
@@ -638,16 +622,16 @@ function crestSVGFull() {
       </p>
       <div class="stat-row" id="s3stats">
         <div class="stat-item">
-          <div class="stat-num">800<span>+</span></div>
+          <div class="stat-num">1,240<span></span></div>
           <div class="stat-label">Students</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num">60<span>+</span></div>
-          <div class="stat-label">Educators</div>
+          <div class="stat-num">87<span></span></div>
+          <div class="stat-label">Staff</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num">50<span>yr</span></div>
-          <div class="stat-label">Legacy</div>
+          <div class="stat-num">34<span></span></div>
+          <div class="stat-label">Co-curriculars</div>
         </div>
       </div>
     </div>
@@ -697,7 +681,7 @@ function crestSVGFull() {
     <h2 class="enter-heading" id="enterHeading">
       Welcome to the<br>McGrath Community.
     </h2>
-    <a href="#portal" class="enter-btn" id="enterBtn" onclick="enterPortal()">
+    <a href="./portal.html" class="enter-btn" id="enterBtn" onclick="return rippleEnter(event)">
       <span>Enter Portal</span>
       <div class="enter-arrow"></div>
     </a>
@@ -998,20 +982,85 @@ observeEl('s5ey',         'vis', 0);
 // ─────────────────────────────────────────────
 //  PORTAL TRANSITION
 // ─────────────────────────────────────────────
-function enterPortal() {
-  setTimeout(() => {
-    document.getElementById('scroll-track').style.display = 'none';
-    document.getElementById('stage').style.display = 'none';
-    document.querySelector('.vignette').style.display = 'none';
-    document.querySelector('.nav-overlay').style.display = 'none';
-    document.querySelector('.section-dots').style.display = 'none';
-    document.querySelector('.progress-line').style.display = 'none';
-    const portal = document.getElementById('portal');
-    portal.style.display = 'block';
-    portal.style.minHeight = '100vh';
-    window.scrollTo(0, 0);
-    document.body.style.background = '#f4fafd';
-  }, 100);
+// ── Ripple water effect then navigate to portal.html ──
+function rippleEnter(e) {
+  e.preventDefault();
+  const btn = e.currentTarget;
+  const rect = btn.getBoundingClientRect();
+  const cx = e.clientX || rect.left + rect.width / 2;
+  const cy = e.clientY || rect.top  + rect.height / 2;
+
+  // Create ripple canvas overlay
+  const rippleOverlay = document.createElement('div');
+  rippleOverlay.style.cssText = `
+    position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden;
+  `;
+  const rc = document.createElement('canvas');
+  rc.style.cssText = 'position:absolute;inset:0;width:100%;height:100%';
+  rc.width  = window.innerWidth;
+  rc.height = window.innerHeight;
+  rippleOverlay.appendChild(rc);
+  document.body.appendChild(rippleOverlay);
+
+  const ctx = rc.getContext('2d');
+  const W = rc.width, H = rc.height;
+  const maxR = Math.sqrt(W*W + H*H) * 1.1;
+  const waves = [];
+  const NUM_WAVES = 8;
+  for(let i = 0; i < NUM_WAVES; i++) {
+    waves.push({ r: 0, delay: i * 60, alpha: 0 });
+  }
+
+  const start = performance.now();
+  const DURATION = 1200;
+
+  function drawRipple(ts) {
+    ctx.clearRect(0, 0, W, H);
+    const elapsed = ts - start;
+    let allDone = true;
+
+    waves.forEach(w => {
+      const t = Math.max(0, elapsed - w.delay);
+      if (t <= 0) { allDone = false; return; }
+      const progress = Math.min(1, t / (DURATION - w.delay * 0.5));
+      w.r = maxR * progress;
+      w.alpha = progress < 0.5
+        ? progress * 2
+        : 1 - (progress - 0.5) * 2;
+      if (progress < 1) allDone = false;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, w.r, 0, Math.PI * 2);
+      // Alternating blue rings
+      const blue = `rgba(43,62,170,${w.alpha * 0.18})`;
+      ctx.strokeStyle = blue;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    });
+
+    // Fill overlay grows with first wave
+    const fillProgress = Math.min(1, elapsed / DURATION);
+    const fillR = maxR * fillProgress;
+    if (fillR > 0) {
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, fillR);
+      grad.addColorStop(0,   'rgba(43,62,170,0.85)');
+      grad.addColorStop(0.7, 'rgba(28,45,138,0.92)');
+      grad.addColorStop(1,   'rgba(7,9,15,1)');
+      ctx.beginPath();
+      ctx.arc(cx, cy, fillR, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }
+
+    if (!allDone || fillProgress < 1) {
+      requestAnimationFrame(drawRipple);
+    } else {
+      // Navigate after ripple fills screen
+      window.location.href = './portal.html';
+    }
+  }
+
+  requestAnimationFrame(drawRipple);
   return false;
 }
 
