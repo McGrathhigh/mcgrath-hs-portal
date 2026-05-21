@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highlights — McGrath High School</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Figtree:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --blue:#2B3EAA; --blue-deep:#1C2D8A; --blue-mid:#3a52cc; --blue-pale:#EEF1FA;
+  --gold:#C9A84C; --white:#FFFFFF; --off:#F7F7F5;
+  --ink:#0D1220; --ink-mid:#2C3A50; --ink-soft:#8495A8; --border:rgba(43,62,170,0.12);
+}
+html { scroll-behavior:smooth; }
+body { font-family:'Figtree',sans-serif; background:var(--white); color:var(--ink); overflow-x:hidden; }
+
+/* ── NAV ── */
+nav { position:sticky; top:0; z-index:200; height:68px; padding:0 6vw; display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.95); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+.nav-brand { display:flex; align-items:center; gap:12px; text-decoration:none; }
+.nav-logo  { width:38px; height:38px; object-fit:contain; }
+.nav-name  { font-family:'Cormorant Garamond',serif; font-size:0.95rem; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:var(--blue-deep); line-height:1.1; }
+.nav-motto { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-soft); }
+.nav-links { display:flex; align-items:center; gap:28px; }
+.nav-links a { font-size:0.75rem; font-weight:500; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-mid); text-decoration:none; transition:color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color:var(--blue); }
+.nav-staff { background:var(--blue)!important; color:white!important; padding:7px 16px; border-radius:8px; font-weight:700!important; }
+@media(max-width:768px){ .nav-links a:not(.nav-staff){ display:none; } }
+
+/* ── HERO ── */
+.hero { padding:80px 6vw; background:var(--white); border-bottom:1px solid var(--border); }
+.hero-inner { max-width:1160px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+@media(max-width:768px){ .hero-inner { grid-template-columns:1fr; } .hero-right { display:none; } }
+.hero-eyebrow { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; }
+.hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2.8rem,5vw,4.5rem); font-weight:300; line-height:0.95; margin-bottom:24px; }
+.hero-title em { font-style:italic; color:var(--blue); }
+.hero-sub { font-size:0.95rem; color:var(--ink-mid); line-height:1.8; max-width:420px; margin-bottom:32px; }
+.hero-cta { display:inline-flex; align-items:center; gap:10px; background:var(--blue); color:white; padding:13px 28px; border-radius:8px; font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; text-decoration:none; transition:background 0.25s; }
+.hero-cta:hover { background:var(--blue-deep); }
+.hero-stat-stack { display:flex; flex-direction:column; gap:16px; }
+.hsc { background:white; border:1px solid var(--border); border-radius:16px; padding:22px 24px; transition:transform 0.3s ease, box-shadow 0.3s ease; }
+.hsc:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(43,62,170,0.1); }
+.hsc-num { font-family:'Cormorant Garamond',serif; font-size:2.6rem; font-weight:300; color:var(--blue); line-height:1; }
+.hsc-num sup { font-size:1.1rem; color:var(--gold); }
+.hsc-label { font-family:'DM Mono',monospace; font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-soft); margin-top:4px; }
+
+/* ══ FOLIO REEL ════════════════════════════════════════════════
+   Two synchronized columns.
+   Left:  title list — scrolls naturally with the page
+   Right: sticky panel — content switches based on scroll position
+   Converge: active entry expands, inactive entries dim
+════════════════════════════════════════════════════════════════ */
+#reel {
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr;
+  padding:0 6vw;
+  gap:0;
+}
+@media(max-width:768px){ #reel { grid-template-columns:1fr; } .reel-right { display:none!important; } }
+
+/* ── LEFT COL: title list ── */
+.reel-left {
+  padding-right:60px;
+  padding-top:60px;
+  padding-bottom:120px;
+  border-right:1px solid var(--border);
+}
+
+/* ── Single entry ── */
+.reel-entry {
+  padding:32px 0;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  /* Slide right on hover */
+  transition:padding-left 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.reel-entry:last-child { border-bottom:none; }
+.reel-entry:hover { padding-left:6px; }
+
+.re-index {
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--ink-soft); margin-bottom:10px;
+  opacity:0.5; transition:opacity 0.35s;
+}
+.reel-entry.active .re-index { opacity:1; color:var(--blue); }
+
+.re-date {
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--gold);
+  max-height:0; overflow:hidden; opacity:0;
+  transition:max-height 0.4s ease, opacity 0.4s ease, margin 0.4s ease;
+  margin-bottom:0;
+}
+.reel-entry.active .re-date { max-height:30px; opacity:1; margin-bottom:8px; }
+
+.re-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.3rem,2.2vw,1.9rem);
+  font-weight:300; line-height:1.1;
+  color:var(--ink-soft);
+  margin-bottom:0;
+  transition:color 0.35s ease;
+  letter-spacing:0.01em;
+}
+.reel-entry.active .re-title { color:var(--blue-deep); }
+.reel-entry:hover .re-title  { color:var(--ink); }
+
+.re-body {
+  font-size:0.85rem; color:var(--ink-mid); line-height:1.7;
+  max-width:380px;
+  /* Collapsed by default, expand when active */
+  max-height:0; overflow:hidden; opacity:0;
+  transition:max-height 0.5s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease 0.05s, margin 0.4s ease;
+  margin-top:0;
+}
+.reel-entry.active .re-body { max-height:160px; opacity:1; margin-top:10px; }
+
+.re-cat {
+  display:inline-block; padding:4px 12px; border-radius:20px;
+  font-family:'DM Mono',monospace; font-size:0.52rem;
+  letter-spacing:0.1em; text-transform:uppercase; font-weight:600;
+  max-height:0; overflow:hidden; opacity:0;
+  transition:max-height 0.4s ease 0.1s, opacity 0.35s ease 0.15s, margin 0.4s ease;
+  margin-top:0;
+}
+.reel-entry.active .re-cat { max-height:40px; opacity:1; margin-top:10px; }
+
+/* ── RIGHT COL: sticky visual panel ── */
+.reel-right {
+  position:sticky;
+  top:68px;                          /* below nav */
+  height:calc(100vh - 68px);
+  padding-left:60px;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+
+/* Visual panels — all absolutely positioned, only active shows */
+.visual-panels { position:relative; width:100%; height:80%; max-height:520px; }
+
+.vp {
+  position:absolute; inset:0;
+  border-radius:20px; overflow:hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  /* Hidden: faded out, scaled up slightly */
+  opacity:0;
+  transform:scale(1.04) translateY(10px);
+  transition:
+    opacity  0.55s cubic-bezier(0.22,1,0.36,1),
+    transform 0.55s cubic-bezier(0.22,1,0.36,1);
+  pointer-events:none;
+}
+.vp.active {
+  opacity:1;
+  transform:scale(1) translateY(0);
+  pointer-events:all;
+}
+
+.vp-bg { position:absolute; inset:0; }
+.vp-content { position:relative; z-index:1; text-align:center; padding:40px; }
+.vp-icon { font-size:4.5rem; display:block; margin-bottom:20px; filter:drop-shadow(0 6px 16px rgba(0,0,0,0.15)); }
+.vp-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(0,0,0,0.4); margin-bottom:8px; }
+.vp-title { font-family:'Cormorant Garamond',serif; font-size:1.7rem; font-weight:600; line-height:1.1; max-width:280px; margin:0 auto 18px; color:var(--ink); }
+.vp-stat { font-family:'Cormorant Garamond',serif; font-size:3.8rem; font-weight:300; color:var(--blue); line-height:1; }
+.vp-stat-label { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-soft); margin-top:4px; }
+/* Watermark year */
+.vp-year { position:absolute; bottom:10px; right:16px; font-family:'Cormorant Garamond',serif; font-size:6rem; font-weight:300; color:rgba(0,0,0,0.05); line-height:1; user-select:none; pointer-events:none; }
+
+/* Category backgrounds for visual panels */
+.bg-academic  { background:linear-gradient(135deg,#dbeef9,#b3d9f0); }
+.bg-sports    { background:linear-gradient(135deg,#d9f0db,#a8dfae); }
+.bg-cultural  { background:linear-gradient(135deg,#fdf0d5,#f5d98b); }
+.bg-pageant   { background:linear-gradient(135deg,#f0d9f0,#dfaede); }
+.bg-patriotic { background:linear-gradient(135deg,#f0d9d9,#dfaeae); }
+.bg-community { background:linear-gradient(135deg,#d9e5f9,#adc2f0); }
+
+/* Category badge colours */
+.cat-academic  { background:rgba(14,111,160,0.12); color:#0e6fa0; }
+.cat-sports    { background:rgba(26,122,26,0.12);  color:#1a7a1a; }
+.cat-cultural  { background:rgba(138,98,0,0.12);   color:#8a6200; }
+.cat-pageant   { background:rgba(122,26,122,0.12); color:#7a1a7a; }
+.cat-patriotic { background:rgba(138,0,0,0.12);    color:#8a0000; }
+.cat-community { background:rgba(26,58,138,0.12);  color:#1a3a8a; }
+
+/* ── Progress line ── */
+.prog-line { position:fixed; left:0; top:0; width:2px; height:0%; z-index:300; background:linear-gradient(180deg,var(--blue),var(--gold)); transition:height 0.08s linear; }
+
+/* ── Closing section ── */
+.closing { background:var(--blue-deep); color:white; padding:96px 6vw; text-align:center; }
+.closing-label { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; }
+.closing-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3.4rem); font-weight:300; margin-bottom:20px; line-height:1.1; }
+.closing-body { font-size:0.9rem; opacity:0.6; max-width:460px; margin:0 auto 40px; line-height:1.75; }
+.closing-links { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.cl-btn { display:inline-block; padding:12px 26px; border-radius:8px; font-family:'DM Mono',monospace; font-size:0.66rem; letter-spacing:0.15em; text-transform:uppercase; text-decoration:none; transition:all 0.25s; }
+.cl-primary { background:white; color:var(--ink); }
+.cl-primary:hover { background:var(--off); }
+.cl-ghost { border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.75); }
+.cl-ghost:hover { border-color:white; color:white; }
+
+/* ── Footer ── */
+footer { background:var(--ink); color:rgba(255,255,255,0.4); padding:28px 6vw; text-align:center; font-size:0.78rem; }
+footer strong { color:rgba(255,255,255,0.8); }
+footer a { color:rgba(255,255,255,0.4); text-decoration:none; }
+footer a:hover { color:white; }
+</style>
+</head>
+<body>
+
+<div class="prog-line" id="progLine"></div>
+
+<nav>
+  <a class="nav-brand" href="./index.html">
+    <img class="nav-logo" src="./images/crest.png" alt="McGrath" onerror="this.style.display='none'">
+    <div>
+      <div class="nav-name">McGrath High School</div>
+      <div class="nav-motto">Striving Toward Perfection</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="./portal.html">Portal</a>
+    <a href="./store.html">Store</a>
+    <a href="./events.html">Events</a>
+    <a href="./highlights.html" class="active">Highlights</a>
+    <a href="./portal.html" class="nav-staff">🔒 Staff</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">— Year in Review · 2025 / 2026</div>
+      <h1 class="hero-title">A year of striving<br>toward <em>perfection.</em></h1>
+      <p class="hero-sub">From the first bell of the academic year to graduation day — scroll through the milestones, achievements and defining moments that shaped McGrath this year.</p>
+      <a href="#reel" class="hero-cta">
+        Begin Scrolling
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+      </a>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat-stack">
+        <div class="hsc">
+          <div class="hsc-num">800<sup>+</sup></div>
+          <div class="hsc-label">Students enrolled</div>
+        </div>
+        <div class="hsc">
+          <div class="hsc-num">97<sup>%</sup></div>
+          <div class="hsc-label">CSEC pass rate</div>
+        </div>
+        <div class="hsc">
+          <div class="hsc-num">12</div>
+          <div class="hsc-label">Major events this year</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOLIO REEL -->
+<div id="reel">
+
+  <!-- LEFT: scrolling title list -->
+  <div class="reel-left" id="reelLeft"></div>
+
+  <!-- RIGHT: sticky visual -->
+  <div class="reel-right">
+    <div class="visual-panels" id="visualPanels"></div>
+  </div>
+
+</div>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="closing-label">— McGrath High School</div>
+  <h2 class="closing-title">Every year, a new chapter.<br>Every student, a legacy.</h2>
+  <p class="closing-body">McGrath High School has been shaping futures for over five decades. The highlights above are only a glimpse of what happens within these walls every day.</p>
+  <div class="closing-links">
+    <a href="./events.html"  class="cl-btn cl-primary">Browse All Events</a>
+    <a href="./portal.html"  class="cl-btn cl-ghost">Community Portal</a>
+  </div>
+</section>
+
+<footer>
+  <img src="./images/crest.png" style="height:28px;opacity:0.15;display:block;margin:0 auto 10px" alt="">
+  <strong>McGrath High School</strong> · Highlights · © 2026<br>
+  <span style="font-size:0.7rem;opacity:0.6;display:block;margin-top:6px">
+    <a href="./portal.html">← Portal</a> &nbsp;·&nbsp;
+    <a href="./store.html">Store</a> &nbsp;·&nbsp;
+    <a href="./events.html">Events</a>
+  </span>
+</footer>
+
+<script>
+/* ── DATA ─────────────────────────────── */
+const HIGHLIGHTS = [
+  { date:'Sep 2025', title:'New Academic Year Opens',     body:"Over 800 students returned for the 2025–2026 academic year. New teachers welcomed, timetables distributed, and the year began with renewed energy across all forms.",               icon:'📚', stat:'800+', statLabel:'Students',   cat:'academic',  year:2025 },
+  { date:'Nov 2025', title:'Cultural Day 2025',           body:'Students and staff delivered a spectacular display of Caribbean and global culture. The performance hall transformed into a stage of colour, music and dance.',                         icon:'🎭', stat:'300+', statLabel:'Performers', cat:'cultural',  year:2025 },
+  { date:'Jan 2026', title:'CSEC Awards Ceremony',        body:"Recognition of McGrath's Class of 2025 — one of the strongest CSEC performances in the school's history. Multiple students achieved perfect scores across several subjects.",           icon:'🏆', stat:'97%',  statLabel:'Pass Rate',  cat:'academic',  year:2026 },
+  { date:'Jan 2026', title:"Boys' Day Celebration",       body:"McGrath's annual celebration of its male students — a day of recognition, motivation and pride honouring achievement in academics, sports, arts and character.",                        icon:'🎖️', stat:'400+', statLabel:'Honoured',   cat:'patriotic', year:2026 },
+  { date:'Feb 2026', title:"Girls' Day Celebration",      body:"A powerful day honouring the young women of McGrath. Awards, performances and addresses celebrating the strength, intelligence and excellence of our female students.",                 icon:'🌸', stat:'400+', statLabel:'Honoured',   cat:'patriotic', year:2026 },
+  { date:'Feb 2026', title:'ISSA Manning Cup',            body:"McGrath's boys football team represented the school with pride in the ISSA/Digicel Manning Cup regional competition — demonstrating teamwork, skill and the McGrath fighting spirit.", icon:'⚽', stat:'11',   statLabel:'Players',    cat:'sports',    year:2026 },
+  { date:'Mar 2026', title:'Inter-House Sports Day',      body:"The stadium came alive as students competed across track and field for house glory. Personal bests broken, school records challenged, team spirit at its absolute peak.",              icon:'🏃', stat:'200+', statLabel:'Athletes',   cat:'sports',    year:2026 },
+  { date:'Jun 2026', title:'Graduation Day 2026',         body:"The Class of 2026 crossed the stage to receive their certificates. A milestone moment for students, parents and teachers — five years of dedication celebrated.",                      icon:'🎓', stat:'200+', statLabel:'Graduates',  cat:'academic',  year:2026 },
+];
+
+const CAT_LABELS = { academic:'Academic', sports:'Sports', cultural:'Cultural', pageant:'Pageant', patriotic:'Patriotic', community:'Community' };
+
+/* ── Build DOM ────────────────────────── */
+const leftCol     = document.getElementById('reelLeft');
+const visualPanel = document.getElementById('visualPanels');
+
+HIGHLIGHTS.forEach((h, i) => {
+
+  /* LEFT ENTRY */
+  const entry = document.createElement('div');
+  entry.className = 'reel-entry' + (i === 0 ? ' active' : '');
+  entry.dataset.index = i;
+  entry.innerHTML = `
+    <div class="re-index">${String(i+1).padStart(2,'0')} / ${String(HIGHLIGHTS.length).padStart(2,'0')}</div>
+    <div class="re-date">${h.date}</div>
+    <div class="re-title">${h.title}</div>
+    <div class="re-body">${h.body}</div>
+    <span class="re-cat cat-${h.cat}">${CAT_LABELS[h.cat]}</span>`;
+  entry.addEventListener('click', () => scrollToEntry(i));
+  leftCol.appendChild(entry);
+
+  /* RIGHT PANEL */
+  const panel = document.createElement('div');
+  panel.className = 'vp' + (i === 0 ? ' active' : '');
+  panel.dataset.index = i;
+  panel.innerHTML = `
+    <div class="vp-bg bg-${h.cat}"></div>
+    <div class="vp-content">
+      <span class="vp-icon">${h.icon}</span>
+      <div class="vp-label">${h.date}</div>
+      <div class="vp-title">${h.title}</div>
+      <div class="vp-stat">${h.stat}</div>
+      <div class="vp-stat-label">${h.statLabel}</div>
+    </div>
+    <div class="vp-year">${h.year}</div>`;
+  visualPanel.appendChild(panel);
+});
+
+/* ── Scroll driver ────────────────────── */
+// Folio pattern: track each entry's position in the viewport
+// and set active when it crosses the 40% threshold
+
+let currentActive = 0;
+
+function setActive(i) {
+  if (i === currentActive) return;
+  currentActive = i;
+
+  document.querySelectorAll('.reel-entry').forEach((el, j) =>
+    el.classList.toggle('active', j === i));
+
+  document.querySelectorAll('.vp').forEach((el, j) =>
+    el.classList.toggle('active', j === i));
+}
+
+function onScroll() {
+  /* Progress line */
+  const totalH = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('progLine').style.height =
+    (window.scrollY / totalH * 100) + '%';
+
+  /* Which entry crosses the 40% viewport line */
+  const threshold = window.innerHeight * 0.4;
+  let active = 0;
+
+  document.querySelectorAll('.reel-entry').forEach((el, i) => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < threshold) active = i;
+  });
+
+  setActive(active);
+}
+
+function scrollToEntry(i) {
+  const entries = document.querySelectorAll('.reel-entry');
+  if (entries[i]) {
+    const top = entries[i].getBoundingClientRect().top + window.scrollY
+      - window.innerHeight * 0.35;
+    window.scrollTo({ top, behavior:'smooth' });
+  }
+}
+
+window.addEventListener('scroll', onScroll, { passive:true });
+onScroll(); // run once on load
+</script>
+</body>
+</html>

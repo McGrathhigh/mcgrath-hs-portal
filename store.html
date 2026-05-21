@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Store — McGrath High School</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Figtree:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:      #2B3EAA;
+  --blue-deep: #1C2D8A;
+  --blue-mid:  #3a52cc;
+  --blue-pale: #EEF1FA;
+  --gold:      #C9A84C;
+  --white:     #FFFFFF;
+  --off:       #F7F7F5;
+  --ink:       #0D1220;
+  --ink-mid:   #2C3A50;
+  --ink-soft:  #8495A8;
+  --border:    rgba(43,62,170,0.12);
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: 'Figtree', sans-serif; background: var(--white); color: var(--ink); overflow-x: hidden; }
+
+/* ══ NAV ══════════════════════════════════════ */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  height: 68px; padding: 0 6vw;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.nav-logo  { width: 38px; height: 38px; object-fit: contain; }
+.nav-name  {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--blue-deep); line-height: 1.1;
+}
+.nav-motto {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.48rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links a {
+  font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--ink-mid); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--blue); }
+.nav-staff {
+  background: var(--blue) !important; color: white !important;
+  padding: 7px 16px; border-radius: 8px; font-weight: 700 !important;
+}
+.nav-staff:hover { background: var(--blue-deep) !important; }
+@media (max-width: 768px) { .nav-links a:not(.nav-staff) { display: none; } }
+
+/* ══ PAGE HEADER ══════════════════════════════ */
+.page-header {
+  background: var(--blue-deep);
+  padding: 64px 6vw 52px;
+  position: relative; overflow: hidden;
+}
+.page-header::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 26px 26px;
+  pointer-events: none;
+}
+.ph-inner { max-width: 1160px; margin: 0 auto; position: relative; z-index: 1; }
+.ph-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 14px;
+}
+.ph-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  font-weight: 300; line-height: 0.95;
+  letter-spacing: 0.02em; color: white;
+  margin-bottom: 16px;
+}
+.ph-sub {
+  font-size: 0.92rem; color: rgba(255,255,255,0.6);
+  max-width: 480px; line-height: 1.75;
+}
+
+/* ══ CONTACT BAND ═════════════════════════════ */
+.contact-band {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 18px 6vw;
+}
+.cb-inner {
+  max-width: 1160px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; gap: 32px;
+  align-items: center; justify-content: space-between;
+}
+.cb-item { display: flex; align-items: center; gap: 10px; }
+.cb-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.cb-val { font-size: 0.85rem; font-weight: 600; color: var(--ink); }
+.cb-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem; letter-spacing: 0.1em; color: var(--gold);
+}
+
+/* ══ FILTER BAR ═══════════════════════════════ */
+.filter-bar {
+  background: var(--off);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 6vw;
+  position: sticky; top: 68px; z-index: 100;
+}
+.fb-inner {
+  max-width: 1160px; margin: 0 auto;
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.fb-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-soft);
+  margin-right: 4px;
+}
+.fb-btn {
+  padding: 7px 18px; border-radius: 20px;
+  border: 1px solid var(--border);
+  background: white;
+  font-family: 'Figtree', sans-serif;
+  font-size: 0.75rem; font-weight: 500;
+  color: var(--ink-mid); cursor: pointer;
+  transition: all 0.22s ease;
+}
+.fb-btn:hover { border-color: var(--blue); color: var(--blue); }
+.fb-btn.active {
+  background: var(--blue); border-color: var(--blue);
+  color: white;
+}
+
+/* ══ MAIN ═════════════════════════════════════ */
+main { max-width: 1160px; margin: 0 auto; padding: 48px 6vw 100px; }
+
+.cat-section { margin-bottom: 64px; }
+
+.cat-head {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 28px;
+}
+.cat-head-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 600;
+  color: var(--blue-deep); white-space: nowrap;
+}
+.cat-head-line { flex: 1; height: 1px; background: var(--border); }
+.cat-head-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.12em; color: var(--ink-soft);
+}
+
+/* ══ PRODUCT GRID ═════════════════════════════ */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* ══ PRODUCT CARD — Motion pattern ═══════════ */
+/*  Initial state: invisible, shifted down, blurred, slightly scaled down  */
+.product-card {
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+  filter: blur(5px);
+  /* transition fires once .revealed is added by JS */
+  transition:
+    opacity  0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    filter   0.65s ease;
+  cursor: pointer;
+}
+/* Stagger delays set inline by JS */
+.product-card.revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+.card-shell {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  /* Lift + shadow on hover */
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease;
+}
+.product-card:hover .card-shell {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 48px rgba(43,62,170,0.13);
+}
+
+/* Preview zone — full bleed image area */
+.card-preview {
+  position: relative;
+  width: 100%; padding: 48px 32px;
+  overflow: hidden;
+  background: var(--blue-pale);
+  display: flex; align-items: center; justify-content: center;
+}
+/* Inner content scales on hover — Motion 900ms cubic-bezier */
+.card-preview-inner {
+  position: relative;
+  width: 100%; aspect-ratio: 1 / 0.62;
+  border-radius: 12px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+.product-card:hover .card-preview-inner { transform: scale(1.04); }
+
+/* Gradient overlay fades in on hover */
+.card-preview-overlay {
+  pointer-events: none;
+  position: absolute; inset: 0; border-radius: 12px;
+  background: linear-gradient(to top, rgba(43,62,170,0.25) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.product-card:hover .card-preview-overlay { opacity: 1; }
+
+/* "View Details" label slides up on hover */
+.card-preview-label {
+  position: absolute; bottom: 10px; left: 14px; z-index: 2;
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.7rem; font-weight: 600; color: white;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+.product-card:hover .card-preview-label {
+  opacity: 1; transform: translateY(0);
+}
+
+/* Badge chips */
+.badge-new {
+  position: absolute; top: 14px; left: 14px; z-index: 3;
+  background: rgba(255,255,255,0.95); color: var(--ink);
+  font-family: 'DM Mono', monospace; font-size: 0.56rem;
+  font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.07);
+}
+.badge-tier {
+  position: absolute; top: 14px; right: 14px; z-index: 3;
+  background: rgba(43,62,170,0.85); color: white;
+  font-family: 'DM Mono', monospace; font-size: 0.56rem;
+  font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 20px;
+  backdrop-filter: blur(6px);
+}
+
+/* Icon placeholder */
+.card-icon { text-align: center; }
+.card-icon-emoji { font-size: 3.2rem; display: block; margin-bottom: 6px; }
+.card-icon-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+
+/* Card body below preview */
+.card-body { padding: 18px 18px 20px; }
+.card-cat {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.56rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 5px;
+}
+.card-name {
+  font-size: 0.95rem; font-weight: 600;
+  color: var(--ink); margin-bottom: 0;
+  letter-spacing: -0.01em; line-height: 1.25;
+}
+.card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 12px; margin-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.card-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem; font-weight: 600; color: var(--blue);
+}
+.card-price-unit {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem; color: var(--ink-soft); margin-left: 2px;
+}
+.card-action-btn {
+  font-size: 0.72rem; font-weight: 600;
+  color: var(--blue); background: var(--blue-pale);
+  border: none; border-radius: 8px;
+  padding: 6px 14px; cursor: pointer;
+  transition: background 0.22s, color 0.22s;
+}
+.card-action-btn:hover { background: var(--blue); color: white; }
+
+/* ══ MODAL ════════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(13,18,32,0.55);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: white; border-radius: 20px;
+  max-width: 620px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+  border: 1px solid var(--border);
+}
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+.modal-preview {
+  background: var(--blue-pale);
+  padding: 48px; display: flex;
+  align-items: center; justify-content: center;
+  border-radius: 20px 20px 0 0;
+}
+.modal-preview-icon { font-size: 5rem; }
+
+.modal-body { padding: 28px; }
+.modal-cat {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 8px;
+}
+.modal-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.9rem; font-weight: 600;
+  color: var(--ink); margin-bottom: 12px; line-height: 1.1;
+}
+.modal-desc {
+  font-size: 0.88rem; color: var(--ink-mid);
+  line-height: 1.75; margin-bottom: 22px;
+}
+.modal-price-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 0; margin-bottom: 22px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.modal-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem; font-weight: 300; color: var(--blue);
+}
+.modal-price-note {
+  font-size: 0.78rem; color: var(--ink-soft); line-height: 1.5;
+}
+.modal-sizes-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-soft);
+  margin-bottom: 10px;
+}
+.size-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+.size-chip {
+  padding: 6px 14px; border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.8rem; cursor: pointer;
+  transition: all 0.2s;
+}
+.size-chip:hover, .size-chip.sel {
+  border-color: var(--blue); background: var(--blue-pale); color: var(--blue);
+}
+
+/* Contact block */
+.modal-contact {
+  background: var(--blue-deep); border-radius: 14px;
+  padding: 20px; color: white; margin-bottom: 16px;
+}
+.mc-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 14px;
+}
+.mc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.mc-item { display: flex; align-items: flex-start; gap: 10px; }
+.mc-icon { font-size: 1rem; margin-top: 2px; opacity: 0.7; }
+.mc-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(255,255,255,0.4);
+}
+.mc-val { font-size: 0.82rem; font-weight: 600; margin-top: 2px; }
+
+.modal-close-btn {
+  width: 100%; padding: 13px;
+  background: var(--off); border: 1px solid var(--border);
+  border-radius: 10px; font-family: 'Figtree', sans-serif;
+  font-size: 0.85rem; font-weight: 600; color: var(--ink-mid);
+  cursor: pointer; transition: all 0.22s;
+}
+.modal-close-btn:hover { background: var(--border); }
+
+/* ══ FOOTER ═══════════════════════════════════ */
+footer {
+  background: var(--blue-deep); color: rgba(255,255,255,0.5);
+  padding: 32px 6vw; text-align: center; font-size: 0.8rem;
+}
+footer strong { color: white; }
+footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
+footer a:hover { color: white; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="./index.html">
+    <img class="nav-logo" src="./images/crest.png" alt="McGrath" onerror="this.style.display='none'">
+    <div>
+      <div class="nav-name">McGrath High School</div>
+      <div class="nav-motto">Striving Toward Perfection</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="./portal.html">Portal</a>
+    <a href="./store.html" class="active">Store</a>
+    <a href="./events.html">Events</a>
+    <a href="./highlights.html">Highlights</a>
+    <a href="./portal.html" class="nav-staff">🔒 Staff</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <div class="ph-inner">
+    <div class="ph-eyebrow">— Official School Store</div>
+    <h1 class="ph-title">McGrath<br>School Store</h1>
+    <p class="ph-sub">Official uniforms, supplies and school merchandise. All items available for collection at the administrative office.</p>
+  </div>
+</header>
+
+<!-- CONTACT BAND -->
+<div class="contact-band">
+  <div class="cb-inner">
+    <div class="cb-item">
+      <div>
+        <div class="cb-label">Phone</div>
+        <div class="cb-val" id="cbPhone">—</div>
+      </div>
+    </div>
+    <div class="cb-item">
+      <div>
+        <div class="cb-label">Email</div>
+        <div class="cb-val" id="cbEmail">—</div>
+      </div>
+    </div>
+    <div class="cb-item">
+      <div>
+        <div class="cb-label">Collection Point</div>
+        <div class="cb-val">Administrative Office</div>
+      </div>
+    </div>
+    <div class="cb-item">
+      <div>
+        <div class="cb-label">Office Hours</div>
+        <div class="cb-val" id="cbHours">Mon – Fri, 8am – 3pm</div>
+      </div>
+    </div>
+    <div class="cb-note">To order: call or email with item name, size and quantity</div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="fb-inner">
+    <span class="fb-label">Filter:</span>
+    <button class="fb-btn active" data-cat="all">All Items</button>
+    <button class="fb-btn" data-cat="uniform">Uniforms</button>
+    <button class="fb-btn" data-cat="pe">PE &amp; Sports</button>
+    <button class="fb-btn" data-cat="supplies">Supplies</button>
+    <button class="fb-btn" data-cat="merchandise">Merchandise</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main id="storeMain"></main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBox">
+    <div class="modal-preview">
+      <div class="modal-preview-icon" id="mIcon"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-cat"    id="mCat"></div>
+      <div class="modal-name"   id="mName"></div>
+      <div class="modal-desc"   id="mDesc"></div>
+      <div class="modal-price-row">
+        <div class="modal-price" id="mPrice"></div>
+        <div class="modal-price-note">Price in JMD.<br>Contact school to confirm availability.</div>
+      </div>
+      <div id="mSizesSection">
+        <div class="modal-sizes-label">Available Sizes</div>
+        <div class="size-chips" id="mSizeChips"></div>
+      </div>
+      <div class="modal-contact">
+        <div class="mc-title">📋 How to Order This Item</div>
+        <div class="mc-grid">
+          <div class="mc-item">
+            <span class="mc-icon">📞</span>
+            <div><div class="mc-label">Phone</div><div class="mc-val" id="mc-phone">—</div></div>
+          </div>
+          <div class="mc-item">
+            <span class="mc-icon">✉️</span>
+            <div><div class="mc-label">Email</div><div class="mc-val" id="mc-email">—</div></div>
+          </div>
+          <div class="mc-item">
+            <span class="mc-icon">📍</span>
+            <div><div class="mc-label">Collection</div><div class="mc-val">Admin Office</div></div>
+          </div>
+          <div class="mc-item">
+            <span class="mc-icon">🕐</span>
+            <div><div class="mc-label">Hours</div><div class="mc-val" id="mc-hours">Mon–Fri 8am–3pm</div></div>
+          </div>
+        </div>
+      </div>
+      <button class="modal-close-btn" id="modalCloseBtn">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <img src="./images/crest.png" style="height:30px;opacity:0.2;display:block;margin:0 auto 10px" alt="">
+  <strong>McGrath High School</strong> · School Store · © 2026<br>
+  <span style="font-size:0.7rem;opacity:0.5;display:block;margin-top:6px">
+    <a href="./portal.html">← Back to Portal</a> &nbsp;·&nbsp;
+    <a href="./events.html">Events</a> &nbsp;·&nbsp;
+    <a href="./highlights.html">Highlights</a>
+  </span>
+</footer>
+
+<script>
+/* ── DATA ─────────────────────────────────── */
+const ITEMS = [
+  { id:1,  cat:'uniform',     name:'School Shirt (Boys)',      desc:'Official McGrath white dress shirt with embroidered crest. Long-sleeve, cotton-polyester blend. Required for all male students.',                                      price:'J$1,800', sizes:['S','M','L','XL','XXL'],       icon:'👔', badge:'Official', tier:null       },
+  { id:2,  cat:'uniform',     name:'School Shirt (Girls)',     desc:'Official McGrath white blouse with embroidered crest. Fitted cut, cotton-polyester blend. Required for all female students.',                                          price:'J$1,800', sizes:['XS','S','M','L','XL'],        icon:'👚', badge:'Official', tier:null       },
+  { id:3,  cat:'uniform',     name:'School Trousers (Boys)',   desc:'Navy blue school trousers. Straight cut, durable twill fabric with belt loops and rear pockets.',                                                                     price:'J$2,400', sizes:['26','28','30','32','34','36'], icon:'👖', badge:null,       tier:null       },
+  { id:4,  cat:'uniform',     name:'School Skirt (Girls)',     desc:'Navy blue pleated knee-length skirt. Comfortable waistband with zip fastening.',                                                                                      price:'J$2,200', sizes:['XS','S','M','L','XL'],        icon:'👗', badge:null,       tier:null       },
+  { id:5,  cat:'uniform',     name:'School Tie',               desc:'Official McGrath tie in royal blue with diagonal gold stripes.',                                                                                                      price:'J$800',   sizes:[],                             icon:'🎗️', badge:null,       tier:null       },
+  { id:6,  cat:'uniform',     name:'School Belt',              desc:'Black leather-effect belt with silver buckle. Suitable for trousers and skirts.',                                                                                     price:'J$600',   sizes:['S','M','L'],                  icon:'➖', badge:null,       tier:null       },
+  { id:7,  cat:'pe',          name:'PE T-Shirt',               desc:'Royal blue moisture-wicking shirt with McGrath crest. "Physical Education" printed on reverse.',                                                                     price:'J$1,200', sizes:['S','M','L','XL'],             icon:'🏃', badge:'Sports',    tier:null       },
+  { id:8,  cat:'pe',          name:'PE Shorts',                desc:'Navy blue athletic shorts with elasticated waist. Lightweight and breathable for outdoor activities.',                                                                price:'J$1,000', sizes:['S','M','L','XL'],             icon:'🩳', badge:null,       tier:null       },
+  { id:9,  cat:'pe',          name:'House Sports Jersey',      desc:'Coloured jersey for inter-house sports. Available in Red, Blue, Green and Yellow house colours. Specify your house when ordering.',                                   price:'J$1,500', sizes:['S','M','L','XL'],             icon:'⚽', badge:'Sports',    tier:'Popular'  },
+  { id:10, cat:'pe',          name:'Sports Bag',               desc:'Official McGrath navy sports bag with large compartment, side water bottle pocket and crest embroidery.',                                                            price:'J$3,500', sizes:[],                             icon:'🎒', badge:null,       tier:null       },
+  { id:11, cat:'supplies',    name:'Exercise Books (×10)',     desc:'Ruled exercise books with McGrath cover. 60 pages each. Suitable for all subjects.',                                                                                 price:'J$900',   sizes:[],                             icon:'📓', badge:null,       tier:null       },
+  { id:12, cat:'supplies',    name:'School Diary / Planner',   desc:'Academic diary with school calendar, timetable pages and homework tracker. McGrath branded cover.',                                                                  price:'J$700',   sizes:[],                             icon:'📅', badge:'New',       tier:null       },
+  { id:13, cat:'supplies',    name:'Geometry Set',             desc:'Complete set with compass, protractor, set squares, ruler and pencil in branded McGrath pouch.',                                                                     price:'J$1,100', sizes:[],                             icon:'📐', badge:null,       tier:null       },
+  { id:14, cat:'supplies',    name:'Scientific Calculator',    desc:'CSEC-approved fx-991EX. Suitable for Maths, Physics and Chemistry examinations.',                                                                                    price:'J$4,800', sizes:[],                             icon:'🔢', badge:'CSEC',      tier:'Essential'},
+  { id:15, cat:'merchandise', name:'McGrath Cap',              desc:'Navy blue baseball cap with gold embroidered McGrath crest. Adjustable strap.',                                                                                      price:'J$1,600', sizes:['One Size'],                    icon:'🧢', badge:null,       tier:null       },
+  { id:16, cat:'merchandise', name:'School Hoodie',            desc:'Premium navy hoodie with crest on chest and motto on reverse. Soft fleece lining.',                                                                                  price:'J$4,200', sizes:['S','M','L','XL','XXL'],       icon:'🧥', badge:null,       tier:'Popular'  },
+  { id:17, cat:'merchandise', name:'Insulated Water Bottle',   desc:'Stainless steel 500ml bottle in royal blue with McGrath crest. Keeps cold 24hr / hot 12hr.',                                                                        price:'J$2,800', sizes:[],                             icon:'💧', badge:null,       tier:null       },
+  { id:18, cat:'merchandise', name:'Sticker Pack (6-piece)',   desc:'Premium vinyl McGrath stickers — crest, motto banner and year badge. Weatherproof.',                                                                                 price:'J$350',   sizes:[],                             icon:'⭐', badge:null,       tier:null       },
+];
+
+const CATS = { uniform:'Uniforms', pe:'PE & Sports', supplies:'Supplies', merchandise:'Merchandise' };
+const CAT_ORDER = ['uniform','pe','supplies','merchandise'];
+
+let phone = '—', email = '—', hours = 'Mon–Fri, 8am–3pm';
+let activeFilter = 'all';
+
+/* ── Settings ──────────────────────────────── */
+async function loadSettings() {
+  try {
+    const r = await fetch('/_data/settings.json?v=' + Date.now(), { cache:'no-store' });
+    if (!r.ok) return;
+    const s = await r.json();
+    phone = s.phone  || phone;
+    email = s.email  || email;
+    hours = s.office_hours || hours;
+    document.getElementById('cbPhone').textContent = phone;
+    document.getElementById('cbEmail').textContent = email;
+    document.getElementById('cbHours').textContent = hours;
+  } catch {}
+}
+
+/* ── Render ────────────────────────────────── */
+function renderStore(filter) {
+  const main = document.getElementById('storeMain');
+  main.innerHTML = '';
+
+  const cats = filter === 'all' ? CAT_ORDER : [filter];
+
+  cats.forEach(cat => {
+    const items = ITEMS.filter(i => i.cat === cat);
+    if (!items.length) return;
+
+    const sec = document.createElement('section');
+    sec.className = 'cat-section';
+
+    sec.innerHTML = `
+      <div class="cat-head">
+        <div class="cat-head-title">${CATS[cat]}</div>
+        <div class="cat-head-line"></div>
+        <div class="cat-head-count">${items.length} item${items.length !== 1 ? 's' : ''}</div>
+      </div>
+      <div class="product-grid" id="grid-${cat}"></div>`;
+
+    main.appendChild(sec);
+
+    const grid = sec.querySelector('.product-grid');
+
+    items.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      // Stagger delay — each card 70ms after the previous
+      card.style.transitionDelay = `${i * 0.07}s`;
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+
+      card.innerHTML = `
+        <div class="card-shell">
+          <div class="card-preview">
+            ${item.badge ? `<div class="badge-new">${item.badge}</div>` : ''}
+            ${item.tier  ? `<div class="badge-tier">${item.tier}</div>`  : ''}
+            <div class="card-preview-inner">
+              <div class="card-icon">
+                <span class="card-icon-emoji">${item.icon}</span>
+                <span class="card-icon-label">Image Coming Soon</span>
+              </div>
+              <div class="card-preview-overlay"></div>
+              <div class="card-preview-label">
+                View Details
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12 5 19 12 12 19"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-cat">${CATS[item.cat]}</div>
+            <div class="card-name">${item.name}</div>
+            <div class="card-footer">
+              <div class="card-price">${item.price}<span class="card-price-unit">JMD</span></div>
+              <button class="card-action-btn">Details</button>
+            </div>
+          </div>
+        </div>`;
+
+      card.addEventListener('click',  () => openModal(item.id));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter') openModal(item.id); });
+      grid.appendChild(card);
+    });
+  });
+
+  /* IntersectionObserver — fires .revealed on each card as it enters viewport */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target); // fire once
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.product-card').forEach(card => observer.observe(card));
+}
+
+/* ── Modal ─────────────────────────────────── */
+function openModal(id) {
+  const item = ITEMS.find(i => i.id === id);
+  if (!item) return;
+
+  document.getElementById('mIcon').textContent  = item.icon;
+  document.getElementById('mCat').textContent   = CATS[item.cat];
+  document.getElementById('mName').textContent  = item.name;
+  document.getElementById('mDesc').textContent  = item.desc;
+  document.getElementById('mPrice').textContent = item.price;
+  document.getElementById('mc-phone').textContent = phone;
+  document.getElementById('mc-email').textContent = email;
+  document.getElementById('mc-hours').textContent = hours;
+
+  const sizeSec   = document.getElementById('mSizesSection');
+  const sizeChips = document.getElementById('mSizeChips');
+
+  if (item.sizes && item.sizes.length) {
+    sizeSec.style.display = 'block';
+    sizeChips.innerHTML = item.sizes
+      .map(s => `<span class="size-chip">${s}</span>`)
+      .join('');
+    sizeChips.querySelectorAll('.size-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        sizeChips.querySelectorAll('.size-chip').forEach(c => c.classList.remove('sel'));
+        chip.classList.add('sel');
+      });
+    });
+  } else {
+    sizeSec.style.display = 'none';
+  }
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+/* ── Filter buttons ────────────────────────── */
+document.querySelectorAll('.fb-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.fb-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.cat;
+    renderStore(activeFilter);
+  });
+});
+
+/* ── Boot ──────────────────────────────────── */
+loadSettings();
+renderStore('all');
+</script>
+</body>
+</html>
