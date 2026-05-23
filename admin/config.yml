@@ -104,7 +104,7 @@ collections:
 
   # ── UPCOMING EVENTS ──────────────────────────────────
   - name: "events"
-    label: "📅 Upcoming Events"
+    label: "📅 Events & Gallery"
     files:
       - name: "list"
         label: "Events List"
@@ -117,12 +117,25 @@ collections:
             fields:
               - { label: "Event Name", name: "title", widget: "string" }
               - { label: "Date", name: "date", widget: "datetime" }
-              - { label: "Time & Location", name: "meta", widget: "string", hint: "e.g. 6:30pm · School Library" }
+              - { label: "Time & Location", name: "meta", widget: "string", required: false, hint: "e.g. 6:30pm · School Hall" }
               - label: "Category"
                 name: "category"
                 widget: "select"
-                options: ["School", "Academic", "Cultural", "Community", "Sports"]
+                options: ["academic", "sports", "cultural", "pageant", "patriotic", "community"]
+              - { label: "Year", name: "year", widget: "number", default: 2026 }
+              - { label: "Emoji Icon", name: "icon", widget: "string", default: "📅", hint: "Emoji shown on the card" }
+              - { label: "Description", name: "description", widget: "text", required: false }
+              - { label: "Published (show on site)", name: "published", widget: "boolean", default: true }
               - { label: "Highlight (gold date box)", name: "highlight", widget: "boolean", default: false }
+              - { label: "Cover Image", name: "coverImage", widget: "image", required: false, hint: "Main photo shown on the event card" }
+              - label: "Photo Gallery"
+                name: "gallery"
+                widget: "list"
+                required: false
+                summary: "{{fields.caption}}"
+                fields:
+                  - { label: "Photo", name: "url", widget: "image" }
+                  - { label: "Caption", name: "caption", widget: "string", required: false }
 
   # ── IMPORTANT NOTICES ────────────────────────────────
   - name: "notices"
