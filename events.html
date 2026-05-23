@@ -255,7 +255,10 @@ footer a:hover { color:white; }
 </footer>
 
 <script>
-const EVENTS = [
+// ── EVENTS DATA ─────────────────────────────────────────────────────────
+// Primary source: /_data/events.json (managed via admin dashboard)
+// Fallback: hardcoded array below (used if JSON not yet deployed)
+const EVENTS_FALLBACK = [
   {id:1, year:2026,cat:'patriotic', name:"Boys' Day",               date:'2026-01-24', desc:"Annual Boys' Day celebrating the achievements, character and contributions of McGrath's male students. Features awards, performances and motivational addresses.",         photos:12, icon:'🎖️', published:true  },
   {id:2, year:2026,cat:'patriotic', name:"Girls' Day",              date:'2026-02-14', desc:"A celebration of the young women of McGrath — highlighting academic excellence, leadership and empowerment through awards and cultural expression.",                       photos:15, icon:'🌸', published:true  },
   {id:3, year:2026,cat:'sports',    name:'Inter-House Sports Day',  date:'2026-03-08', desc:'The annual inter-house athletics championship. Students compete across track and field representing their houses — a highlight of the school sports calendar.',             photos:28, icon:'🏃', published:true  },
@@ -269,6 +272,8 @@ const EVENTS = [
   {id:11,year:2025,cat:'academic',  name:'Graduation 2025',        date:'2025-06-27', desc:'The Class of 2025 celebrated the completion of their secondary education. A formal ceremony honouring the achievements of our graduating year.',                           photos:55, icon:'🎓', published:true  },
   {id:12,year:2025,cat:'patriotic', name:"Boys' Day 2025",         date:'2025-01-31', desc:"2025 Boys' Day — recognising achievement in academics, sports, arts and leadership across the male student body.",                                                         photos:14, icon:'🎖️', published:true  },
 ];
+
+let EVENTS = EVENTS_FALLBACK;
 
 const CAT_LABELS = { academic:'Academic', sports:'Sports', cultural:'Cultural', pageant:'Pageant', patriotic:'Patriotic', community:'Community' };
 let activeFilter = 'all', activeYear = 'all';
@@ -324,12 +329,12 @@ function renderEvents() {
       card.innerHTML = `
         <div class="ec-shell">
           <div class="ec-preview">
-            <div class="ec-preview-bg bg-${ev.cat}"></div>
+            <div class="ec-preview-bg bg-${ev.cat}"${ev.coverImage ? ` style="background:url('${ev.coverImage}') center/cover no-repeat"` : ''}></div>
             <div class="ec-badge-cat cat-badge-${ev.cat}">${CAT_LABELS[ev.cat]}</div>
             <div class="ec-badge-date">${new Date(ev.date).toLocaleDateString('en-JM',{day:'numeric',month:'short'}).toUpperCase()}</div>
             <div class="ec-preview-content">
               <span class="ec-preview-icon">${ev.icon}</span>
-              <span class="ec-preview-icon-label">Gallery Coming Soon</span>
+              <span class="ec-preview-icon-label">${ev.coverImage ? '' : 'Gallery Coming Soon'}</span>
             </div>
             <div class="ec-overlay"></div>
             <div class="ec-hover-label">
@@ -384,13 +389,19 @@ function openModal(id) {
   document.getElementById('mDesc').textContent   = ev.desc;
 
   document.getElementById('mGallery').innerHTML =
-    Array.from({ length: Math.min(ev.photos, 9) }).map((_, i) => `
-      <div class="gallery-slot">
-        <div class="gs-inner">
-          <span class="gs-icon">${ev.icon}</span>
-          <span class="gs-label">Photo ${i + 1}</span>
-        </div>
-      </div>`).join('');
+    (ev.gallery && ev.gallery.length
+      ? ev.gallery.slice(0, 9).map(img => `
+          <div class="gallery-slot">
+            <img src="${img.url || img}" alt="${img.caption || ev.name}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">
+          </div>`)
+      : Array.from({ length: Math.min(ev.photos, 9) }).map((_, i) => `
+          <div class="gallery-slot">
+            <div class="gs-inner">
+              <span class="gs-icon">${ev.icon}</span>
+              <span class="gs-label">Photo ${i + 1}</span>
+            </div>
+          </div>`)
+    ).join('');
 
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -423,7 +434,28 @@ document.querySelectorAll('[data-year]').forEach(btn => {
   });
 });
 
-renderEvents();
-</script>
-</body>
-</html>
+// ── Boot: load from /_data/events.json, fall back to hardcoded ──────────
+async function loadEventsFromJSON() {
+  try {
+    const r = await fetch('/_data/events.json?v=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!Array.isArray(data?.items) || !data.items.length) return;
+    // Map JSON schema → internal schema
+    EVENTS = data.items.map((e, i) => ({
+      id:        e.id        || i + 1,
+      year:      e.year      || new Date(e.date).getFullYear(),
+      cat:       e.category  || e.cat || 'academic',
+      name:      e.title     || e.name,
+      date:      e.date,
+      desc:      e.description || e.desc || '',
+      photos:    e.photos    || (Array.isArray(e.gallery) ? e.gallery.length : 0),
+      gallery:   e.gallery   || [],
+      coverImage:e.coverImage|| null,
+      icon:      e.icon      || '📅',
+      published: e.published !== false,
+    }));
+  } catch {}
+  renderEvents();
+}
+loadEventsFromJSON();

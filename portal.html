@@ -909,6 +909,77 @@ if(window.netlifyIdentity){
   window.netlifyIdentity.on('logout',()=>{document.getElementById('cmsBar').style.display='none'});
 }
 
+// ── NETLIFY IDENTITY PASSWORD RECOVERY ───────────────
+// When Netlify sends a password-reset email, the link lands on this page
+// with a #recovery_token=... hash. We intercept it and show a reset form.
+(function handleRecovery(){
+  const hash = window.location.hash;
+  const tokenMatch = hash.match(/recovery_token=([^&]+)/);
+  const inviteMatch = hash.match(/invite_token=([^&]+)/);
+  const token = (tokenMatch && tokenMatch[1]) || (inviteMatch && inviteMatch[1]);
+  const type  = tokenMatch ? 'recovery' : 'invite';
+  if (!token) return;
+
+  // Hide all other page sections and show the reset card
+  ['publicPortal','staffLogin','staffDash'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  const card = document.createElement('div');
+  card.id = 'recoveryCard';
+  card.style.cssText = 'min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--off-white);padding:40px 20px';
+  card.innerHTML = `
+    <div style="background:white;border-radius:22px;box-shadow:0 24px 64px rgba(56,182,232,.18);padding:52px 44px;text-align:center;max-width:420px;width:100%">
+      <img src="./images/crest.png" style="height:64px;margin-bottom:18px" alt="">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:700;color:var(--sky-deeper);margin-bottom:6px">Set New Password</div>
+      <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:28px">McGrath High School Staff Portal</div>
+      <div id="recErr" style="background:#fdecea;color:#c0392b;border-radius:9px;padding:10px 14px;font-size:.82rem;margin-bottom:16px;display:none;font-weight:600"></div>
+      <div id="recOk"  style="background:#e8f8f0;color:#1a7a4a;border-radius:9px;padding:10px 14px;font-size:.82rem;margin-bottom:16px;display:none;font-weight:600">Password updated! You can now sign in.</div>
+      <div style="margin-bottom:16px;text-align:left">
+        <label style="display:block;font-size:.78rem;font-weight:800;letter-spacing:.05em;margin-bottom:5px">New Password</label>
+        <input id="recPw" type="password" placeholder="Enter new password" autocomplete="new-password"
+          style="width:100%;padding:12px 16px;border-radius:10px;border:2px solid var(--border);font-size:.9rem;font-family:inherit;outline:none">
+      </div>
+      <div style="margin-bottom:20px;text-align:left">
+        <label style="display:block;font-size:.78rem;font-weight:800;letter-spacing:.05em;margin-bottom:5px">Confirm Password</label>
+        <input id="recPw2" type="password" placeholder="Confirm new password" autocomplete="new-password"
+          style="width:100%;padding:12px 16px;border-radius:10px;border:2px solid var(--border);font-size:.9rem;font-family:inherit;outline:none">
+      </div>
+      <button onclick="submitRecovery()" id="recBtn"
+        style="width:100%;background:var(--sky-deeper);color:white;border:none;padding:14px;border-radius:10px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit">
+        Set Password
+      </button>
+      <div style="margin-top:16px;font-size:.78rem;color:var(--text-muted)">McGrath High School · Staff Access Only</div>
+    </div>`;
+  document.body.appendChild(card);
+
+  window.submitRecovery = async function(){
+    const pw  = document.getElementById('recPw').value;
+    const pw2 = document.getElementById('recPw2').value;
+    const err = document.getElementById('recErr');
+    const ok  = document.getElementById('recOk');
+    const btn = document.getElementById('recBtn');
+    err.style.display = 'none'; ok.style.display = 'none';
+    if (!pw || pw.length < 8) { err.textContent = 'Password must be at least 8 characters.'; err.style.display='block'; return; }
+    if (pw !== pw2)            { err.textContent = 'Passwords do not match.'; err.style.display='block'; return; }
+    btn.textContent = 'Saving…'; btn.disabled = true;
+    try {
+      if (window.netlifyIdentity) {
+        await window.netlifyIdentity.store.modal.page(type === 'invite' ? 'invite' : 'recovery', {token});
+        await window.netlifyIdentity.currentUser().update({ password: pw });
+      }
+      ok.style.display = 'block';
+      btn.textContent = 'Done';
+      setTimeout(() => { window.location.hash = ''; window.location.reload(); }, 2000);
+    } catch(e) {
+      err.textContent = 'Could not update password. The link may have expired — request a new one.';
+      err.style.display = 'block';
+      btn.textContent = 'Set Password'; btn.disabled = false;
+    }
+  };
+}());
+
 // ── BOOT ──────────────────────────────────────────────
 async function boot(){
   await loadSettings();
