@@ -428,50 +428,11 @@ footer a:hover { color:white; }
   </div>
 
   <div class="fan-stage" id="fanStage">
-
-    <div class="fan-card" id="csCard0">
-      <div class="card-deco card-bg-1"><div class="card-deco-icon">🏆</div><div class="card-deco-label">Athletics</div></div>
-      <div class="card-accent"></div>
-      <div class="card-overlay"></div>
-      <div class="card-caption"><div class="caption-tag">Sports</div><div class="caption-title">Championship Season</div></div>
-    </div>
-
-    <div class="fan-card" id="csCard1">
-      <div class="card-deco card-bg-2"><div class="card-deco-icon">🎭</div><div class="card-deco-label">Arts</div></div>
-      <div class="card-accent"></div>
-      <div class="card-overlay"></div>
-      <div class="card-caption"><div class="caption-tag">Performing Arts</div><div class="caption-title">Annual Concert</div></div>
-    </div>
-
-    <div class="fan-card" id="csCard2">
-      <div class="card-deco card-bg-3"><div class="card-deco-icon">🎓</div><div class="card-deco-label">Graduation</div></div>
-      <div class="card-accent"></div>
-      <div class="card-overlay"></div>
-      <div class="card-caption"><div class="caption-tag">Milestone</div><div class="caption-title">Class of 2026</div></div>
-    </div>
-
-    <div class="fan-card" id="csCard3">
-      <div class="card-deco card-bg-4"><div class="card-deco-icon">🔬</div><div class="card-deco-label">Science</div></div>
-      <div class="card-accent"></div>
-      <div class="card-overlay"></div>
-      <div class="card-caption"><div class="caption-tag">STEM</div><div class="caption-title">Science Fair 2026</div></div>
-    </div>
-
-    <div class="fan-card" id="csCard4">
-      <div class="card-deco card-bg-5"><div class="card-deco-icon">🎨</div><div class="card-deco-label">Culture</div></div>
-      <div class="card-accent"></div>
-      <div class="card-overlay"></div>
-      <div class="card-caption"><div class="caption-tag">Culture Day</div><div class="caption-title">Heritage &amp; Pride</div></div>
-    </div>
-
+    <!-- Cards injected by JS from /_data/highlights_cascade.json -->
   </div>
 
   <div class="csticker-wrap" id="csTicker">
-    <div class="csticker-item" data-index="0"><div class="csticker-tag">Sports</div><div class="csticker-title">Championship Season</div></div>
-    <div class="csticker-item" data-index="1"><div class="csticker-tag">Performing Arts</div><div class="csticker-title">Annual Concert</div></div>
-    <div class="csticker-item" data-index="2"><div class="csticker-tag">Milestone</div><div class="csticker-title">Class of 2026</div></div>
-    <div class="csticker-item" data-index="3"><div class="csticker-tag">STEM</div><div class="csticker-title">Science Fair 2026</div></div>
-    <div class="csticker-item" data-index="4"><div class="csticker-tag">Culture Day</div><div class="csticker-title">Heritage &amp; Pride</div></div>
+    <!-- Ticker items injected by JS from /_data/highlights_cascade.json -->
   </div>
 
   <div class="csprogress-wrap">
@@ -529,55 +490,71 @@ footer a:hover { color:white; }
 </footer>
 
 <script>
-/* ── DATA ─────────────────────────────── */
-const HIGHLIGHTS = [
-  { date:'Sep 2025', title:'New Academic Year Opens',     body:"Over 800 students returned for the 2025–2026 academic year. New teachers welcomed, timetables distributed, and the year began with renewed energy across all forms.",               icon:'📚', stat:'800+', statLabel:'Students',   cat:'academic',  year:2025 },
-  { date:'Nov 2025', title:'Cultural Day 2025',           body:'Students and staff delivered a spectacular display of Caribbean and global culture. The performance hall transformed into a stage of colour, music and dance.',                         icon:'🎭', stat:'300+', statLabel:'Performers', cat:'cultural',  year:2025 },
-  { date:'Jan 2026', title:'CSEC Awards Ceremony',        body:"Recognition of McGrath's Class of 2025 — one of the strongest CSEC performances in the school's history. Multiple students achieved perfect scores across several subjects.",           icon:'🏆', stat:'97%',  statLabel:'Pass Rate',  cat:'academic',  year:2026 },
-  { date:'Jan 2026', title:"Boys' Day Celebration",       body:"McGrath's annual celebration of its male students — a day of recognition, motivation and pride honouring achievement in academics, sports, arts and character.",                        icon:'🎖️', stat:'400+', statLabel:'Honoured',   cat:'patriotic', year:2026 },
-  { date:'Feb 2026', title:"Girls' Day Celebration",      body:"A powerful day honouring the young women of McGrath. Awards, performances and addresses celebrating the strength, intelligence and excellence of our female students.",                 icon:'🌸', stat:'400+', statLabel:'Honoured',   cat:'patriotic', year:2026 },
-  { date:'Feb 2026', title:'ISSA Manning Cup',            body:"McGrath's boys football team represented the school with pride in the ISSA/Digicel Manning Cup regional competition — demonstrating teamwork, skill and the McGrath fighting spirit.", icon:'⚽', stat:'11',   statLabel:'Players',    cat:'sports',    year:2026 },
-  { date:'Mar 2026', title:'Inter-House Sports Day',      body:"The stadium came alive as students competed across track and field for house glory. Personal bests broken, school records challenged, team spirit at its absolute peak.",              icon:'🏃', stat:'200+', statLabel:'Athletes',   cat:'sports',    year:2026 },
-  { date:'Jun 2026', title:'Graduation Day 2026',         body:"The Class of 2026 crossed the stage to receive their certificates. A milestone moment for students, parents and teachers — five years of dedication celebrated.",                      icon:'🎓', stat:'200+', statLabel:'Graduates',  cat:'academic',  year:2026 },
-];
-
+/* ── DATA — loaded from /_data/highlights_reel.json ── */
 const CAT_LABELS = { academic:'Academic', sports:'Sports', cultural:'Cultural', pageant:'Pageant', patriotic:'Patriotic', community:'Community' };
 
-/* ── Build DOM ────────────────────────── */
-const leftCol     = document.getElementById('reelLeft');
-const visualPanel = document.getElementById('visualPanels');
+async function loadReel() {
+  let items = [];
+  try {
+    const r = await fetch('/_data/highlights_reel.json?v=' + Date.now(), { cache: 'no-store' });
+    if (r.ok) { const d = await r.json(); items = d.items || []; }
+  } catch(e) {}
 
-HIGHLIGHTS.forEach((h, i) => {
+  /* Fallback to hardcoded defaults if JSON not yet deployed */
+  if (!items.length) {
+    items = [
+      { date:'Sep 2025', title:'New Academic Year Opens',   body:"Over 800 students returned for the 2025–2026 academic year. New teachers welcomed, timetables distributed, and the year began with renewed energy across all forms.",               icon:'📚', stat:'800+', stat_label:'Students',   cat:'academic',  year:'2025' },
+      { date:'Nov 2025', title:'Cultural Day 2025',          body:'Students and staff delivered a spectacular display of Caribbean and global culture. The performance hall transformed into a stage of colour, music and dance.',                         icon:'🎭', stat:'300+', stat_label:'Performers', cat:'cultural',  year:'2025' },
+      { date:'Jan 2026', title:'CSEC Awards Ceremony',       body:"Recognition of McGrath's Class of 2025 — one of the strongest CSEC performances in the school's history. Multiple students achieved perfect scores across several subjects.",           icon:'🏆', stat:'97%',  stat_label:'Pass Rate',  cat:'academic',  year:'2026' },
+      { date:'Jan 2026', title:"Boys' Day Celebration",      body:"McGrath's annual celebration of its male students — a day of recognition, motivation and pride honouring achievement in academics, sports, arts and character.",                        icon:'🎖️', stat:'400+', stat_label:'Honoured',   cat:'patriotic', year:'2026' },
+      { date:'Feb 2026', title:"Girls' Day Celebration",     body:"A powerful day honouring the young women of McGrath. Awards, performances and addresses celebrating the strength, intelligence and excellence of our female students.",                 icon:'🌸', stat:'400+', stat_label:'Honoured',   cat:'patriotic', year:'2026' },
+      { date:'Feb 2026', title:'ISSA Manning Cup',           body:"McGrath's boys football team represented the school with pride in the ISSA/Digicel Manning Cup regional competition — demonstrating teamwork, skill and the McGrath fighting spirit.", icon:'⚽', stat:'11',   stat_label:'Players',    cat:'sports',    year:'2026' },
+      { date:'Mar 2026', title:'Inter-House Sports Day',     body:"The stadium came alive as students competed across track and field for house glory. Personal bests broken, school records challenged, team spirit at its absolute peak.",              icon:'🏃', stat:'200+', stat_label:'Athletes',   cat:'sports',    year:'2026' },
+      { date:'Jun 2026', title:'Graduation Day 2026',        body:"The Class of 2026 crossed the stage to receive their certificates. A milestone moment for students, parents and teachers — five years of dedication celebrated.",                      icon:'🎓', stat:'200+', stat_label:'Graduates',  cat:'academic',  year:'2026' },
+    ];
+  }
 
-  /* LEFT ENTRY */
-  const entry = document.createElement('div');
-  entry.className = 'reel-entry' + (i === 0 ? ' active' : '');
-  entry.dataset.index = i;
-  entry.innerHTML = `
-    <div class="re-index">${String(i+1).padStart(2,'0')} / ${String(HIGHLIGHTS.length).padStart(2,'0')}</div>
-    <div class="re-date">${h.date}</div>
-    <div class="re-title">${h.title}</div>
-    <div class="re-body">${h.body}</div>
-    <span class="re-cat cat-${h.cat}">${CAT_LABELS[h.cat]}</span>`;
-  entry.addEventListener('click', () => scrollToEntry(i));
-  leftCol.appendChild(entry);
+  /* ── Build DOM ────────────────────────── */
+  const leftCol     = document.getElementById('reelLeft');
+  const visualPanel = document.getElementById('visualPanels');
 
-  /* RIGHT PANEL */
-  const panel = document.createElement('div');
-  panel.className = 'vp' + (i === 0 ? ' active' : '');
-  panel.dataset.index = i;
-  panel.innerHTML = `
-    <div class="vp-bg bg-${h.cat}"></div>
-    <div class="vp-content">
-      <span class="vp-icon">${h.icon}</span>
-      <div class="vp-label">${h.date}</div>
-      <div class="vp-title">${h.title}</div>
-      <div class="vp-stat">${h.stat}</div>
-      <div class="vp-stat-label">${h.statLabel}</div>
-    </div>
-    <div class="vp-year">${h.year}</div>`;
-  visualPanel.appendChild(panel);
-});
+  items.forEach((h, i) => {
+    /* LEFT ENTRY */
+    const entry = document.createElement('div');
+    entry.className = 'reel-entry' + (i === 0 ? ' active' : '');
+    entry.dataset.index = i;
+    entry.innerHTML = `
+      <div class="re-index">${String(i+1).padStart(2,'0')} / ${String(items.length).padStart(2,'0')}</div>
+      <div class="re-date">${h.date}</div>
+      <div class="re-title">${h.title}</div>
+      <div class="re-body">${h.body}</div>
+      <span class="re-cat cat-${h.cat}">${CAT_LABELS[h.cat] || h.cat}</span>`;
+    entry.addEventListener('click', () => scrollToEntry(i));
+    leftCol.appendChild(entry);
+
+    /* RIGHT PANEL */
+    const panel = document.createElement('div');
+    panel.className = 'vp' + (i === 0 ? ' active' : '');
+    panel.dataset.index = i;
+    panel.innerHTML = `
+      <div class="vp-bg bg-${h.cat}"></div>
+      <div class="vp-content">
+        <span class="vp-icon">${h.icon}</span>
+        <div class="vp-label">${h.date}</div>
+        <div class="vp-title">${h.title}</div>
+        <div class="vp-stat">${h.stat}</div>
+        <div class="vp-stat-label">${h.stat_label}</div>
+      </div>
+      <div class="vp-year">${h.year}</div>`;
+    visualPanel.appendChild(panel);
+  });
+
+  /* Start scroll listener after DOM is built */
+  window.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+}
+
+loadReel();
 
 /* ── Scroll driver ────────────────────── */
 // Folio pattern: track each entry's position in the viewport
@@ -623,31 +600,15 @@ function scrollToEntry(i) {
   }
 }
 
-window.addEventListener('scroll', onScroll, { passive:true });
-onScroll(); // run once on load
 </script>
 
 <!-- ══ CASCADE SECTION JS ══════════════════════════════════════ -->
 <script>
 (function () {
-  var N        = 5;
   var INTERVAL = 3800;
   var TICK     = 60;
 
-  var cards        = Array.from(document.querySelectorAll('.fan-card'));
-  var tickerItems  = Array.from(document.querySelectorAll('.csticker-item'));
-  var dotRow       = document.getElementById('csDotRow');
-  var progressFill = document.getElementById('csProgressFill');
-  var slideCounter = document.getElementById('csSlideCounter');
-  var pauseBtn     = document.getElementById('csPauseBtn');
-  var prevBtn      = document.getElementById('csPrevBtn');
-  var nextBtn      = document.getElementById('csNextBtn');
-
-  var current  = 0;
-  var paused   = false;
-  var elapsed  = 0;
-  var timer    = null;
-  var progTimer= null;
+  var CARD_BG_CLASSES = ['card-bg-1','card-bg-2','card-bg-3','card-bg-4','card-bg-5'];
 
   var SLOTS = [
     { tx: -560, ty: 60,  rot: -16, scale: 0.65, z: 1 },
@@ -657,131 +618,215 @@ onScroll(); // run once on load
     { tx:  560, ty: 60,  rot: 16,  scale: 0.65, z: 1 },
   ];
 
-  /* Build dots */
-  for (var i = 0; i < N; i++) {
-    var d = document.createElement('button');
-    d.className = 'dot-ind';
-    d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-    d.dataset.idx = i;
-    dotRow.appendChild(d);
-  }
-  var dots = Array.from(dotRow.querySelectorAll('.dot-ind'));
+  var DEFAULT_CARDS = [
+    { caption_tag:'Sports',         caption_title:'Championship Season', icon:'🏆', deco_label:'Athletics',  image:'' },
+    { caption_tag:'Performing Arts',caption_title:'Annual Concert',       icon:'🎭', deco_label:'Arts',       image:'' },
+    { caption_tag:'Milestone',      caption_title:'Class of 2026',        icon:'🎓', deco_label:'Graduation', image:'' },
+    { caption_tag:'STEM',           caption_title:'Science Fair 2026',    icon:'🔬', deco_label:'Science',    image:'' },
+    { caption_tag:'Culture Day',    caption_title:'Heritage & Pride',     icon:'🎨', deco_label:'Culture',    image:'' },
+  ];
 
-  function applySlot(cardEl, slotIndex) {
-    var s = SLOTS[slotIndex];
-    cardEl.style.transform =
-      'translateX(' + s.tx + 'px) translateY(' + s.ty + 'px) ' +
-      'rotate(' + s.rot + 'deg) scale(' + s.scale + ')';
-    cardEl.style.zIndex = s.z;
-    if (slotIndex === 2) { cardEl.classList.add('is-center'); }
-    else { cardEl.classList.remove('is-center'); }
-  }
+  function buildCards(items) {
+    var stage   = document.getElementById('fanStage');
+    var ticker  = document.getElementById('csTicker');
+    var counter = document.getElementById('csSlideCounter');
+    stage.innerHTML  = '';
+    ticker.innerHTML = '';
 
-  function positionCards(centerIdx, animate) {
-    var slotMap = [2, 3, 4, 0, 1];
-    cards.forEach(function (card, i) {
-      var offset = ((i - centerIdx) % N + N) % N;
-      var slot   = slotMap[offset];
-      if (!animate) { card.style.transition = 'none'; }
-      else { card.style.transition = 'transform 0.72s cubic-bezier(0.38,0.72,0,1), box-shadow 0.72s cubic-bezier(0.38,0.72,0,1)'; }
-      applySlot(card, slot);
-    });
-  }
-
-  function updateTicker(idx) {
-    tickerItems.forEach(function (t) { t.classList.remove('visible'); });
-    if (tickerItems[idx]) tickerItems[idx].classList.add('visible');
-  }
-
-  function updateUI(idx) {
-    dots.forEach(function (dot) { dot.classList.remove('active'); });
-    if (dots[idx]) dots[idx].classList.add('active');
-    slideCounter.textContent = (idx + 1) + ' / ' + N;
-  }
-
-  function goTo(idx, animate) {
-    current = ((idx % N) + N) % N;
-    positionCards(current, animate !== false);
-    updateTicker(current);
-    updateUI(current);
-    elapsed = 0;
-    progressFill.style.width = '0%';
-  }
-
-  function startProgress() {
-    clearInterval(progTimer);
-    progTimer = setInterval(function () {
-      if (paused) return;
-      elapsed += TICK;
-      progressFill.style.width = Math.min((elapsed / INTERVAL) * 100, 100) + '%';
-    }, TICK);
-  }
-
-  function startTimer() {
-    clearTimeout(timer);
-    timer = setTimeout(function tick() {
-      if (!paused) goTo(current + 1, true);
-      timer = setTimeout(tick, INTERVAL);
-    }, INTERVAL);
-  }
-
-  function setPaused(val) {
-    paused = val;
-    pauseBtn.innerHTML = paused ? '&#9654;' : '&#10074;&#10074;';
-    pauseBtn.setAttribute('aria-label', paused ? 'Play' : 'Pause');
-  }
-
-  pauseBtn.addEventListener('click', function () { setPaused(!paused); });
-  prevBtn.addEventListener('click', function () { goTo(current - 1, true); setPaused(false); startTimer(); });
-  nextBtn.addEventListener('click', function () { goTo(current + 1, true); setPaused(false); startTimer(); });
-
-  dots.forEach(function (dot) {
-    dot.addEventListener('click', function () { goTo(parseInt(dot.dataset.idx), true); setPaused(false); startTimer(); });
-  });
-
-  cards.forEach(function (card, i) {
-    card.addEventListener('click', function () {
-      if (i !== current) { goTo(i, true); setPaused(false); startTimer(); }
-    });
-  });
-
-  var stage = document.getElementById('fanStage');
-  stage.addEventListener('mouseenter', function () { setPaused(true); });
-  stage.addEventListener('mouseleave', function () { setPaused(false); });
-
-  /* Entrance: start invisible, fan in after hero text animations */
-  cards.forEach(function (card) {
-    card.style.transition = 'none';
-    card.style.opacity    = '0';
-    card.style.transform  = 'translateY(80px) scale(0.65)';
-    card.style.zIndex     = '1';
-  });
-
-  /* Use IntersectionObserver so entrance fires when section scrolls into view */
-  var hasEntered = false;
-  var sectionEl  = document.getElementById('cascadeIntro');
-  var entryObs   = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting && !hasEntered) {
-        hasEntered = true;
-        entryObs.disconnect();
-        setTimeout(function () {
-          positionCards(0, false);
-          cards.forEach(function (card) { card.style.opacity = '1'; });
-          setTimeout(function () {
-            cards.forEach(function (card) {
-              card.style.transition = 'transform 0.72s cubic-bezier(0.38,0.72,0,1), box-shadow 0.72s cubic-bezier(0.38,0.72,0,1)';
-            });
-            updateTicker(0);
-            updateUI(0);
-            startTimer();
-            startProgress();
-          }, 80);
-        }, 600);
+    items.forEach(function (item, i) {
+      /* Card */
+      var card = document.createElement('div');
+      card.className = 'fan-card';
+      card.id = 'csCard' + i;
+      var bgClass = CARD_BG_CLASSES[i % CARD_BG_CLASSES.length];
+      var innerHTML = '<div class="card-deco ' + bgClass + '">';
+      if (item.image) {
+        innerHTML += '<img class="card-img" src="' + item.image + '" alt="' + item.caption_title + '">';
       }
+      innerHTML += '<div class="card-deco-icon">' + (item.icon || '📸') + '</div>';
+      innerHTML += '<div class="card-deco-label">' + (item.deco_label || '') + '</div></div>';
+      innerHTML += '<div class="card-accent"></div>';
+      innerHTML += '<div class="card-overlay"></div>';
+      innerHTML += '<div class="card-caption"><div class="caption-tag">' + item.caption_tag + '</div><div class="caption-title">' + item.caption_title + '</div></div>';
+      card.innerHTML = innerHTML;
+      stage.appendChild(card);
+
+      /* Ticker item */
+      var ti = document.createElement('div');
+      ti.className = 'csticker-item';
+      ti.dataset.index = i;
+      ti.innerHTML = '<div class="csticker-tag">' + item.caption_tag + '</div><div class="csticker-title">' + item.caption_title + '</div>';
+      ticker.appendChild(ti);
     });
-  }, { threshold: 0.2 });
-  entryObs.observe(sectionEl);
+
+    if (counter) counter.textContent = '1 / ' + items.length;
+  }
+
+  function bootCarousel() {
+    var N            = document.querySelectorAll('.fan-card').length;
+    var cards        = Array.from(document.querySelectorAll('.fan-card'));
+    var tickerItems  = Array.from(document.querySelectorAll('.csticker-item'));
+    var dotRow       = document.getElementById('csDotRow');
+    var progressFill = document.getElementById('csProgressFill');
+    var slideCounter = document.getElementById('csSlideCounter');
+    var pauseBtn     = document.getElementById('csPauseBtn');
+    var prevBtn      = document.getElementById('csPrevBtn');
+    var nextBtn      = document.getElementById('csNextBtn');
+
+    var current  = 0;
+    var paused   = false;
+    var elapsed  = 0;
+    var timer    = null;
+    var progTimer= null;
+
+    /* Build dots */
+    dotRow.innerHTML = '';
+    for (var i = 0; i < N; i++) {
+      var d = document.createElement('button');
+      d.className = 'dot-ind';
+      d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+      d.dataset.idx = i;
+      dotRow.appendChild(d);
+    }
+    var dots = Array.from(dotRow.querySelectorAll('.dot-ind'));
+
+    /* Build a slot map sized to N (supports any number of cards, not just 5) */
+    function buildSlotMap(n, centerIdx) {
+      var result = [];
+      for (var i = 0; i < n; i++) {
+        var offset = ((i - centerIdx) % n + n) % n;
+        /* Map offset to one of the 5 SLOTS; wrap if fewer/more cards */
+        var slot = Math.round((offset / Math.max(n - 1, 1)) * (SLOTS.length - 1));
+        result.push(slot);
+      }
+      return result;
+    }
+
+    function applySlot(cardEl, slotIndex) {
+      var s = SLOTS[Math.min(slotIndex, SLOTS.length - 1)];
+      cardEl.style.transform =
+        'translateX(' + s.tx + 'px) translateY(' + s.ty + 'px) ' +
+        'rotate(' + s.rot + 'deg) scale(' + s.scale + ')';
+      cardEl.style.zIndex = s.z;
+      if (slotIndex === 2) { cardEl.classList.add('is-center'); }
+      else { cardEl.classList.remove('is-center'); }
+    }
+
+    function positionCards(centerIdx, animate) {
+      var slotMap = [2, 3, 4, 0, 1];
+      cards.forEach(function (card, i) {
+        var offset = ((i - centerIdx) % N + N) % N;
+        var slot   = slotMap[offset % slotMap.length];
+        if (!animate) { card.style.transition = 'none'; }
+        else { card.style.transition = 'transform 0.72s cubic-bezier(0.38,0.72,0,1), box-shadow 0.72s cubic-bezier(0.38,0.72,0,1)'; }
+        applySlot(card, slot);
+      });
+    }
+
+    function updateTicker(idx) {
+      tickerItems.forEach(function (t) { t.classList.remove('visible'); });
+      if (tickerItems[idx]) tickerItems[idx].classList.add('visible');
+    }
+
+    function updateUI(idx) {
+      dots.forEach(function (dot) { dot.classList.remove('active'); });
+      if (dots[idx]) dots[idx].classList.add('active');
+      slideCounter.textContent = (idx + 1) + ' / ' + N;
+    }
+
+    function goTo(idx, animate) {
+      current = ((idx % N) + N) % N;
+      positionCards(current, animate !== false);
+      updateTicker(current);
+      updateUI(current);
+      elapsed = 0;
+      progressFill.style.width = '0%';
+    }
+
+    function startProgress() {
+      clearInterval(progTimer);
+      progTimer = setInterval(function () {
+        if (paused) return;
+        elapsed += TICK;
+        progressFill.style.width = Math.min((elapsed / INTERVAL) * 100, 100) + '%';
+      }, TICK);
+    }
+
+    function startTimer() {
+      clearTimeout(timer);
+      timer = setTimeout(function tick() {
+        if (!paused) goTo(current + 1, true);
+        timer = setTimeout(tick, INTERVAL);
+      }, INTERVAL);
+    }
+
+    function setPaused(val) {
+      paused = val;
+      pauseBtn.innerHTML = paused ? '&#9654;' : '&#10074;&#10074;';
+      pauseBtn.setAttribute('aria-label', paused ? 'Play' : 'Pause');
+    }
+
+    pauseBtn.addEventListener('click', function () { setPaused(!paused); });
+    prevBtn.addEventListener('click', function () { goTo(current - 1, true); setPaused(false); startTimer(); });
+    nextBtn.addEventListener('click', function () { goTo(current + 1, true); setPaused(false); startTimer(); });
+
+    dots.forEach(function (dot) {
+      dot.addEventListener('click', function () { goTo(parseInt(dot.dataset.idx), true); setPaused(false); startTimer(); });
+    });
+
+    cards.forEach(function (card, i) {
+      card.addEventListener('click', function () {
+        if (i !== current) { goTo(i, true); setPaused(false); startTimer(); }
+      });
+    });
+
+    var stage = document.getElementById('fanStage');
+    stage.addEventListener('mouseenter', function () { setPaused(true); });
+    stage.addEventListener('mouseleave', function () { setPaused(false); });
+
+    /* Entrance animation */
+    cards.forEach(function (card) {
+      card.style.transition = 'none';
+      card.style.opacity    = '0';
+      card.style.transform  = 'translateY(80px) scale(0.65)';
+      card.style.zIndex     = '1';
+    });
+
+    var hasEntered = false;
+    var sectionEl  = document.getElementById('cascadeIntro');
+    var entryObs   = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !hasEntered) {
+          hasEntered = true;
+          entryObs.disconnect();
+          setTimeout(function () {
+            positionCards(0, false);
+            cards.forEach(function (card) { card.style.opacity = '1'; });
+            setTimeout(function () {
+              cards.forEach(function (card) {
+                card.style.transition = 'transform 0.72s cubic-bezier(0.38,0.72,0,1), box-shadow 0.72s cubic-bezier(0.38,0.72,0,1)';
+              });
+              updateTicker(0);
+              updateUI(0);
+              startTimer();
+              startProgress();
+            }, 80);
+          }, 600);
+        }
+      });
+    }, { threshold: 0.2 });
+    entryObs.observe(sectionEl);
+  }
+
+  /* ── Load cards from JSON, fall back to defaults ── */
+  fetch('/_data/highlights_cascade.json?v=' + Date.now(), { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .catch(function () { return null; })
+    .then(function (data) {
+      var items = (data && data.items && data.items.length) ? data.items : DEFAULT_CARDS;
+      buildCards(items);
+      bootCarousel();
+    });
 
 }());
 </script>

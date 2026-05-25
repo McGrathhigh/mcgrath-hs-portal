@@ -266,28 +266,6 @@ main { max-width: 1160px; margin: 0 auto; padding: 48px 6vw 100px; }
   backdrop-filter: blur(6px);
 }
 
-/* ── Out of Stock ── */
-.product-card.oos { cursor: default; }
-.product-card.oos .card-shell { opacity: 0.6; }
-.product-card.oos:hover .card-shell { transform: none; box-shadow: none; }
-.product-card.oos .card-preview-label { display: none; }
-.oos-overlay {
-  position: absolute; inset: 0; z-index: 4;
-  background: rgba(240,240,245,0.55);
-  backdrop-filter: grayscale(0.6);
-  display: flex; align-items: center; justify-content: center;
-  border-radius: inherit;
-}
-.oos-badge {
-  background: rgba(255,255,255,0.96);
-  color: #6b2b2b;
-  font-family: 'DM Mono', monospace; font-size: 0.6rem;
-  font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-  padding: 6px 14px; border-radius: 20px;
-  border: 1px solid rgba(180,60,60,0.25);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-}
-
 /* Icon placeholder */
 .card-icon { text-align: center; }
 .card-icon-emoji { font-size: 3.2rem; display: block; margin-bottom: 6px; }
@@ -579,31 +557,32 @@ footer a:hover { color: white; }
 </footer>
 
 <script>
-/* ── DATA ─────────────────────────────────── */
-const ITEMS = [
-  { id:1,  cat:'uniform',     name:'School Shirt (Boys)',      desc:'Official McGrath white dress shirt with embroidered crest. Long-sleeve, cotton-polyester blend. Required for all male students.',                                      price:'J$1,800', sizes:['S','M','L','XL','XXL'],       icon:'👔', badge:'Official', tier:null, status:'active'   },
-  { id:2,  cat:'uniform',     name:'School Shirt (Girls)',     desc:'Official McGrath white blouse with embroidered crest. Fitted cut, cotton-polyester blend. Required for all female students.',                                          price:'J$1,800', sizes:['XS','S','M','L','XL'],        icon:'👚', badge:'Official', tier:null, status:'active'   },
-  { id:3,  cat:'uniform',     name:'School Trousers (Boys)',   desc:'Navy blue school trousers. Straight cut, durable twill fabric with belt loops and rear pockets.',                                                                     price:'J$2,400', sizes:['26','28','30','32','34','36'], icon:'👖', badge:null,       tier:null, status:'active'   },
-  { id:4,  cat:'uniform',     name:'School Skirt (Girls)',     desc:'Navy blue pleated knee-length skirt. Comfortable waistband with zip fastening.',                                                                                      price:'J$2,200', sizes:['XS','S','M','L','XL'],        icon:'👗', badge:null,       tier:null, status:'active'   },
-  { id:5,  cat:'uniform',     name:'School Tie',               desc:'Official McGrath tie in royal blue with diagonal gold stripes.',                                                                                                      price:'J$800',   sizes:[],                             icon:'🎗️', badge:null,       tier:null, status:'out_of_stock'   },
-  { id:6,  cat:'uniform',     name:'School Belt',              desc:'Black leather-effect belt with silver buckle. Suitable for trousers and skirts.',                                                                                     price:'J$600',   sizes:['S','M','L'],                  icon:'➖', badge:null,       tier:null, status:'active'   },
-  { id:7,  cat:'pe',          name:'PE T-Shirt',               desc:'Royal blue moisture-wicking shirt with McGrath crest. "Physical Education" printed on reverse.',                                                                     price:'J$1,200', sizes:['S','M','L','XL'],             icon:'🏃', badge:'Sports',    tier:null, status:'active'   },
-  { id:8,  cat:'pe',          name:'PE Shorts',                desc:'Navy blue athletic shorts with elasticated waist. Lightweight and breathable for outdoor activities.',                                                                price:'J$1,000', sizes:['S','M','L','XL'],             icon:'🩳', badge:null,       tier:null, status:'active'   },
-  { id:9,  cat:'pe',          name:'House Sports Jersey',      desc:'Coloured jersey for inter-house sports. Available in Red, Blue, Green and Yellow house colours. Specify your house when ordering.',                                   price:'J$1,500', sizes:['S','M','L','XL'],             icon:'⚽', badge:'Sports',    tier:'Popular', status:'out_of_stock'   },
-  { id:10, cat:'pe',          name:'Sports Bag',               desc:'Official McGrath navy sports bag with large compartment, side water bottle pocket and crest embroidery.',                                                            price:'J$3,500', sizes:[],                             icon:'🎒', badge:null,       tier:null, status:'active'   },
-  { id:11, cat:'supplies',    name:'Exercise Books (×10)',     desc:'Ruled exercise books with McGrath cover. 60 pages each. Suitable for all subjects.',                                                                                 price:'J$900',   sizes:[],                             icon:'📓', badge:null,       tier:null, status:'active'   },
-  { id:12, cat:'supplies',    name:'School Diary / Planner',   desc:'Academic diary with school calendar, timetable pages and homework tracker. McGrath branded cover.',                                                                  price:'J$700',   sizes:[],                             icon:'📅', badge:'New',       tier:null, status:'active'   },
-  { id:13, cat:'supplies',    name:'Geometry Set',             desc:'Complete set with compass, protractor, set squares, ruler and pencil in branded McGrath pouch.',                                                                     price:'J$1,100', sizes:[],                             icon:'📐', badge:null,       tier:null, status:'active'   },
-  { id:14, cat:'supplies',    name:'Scientific Calculator',    desc:'CSEC-approved fx-991EX. Suitable for Maths, Physics and Chemistry examinations.',                                                                                    price:'J$4,800', sizes:[],                             icon:'🔢', badge:'CSEC',      tier:'Essential', status:'active'   },
-  { id:15, cat:'merchandise', name:'McGrath Cap',              desc:'Navy blue baseball cap with gold embroidered McGrath crest. Adjustable strap.',                                                                                      price:'J$1,600', sizes:['One Size'],                    icon:'🧢', badge:null,       tier:null, status:'active'   },
-  { id:16, cat:'merchandise', name:'School Hoodie',            desc:'Premium navy hoodie with crest on chest and motto on reverse. Soft fleece lining.',                                                                                  price:'J$4,200', sizes:['S','M','L','XL','XXL'],       icon:'🧥', badge:null,       tier:'Popular', status:'active'   },
-  { id:17, cat:'merchandise', name:'Insulated Water Bottle',   desc:'Stainless steel 500ml bottle in royal blue with McGrath crest. Keeps cold 24hr / hot 12hr.',                                                                        price:'J$2,800', sizes:[],                             icon:'💧', badge:null,       tier:null, status:'active'   },
-  { id:18, cat:'merchandise', name:'Sticker Pack (6-piece)',   desc:'Premium vinyl McGrath stickers — crest, motto banner and year badge. Weatherproof.',                                                                                 price:'J$350',   sizes:[],                             icon:'⭐', badge:null,       tier:null, status:'discontinued'   },
-];
-
-const CATS = { uniform:'Uniforms', pe:'PE & Sports', supplies:'Supplies', merchandise:'Merchandise' };
+/* ── DATA — loaded from /_data/store.json ── */
+const CATS      = { uniform:'Uniforms', pe:'PE & Sports', supplies:'Supplies', merchandise:'Merchandise' };
 const CAT_ORDER = ['uniform','pe','supplies','merchandise'];
 
+const DEFAULT_ITEMS = [
+  { id:1,  cat:'uniform',     name:'School Shirt (Boys)',      desc:'Official McGrath white dress shirt with embroidered crest. Long-sleeve, cotton-polyester blend. Required for all male students.',                    price:'J$1,800', sizes:['S','M','L','XL','XXL'],       icon:'👔', badge:'Official', tier:null,        status:'active', image:'' },
+  { id:2,  cat:'uniform',     name:'School Shirt (Girls)',     desc:'Official McGrath white blouse with embroidered crest. Fitted cut, cotton-polyester blend. Required for all female students.',                        price:'J$1,800', sizes:['XS','S','M','L','XL'],        icon:'👚', badge:'Official', tier:null,        status:'active', image:'' },
+  { id:3,  cat:'uniform',     name:'School Trousers (Boys)',   desc:'Navy blue school trousers. Straight cut, durable twill fabric with belt loops and rear pockets.',                                                   price:'J$2,400', sizes:['26','28','30','32','34','36'], icon:'👖', badge:null,       tier:null,        status:'active', image:'' },
+  { id:4,  cat:'uniform',     name:'School Skirt (Girls)',     desc:'Navy blue pleated knee-length skirt. Comfortable waistband with zip fastening.',                                                                    price:'J$2,200', sizes:['XS','S','M','L','XL'],        icon:'👗', badge:null,       tier:null,        status:'active', image:'' },
+  { id:5,  cat:'uniform',     name:'School Tie',               desc:'Official McGrath tie in royal blue with diagonal gold stripes.',                                                                                    price:'J$800',   sizes:[],                             icon:'🎗️', badge:null,       tier:null,        status:'active', image:'' },
+  { id:6,  cat:'uniform',     name:'School Belt',              desc:'Black leather-effect belt with silver buckle. Suitable for trousers and skirts.',                                                                   price:'J$600',   sizes:['S','M','L'],                  icon:'➖', badge:null,       tier:null,        status:'active', image:'' },
+  { id:7,  cat:'pe',          name:'PE T-Shirt',               desc:'Royal blue moisture-wicking shirt with McGrath crest.',                                                                                             price:'J$1,200', sizes:['S','M','L','XL'],             icon:'🏃', badge:'Sports',    tier:null,        status:'active', image:'' },
+  { id:8,  cat:'pe',          name:'PE Shorts',                desc:'Navy blue athletic shorts with elasticated waist. Lightweight and breathable.',                                                                     price:'J$1,000', sizes:['S','M','L','XL'],             icon:'🩳', badge:null,       tier:null,        status:'active', image:'' },
+  { id:9,  cat:'pe',          name:'House Sports Jersey',      desc:'Coloured jersey for inter-house sports. Available in Red, Blue, Green and Yellow house colours.',                                                   price:'J$1,500', sizes:['S','M','L','XL'],             icon:'⚽', badge:'Sports',    tier:'Popular',   status:'active', image:'' },
+  { id:10, cat:'pe',          name:'Sports Bag',               desc:'Official McGrath navy sports bag with crest embroidery.',                                                                                           price:'J$3,500', sizes:[],                             icon:'🎒', badge:null,       tier:null,        status:'active', image:'' },
+  { id:11, cat:'supplies',    name:'Exercise Books (×10)',     desc:'Ruled exercise books with McGrath cover. 60 pages each.',                                                                                           price:'J$900',   sizes:[],                             icon:'📓', badge:null,       tier:null,        status:'active', image:'' },
+  { id:12, cat:'supplies',    name:'School Diary / Planner',   desc:'Academic diary with school calendar, timetable pages and homework tracker.',                                                                        price:'J$700',   sizes:[],                             icon:'📅', badge:'New',       tier:null,        status:'active', image:'' },
+  { id:13, cat:'supplies',    name:'Geometry Set',             desc:'Complete set with compass, protractor, set squares, ruler and pencil in branded pouch.',                                                            price:'J$1,100', sizes:[],                             icon:'📐', badge:null,       tier:null,        status:'active', image:'' },
+  { id:14, cat:'supplies',    name:'Scientific Calculator',    desc:'CSEC-approved fx-991EX. Suitable for Maths, Physics and Chemistry examinations.',                                                                   price:'J$4,800', sizes:[],                             icon:'🔢', badge:'CSEC',      tier:'Essential', status:'active', image:'' },
+  { id:15, cat:'merchandise', name:'McGrath Cap',              desc:'Navy blue baseball cap with gold embroidered McGrath crest. Adjustable strap.',                                                                     price:'J$1,600', sizes:['One Size'],                    icon:'🧢', badge:null,       tier:null,        status:'active', image:'' },
+  { id:16, cat:'merchandise', name:'School Hoodie',            desc:'Premium navy hoodie with crest on chest and motto on reverse. Soft fleece lining.',                                                                 price:'J$4,200', sizes:['S','M','L','XL','XXL'],       icon:'🧥', badge:null,       tier:'Popular',   status:'active', image:'' },
+  { id:17, cat:'merchandise', name:'Insulated Water Bottle',   desc:'Stainless steel 500ml bottle in royal blue with McGrath crest.',                                                                                    price:'J$2,800', sizes:[],                             icon:'💧', badge:null,       tier:null,        status:'active', image:'' },
+  { id:18, cat:'merchandise', name:'Sticker Pack (6-piece)',   desc:'Premium vinyl McGrath stickers — crest, motto banner and year badge. Weatherproof.',                                                                price:'J$350',   sizes:[],                             icon:'⭐', badge:null,       tier:null,        status:'active', image:'' },
+];
+
+let ITEMS = [];
 let phone = '—', email = '—', hours = 'Mon–Fri, 8am–3pm';
 let activeFilter = 'all';
 
@@ -622,6 +601,21 @@ async function loadSettings() {
   } catch {}
 }
 
+/* ── Load store items from JSON ────────────── */
+async function loadStore() {
+  try {
+    const r = await fetch('/_data/store.json?v=' + Date.now(), { cache:'no-store' });
+    if (r.ok) {
+      const d = await r.json();
+      if (d.items && d.items.length) {
+        ITEMS = d.items.map((item, i) => ({ id: i + 1, ...item, sizes: item.sizes || [] }));
+      }
+    }
+  } catch {}
+  if (!ITEMS.length) ITEMS = DEFAULT_ITEMS;
+  renderStore(activeFilter);
+}
+
 /* ── Render ────────────────────────────────── */
 function renderStore(filter) {
   const main = document.getElementById('storeMain');
@@ -630,13 +624,11 @@ function renderStore(filter) {
   const cats = filter === 'all' ? CAT_ORDER : [filter];
 
   cats.forEach(cat => {
-    const items = ITEMS.filter(i => i.cat === cat && i.status !== 'discontinued');
-    if (!items.length) return;
+    const allInCat  = ITEMS.filter(i => i.cat === cat && (i.status || 'active') !== 'discontinued');
+    if (!allInCat.length) return;
 
-    const activeCount = items.filter(i => i.status === 'active').length;
-    const countLabel = activeCount === items.length
-      ? `${items.length} item${items.length !== 1 ? 's' : ''}`
-      : `${activeCount} of ${items.length} available`;
+    const available = allInCat.filter(i => (i.status || 'active') === 'active').length;
+
     const sec = document.createElement('section');
     sec.className = 'cat-section';
 
@@ -644,7 +636,7 @@ function renderStore(filter) {
       <div class="cat-head">
         <div class="cat-head-title">${CATS[cat]}</div>
         <div class="cat-head-line"></div>
-        <div class="cat-head-count">${countLabel}</div>
+        <div class="cat-head-count">${available} of ${allInCat.length} available</div>
       </div>
       <div class="product-grid" id="grid-${cat}"></div>`;
 
@@ -652,50 +644,44 @@ function renderStore(filter) {
 
     const grid = sec.querySelector('.product-grid');
 
-    items.forEach((item, i) => {
+    allInCat.forEach((item, i) => {
+      const oos  = (item.status || 'active') === 'out_of_stock';
       const card = document.createElement('div');
-      const isOOS = item.status === 'out_of_stock';
-      card.className = 'product-card' + (isOOS ? ' oos' : '');
-      // Stagger delay — each card 70ms after the previous
+      card.className = 'product-card' + (oos ? ' oos' : '');
       card.style.transitionDelay = `${i * 0.07}s`;
-      card.setAttribute('role', 'button');
-      card.setAttribute('tabindex', '0');
+      if (!oos) { card.setAttribute('role', 'button'); card.setAttribute('tabindex', '0'); }
+
+      const previewInner = item.image
+        ? `<img src="${item.image}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0;">`
+        : `<div class="card-icon"><span class="card-icon-emoji">${item.icon}</span><span class="card-icon-label">Image Coming Soon</span></div>`;
 
       card.innerHTML = `
         <div class="card-shell">
           <div class="card-preview">
-            ${isOOS ? '<div class="oos-overlay"><div class="oos-badge">Out of Stock</div></div>' : ''}
-            ${item.badge && !isOOS ? `<div class="badge-new">${item.badge}</div>` : ''}
-            ${item.tier  && !isOOS ? `<div class="badge-tier">${item.tier}</div>`  : ''}
-            <div class="card-preview-inner">
-              <div class="card-icon">
-                <span class="card-icon-emoji">${item.icon}</span>
-                <span class="card-icon-label">Image Coming Soon</span>
-              </div>
+            ${item.badge ? `<div class="badge-new">${item.badge}</div>` : ''}
+            ${item.tier  ? `<div class="badge-tier">${item.tier}</div>`  : ''}
+            ${oos        ? `<div class="badge-new" style="background:#8495A8;top:auto;bottom:12px;">Out of Stock</div>` : ''}
+            <div class="card-preview-inner" style="position:relative;overflow:hidden;">
+              ${previewInner}
+              ${oos ? '<div style="position:absolute;inset:0;background:rgba(255,255,255,0.55);"></div>' : ''}
               <div class="card-preview-overlay"></div>
-              ${!isOOS ? `<div class="card-preview-label">
-                View Details
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                  <polyline points="12 5 19 12 12 19"/>
-                </svg>
-              </div>` : ''}
+              ${!oos ? `<div class="card-preview-label">View Details <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>` : ''}
             </div>
           </div>
           <div class="card-body">
             <div class="card-cat">${CATS[item.cat]}</div>
-            <div class="card-name">${item.name}</div>
+            <div class="card-name" style="${oos ? 'opacity:0.45;' : ''}">${item.name}</div>
             <div class="card-footer">
-              <div class="card-price">${item.price}<span class="card-price-unit">JMD</span></div>
-              ${isOOS
-                ? '<span style="font-family:\'DM Mono\',monospace;font-size:0.6rem;color:#9b4444;letter-spacing:0.08em;text-transform:uppercase;">Currently unavailable</span>'
-                : '<button class="card-action-btn">Details</button>'}
+              <div class="card-price" style="${oos ? 'opacity:0.45;' : ''}">${item.price}<span class="card-price-unit">JMD</span></div>
+              ${oos ? `<span style="font-size:0.72rem;color:#8495A8;font-weight:600;">Currently unavailable</span>` : `<button class="card-action-btn">Details</button>`}
             </div>
           </div>
         </div>`;
 
-      card.addEventListener('click',  () => { if (!isOOS) openModal(item.id); });
-      card.addEventListener('keydown', e => { if (e.key === 'Enter' && !isOOS) openModal(item.id); });
+      if (!oos) {
+        card.addEventListener('click',  () => openModal(item.id));
+        card.addEventListener('keydown', e => { if (e.key === 'Enter') openModal(item.id); });
+      }
       grid.appendChild(card);
     });
   });
@@ -705,7 +691,7 @@ function renderStore(filter) {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('revealed');
-        observer.unobserve(entry.target); // fire once
+        observer.unobserve(entry.target);
       }
     });
   }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
@@ -718,7 +704,12 @@ function openModal(id) {
   const item = ITEMS.find(i => i.id === id);
   if (!item) return;
 
-  document.getElementById('mIcon').textContent  = item.icon;
+  const mIconEl = document.getElementById('mIcon');
+  if (item.image) {
+    mIconEl.innerHTML = `<img src="${item.image}" alt="${item.name}" style="width:80px;height:80px;object-fit:cover;border-radius:12px;">`;
+  } else {
+    mIconEl.textContent = item.icon;
+  }
   document.getElementById('mCat').textContent   = CATS[item.cat];
   document.getElementById('mName').textContent  = item.name;
   document.getElementById('mDesc').textContent  = item.desc;
@@ -771,7 +762,7 @@ document.querySelectorAll('.fb-btn').forEach(btn => {
 
 /* ── Boot ──────────────────────────────────── */
 loadSettings();
-renderStore('all');
+loadStore();
 </script>
 </body>
 </html>

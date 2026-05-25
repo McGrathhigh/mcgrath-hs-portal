@@ -255,28 +255,50 @@ footer a:hover { color:white; }
 </footer>
 
 <script>
-// ── EVENTS DATA ─────────────────────────────────────────────────────────
-// Primary source: /_data/events.json (managed via admin dashboard)
-// Fallback: hardcoded array below (used if JSON not yet deployed)
-const EVENTS_FALLBACK = [
-  {id:1, year:2026,cat:'patriotic', name:"Boys' Day",               date:'2026-01-24', desc:"Annual Boys' Day celebrating the achievements, character and contributions of McGrath's male students. Features awards, performances and motivational addresses.",         photos:12, icon:'🎖️', published:true  },
-  {id:2, year:2026,cat:'patriotic', name:"Girls' Day",              date:'2026-02-14', desc:"A celebration of the young women of McGrath — highlighting academic excellence, leadership and empowerment through awards and cultural expression.",                       photos:15, icon:'🌸', published:true  },
-  {id:3, year:2026,cat:'sports',    name:'Inter-House Sports Day',  date:'2026-03-08', desc:'The annual inter-house athletics championship. Students compete across track and field representing their houses — a highlight of the school sports calendar.',             photos:28, icon:'🏃', published:true  },
-  {id:4, year:2026,cat:'sports',    name:'ISSA Manning Cup',        date:'2026-02-22', desc:"McGrath's boys football team in the ISSA/Digicel Manning Cup competition. Representing the school with pride on the regional football stage.",                            photos:18, icon:'⚽', published:true  },
-  {id:5, year:2026,cat:'academic',  name:'CSEC Awards Ceremony',   date:'2026-01-15', desc:'Recognition ceremony honouring students who achieved outstanding results in CSEC. McGrath celebrates its academic champions with awards and addresses.',                    photos:22, icon:'🎓', published:true  },
-  {id:6, year:2026,cat:'pageant',   name:'Mr & Miss McGrath',      date:'2026-04-12', desc:"The prestigious Mr & Miss McGrath pageant — judged across talent, intelligence, personality and presentation. The school's premier cultural event.",                      photos:35, icon:'👑', published:false },
-  {id:7, year:2026,cat:'patriotic', name:'Jamaica Day',            date:'2026-10-18', desc:'Annual Jamaica Day honouring Jamaican culture and heritage. Students dress in national colours, enjoy traditional food, music and cultural performances.',                  photos:20, icon:'🇯🇲', published:false },
-  {id:8, year:2025,cat:'cultural',  name:'Cultural Day 2025',      date:'2025-11-14', desc:'A vibrant celebration of Caribbean and global culture. Students performed songs, dances and dramatic pieces from various traditions in a spectacular showcase.',            photos:31, icon:'🎭', published:true  },
-  {id:9, year:2025,cat:'pageant',   name:'Mr & Miss McGrath 2025', date:'2025-04-19', desc:"2025 edition of the school's flagship pageant — an evening of elegance, talent and excellence as McGrath crowned its king and queen for the year.",                      photos:42, icon:'👑', published:true  },
-  {id:10,year:2025,cat:'sports',    name:'Sports Day 2025',        date:'2025-03-14', desc:'Hundreds competed across sprints, relays, field events and novelty races in a full day of competitive spirit and house pride.',                                            photos:38, icon:'🏅', published:true  },
-  {id:11,year:2025,cat:'academic',  name:'Graduation 2025',        date:'2025-06-27', desc:'The Class of 2025 celebrated the completion of their secondary education. A formal ceremony honouring the achievements of our graduating year.',                           photos:55, icon:'🎓', published:true  },
-  {id:12,year:2025,cat:'patriotic', name:"Boys' Day 2025",         date:'2025-01-31', desc:"2025 Boys' Day — recognising achievement in academics, sports, arts and leadership across the male student body.",                                                         photos:14, icon:'🎖️', published:true  },
-];
-
-let EVENTS = EVENTS_FALLBACK;
-
+/* ── DATA — loaded from /_data/events_gallery.json ── */
 const CAT_LABELS = { academic:'Academic', sports:'Sports', cultural:'Cultural', pageant:'Pageant', patriotic:'Patriotic', community:'Community' };
 let activeFilter = 'all', activeYear = 'all';
+let EVENTS = [];
+
+const DEFAULT_EVENTS = [
+  {id:1, year:2026,cat:'patriotic', name:"Boys' Day",               date:'2026-01-24', desc:"Annual Boys' Day celebrating the achievements, character and contributions of McGrath's male students.",         photos:12, icon:'🎖️', published:true,  coverImage:'', gallery:[] },
+  {id:2, year:2026,cat:'patriotic', name:"Girls' Day",              date:'2026-02-14', desc:"A celebration of the young women of McGrath — highlighting academic excellence, leadership and empowerment.",     photos:15, icon:'🌸', published:true,  coverImage:'', gallery:[] },
+  {id:3, year:2026,cat:'sports',    name:'Inter-House Sports Day',  date:'2026-03-08', desc:'The annual inter-house athletics championship. Students compete across track and field for house glory.',          photos:28, icon:'🏃', published:true,  coverImage:'', gallery:[] },
+  {id:4, year:2026,cat:'sports',    name:'ISSA Manning Cup',        date:'2026-02-22', desc:"McGrath's boys football team in the ISSA/Digicel Manning Cup competition.",                                       photos:18, icon:'⚽', published:true,  coverImage:'', gallery:[] },
+  {id:5, year:2026,cat:'academic',  name:'CSEC Awards Ceremony',   date:'2026-01-15', desc:'Recognition ceremony honouring students with outstanding CSEC results.',                                           photos:22, icon:'🎓', published:true,  coverImage:'', gallery:[] },
+  {id:6, year:2026,cat:'pageant',   name:'Mr & Miss McGrath',      date:'2026-04-12', desc:"The prestigious Mr & Miss McGrath pageant — judged across talent, intelligence, personality and presentation.",   photos:35, icon:'👑', published:false, coverImage:'', gallery:[] },
+  {id:8, year:2025,cat:'cultural',  name:'Cultural Day 2025',      date:'2025-11-14', desc:'A vibrant celebration of Caribbean and global culture with songs, dances and dramatic pieces.',                   photos:31, icon:'🎭', published:true,  coverImage:'', gallery:[] },
+  {id:9, year:2025,cat:'pageant',   name:'Mr & Miss McGrath 2025', date:'2025-04-19', desc:"2025 edition of the school's flagship pageant.",                                                                   photos:42, icon:'👑', published:true,  coverImage:'', gallery:[] },
+  {id:10,year:2025,cat:'sports',    name:'Sports Day 2025',        date:'2025-03-14', desc:'Hundreds competed across sprints, relays and field events in a full day of competitive spirit.',                   photos:38, icon:'🏅', published:true,  coverImage:'', gallery:[] },
+  {id:11,year:2025,cat:'academic',  name:'Graduation 2025',        date:'2025-06-27', desc:'The Class of 2025 celebrated the completion of their secondary education.',                                        photos:55, icon:'🎓', published:true,  coverImage:'', gallery:[] },
+  {id:12,year:2025,cat:'patriotic', name:"Boys' Day 2025",         date:'2025-01-31', desc:"2025 Boys' Day — recognising achievement in academics, sports, arts and leadership.",                              photos:14, icon:'🎖️', published:true,  coverImage:'', gallery:[] },
+];
+
+async function loadEvents() {
+  try {
+    const r = await fetch('/_data/events_gallery.json?v=' + Date.now(), { cache:'no-store' });
+    if (r.ok) {
+      const d = await r.json();
+      if (d.items && d.items.length) {
+        EVENTS = d.items.map((e, i) => ({
+          id: i + 1,
+          year: parseInt(e.year) || new Date(e.date).getFullYear(),
+          cat: e.cat || 'academic',
+          name: e.name || e.title || '',
+          date: e.date || '',
+          desc: e.desc || e.description || '',
+          photos: (e.gallery || []).length || e.photos || 0,
+          icon: e.icon || '📸',
+          published: e.published !== false,
+          coverImage: e.coverImage || e.cover_image || '',
+          gallery: e.gallery || [],
+        }));
+      }
+    }
+  } catch {}
+  if (!EVENTS.length) EVENTS = DEFAULT_EVENTS;
+  renderEvents();
+}
 
 function fmtDate(iso) {
   try { return new Date(iso).toLocaleDateString('en-JM',{day:'numeric',month:'long',year:'numeric'}).toUpperCase(); }
@@ -329,12 +351,13 @@ function renderEvents() {
       card.innerHTML = `
         <div class="ec-shell">
           <div class="ec-preview">
-            <div class="ec-preview-bg bg-${ev.cat}"${ev.coverImage ? ` style="background:url('${ev.coverImage}') center/cover no-repeat"` : ''}></div>
+            <div class="ec-preview-bg bg-${ev.cat}"></div>
             <div class="ec-badge-cat cat-badge-${ev.cat}">${CAT_LABELS[ev.cat]}</div>
             <div class="ec-badge-date">${new Date(ev.date).toLocaleDateString('en-JM',{day:'numeric',month:'short'}).toUpperCase()}</div>
             <div class="ec-preview-content">
-              <span class="ec-preview-icon">${ev.icon}</span>
-              <span class="ec-preview-icon-label">${ev.coverImage ? '' : 'Gallery Coming Soon'}</span>
+              ${ev.coverImage
+                ? `<img src="${ev.coverImage}" alt="${ev.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`
+                : `<span class="ec-preview-icon">${ev.icon}</span><span class="ec-preview-icon-label">Gallery Coming Soon</span>`}
             </div>
             <div class="ec-overlay"></div>
             <div class="ec-hover-label">
@@ -376,6 +399,13 @@ function openModal(id) {
 
   const top = document.getElementById('mTop');
   top.className = `modal-top bg-${ev.cat}`;
+  if (ev.coverImage) {
+    top.style.backgroundImage = `url('${ev.coverImage}')`;
+    top.style.backgroundSize  = 'cover';
+    top.style.backgroundPosition = 'center';
+  } else {
+    top.style.backgroundImage = '';
+  }
   document.getElementById('mIcon').textContent  = ev.icon;
   document.getElementById('mYear').textContent  = ev.year;
 
@@ -388,20 +418,21 @@ function openModal(id) {
   document.getElementById('mPhotos').textContent = ev.photos + ' photos';
   document.getElementById('mDesc').textContent   = ev.desc;
 
+  const gallery = ev.gallery && ev.gallery.length ? ev.gallery : [];
   document.getElementById('mGallery').innerHTML =
-    (ev.gallery && ev.gallery.length
-      ? ev.gallery.slice(0, 9).map(img => `
-          <div class="gallery-slot">
-            <img src="${img.url || img}" alt="${img.caption || ev.name}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">
-          </div>`)
-      : Array.from({ length: Math.min(ev.photos, 9) }).map((_, i) => `
+    gallery.length
+      ? gallery.slice(0, 9).map((g, i) =>
+          g.image
+            ? `<div class="gallery-slot"><img src="${g.image}" alt="${g.caption || 'Photo ' + (i+1)}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;display:block;"></div>`
+            : `<div class="gallery-slot"><div class="gs-inner"><span class="gs-icon">${ev.icon}</span><span class="gs-label">${g.caption || 'Photo ' + (i+1)}</span></div></div>`
+        ).join('')
+      : Array.from({ length: Math.min(ev.photos || 6, 9) }).map((_, i) => `
           <div class="gallery-slot">
             <div class="gs-inner">
               <span class="gs-icon">${ev.icon}</span>
               <span class="gs-label">Photo ${i + 1}</span>
             </div>
-          </div>`)
-    ).join('');
+          </div>`).join('');
 
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -434,28 +465,7 @@ document.querySelectorAll('[data-year]').forEach(btn => {
   });
 });
 
-// ── Boot: load from /_data/events.json, fall back to hardcoded ──────────
-async function loadEventsFromJSON() {
-  try {
-    const r = await fetch('/_data/events.json?v=' + Date.now(), { cache: 'no-store' });
-    if (!r.ok) return;
-    const data = await r.json();
-    if (!Array.isArray(data?.items) || !data.items.length) return;
-    // Map JSON schema → internal schema
-    EVENTS = data.items.map((e, i) => ({
-      id:        e.id        || i + 1,
-      year:      e.year      || new Date(e.date).getFullYear(),
-      cat:       e.category  || e.cat || 'academic',
-      name:      e.title     || e.name,
-      date:      e.date,
-      desc:      e.description || e.desc || '',
-      photos:    e.photos    || (Array.isArray(e.gallery) ? e.gallery.length : 0),
-      gallery:   e.gallery   || [],
-      coverImage:e.coverImage|| null,
-      icon:      e.icon      || '📅',
-      published: e.published !== false,
-    }));
-  } catch {}
-  renderEvents();
-}
-loadEventsFromJSON();
+loadEvents();
+</script>
+</body>
+</html>
