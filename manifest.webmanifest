@@ -1,0 +1,20 @@
+{
+  "name": "McGrath High School",
+  "short_name": "McGrath HS",
+  "description": "News, events, sports, the school store and staff portal for McGrath High School.",
+  "start_url": "/portal.html?source=app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4fafd",
+  "theme_color": "#0e6fa0",
+  "icons": [
+    { "src": "/images/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/images/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/images/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Events Gallery", "url": "/events.html", "icons": [{ "src": "/images/icon-192.png", "sizes": "192x192" }] },
+    { "name": "School Store", "url": "/store.html", "icons": [{ "src": "/images/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Staff Portal", "url": "/portal.html#staff", "icons": [{ "src": "/images/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

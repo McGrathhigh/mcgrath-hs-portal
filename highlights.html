@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Highlights — McGrath High School</title>
+<link rel="icon" href="./images/crest.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#1C2D8A">
+<script src="./assets/site.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Figtree:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -56,7 +61,8 @@ nav { position:sticky; top:0; z-index:200; height:68px; padding:0 6vw; display:f
   padding:0 6vw;
   gap:0;
 }
-@media(max-width:768px){ #reel { grid-template-columns:1fr; } .reel-right { display:none!important; } }
+@media(max-width:768px){ #reel { grid-template-columns:1fr; } .reel-right { display:none!important; } .reel-left { padding-right:0; border-right:none; } }
+#reel { scroll-margin-top:68px; }
 
 /* ── LEFT COL: title list ── */
 .reel-left {
@@ -115,7 +121,7 @@ nav { position:sticky; top:0; z-index:200; height:68px; padding:0 6vw; display:f
   transition:max-height 0.5s cubic-bezier(0.22,1,0.36,1), opacity 0.4s ease 0.05s, margin 0.4s ease;
   margin-top:0;
 }
-.reel-entry.active .re-body { max-height:160px; opacity:1; margin-top:10px; }
+.reel-entry.active .re-body { max-height:320px; opacity:1; margin-top:10px; }
 
 .re-cat {
   display:inline-block; padding:4px 12px; border-radius:20px;
@@ -198,6 +204,27 @@ nav { position:sticky; top:0; z-index:200; height:68px; padding:0 6vw; display:f
 .cl-primary:hover { background:var(--off); }
 .cl-ghost { border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.75); }
 .cl-ghost:hover { border-color:white; color:white; }
+
+/* ── Alumni wall ── */
+.alumni { padding:96px 6vw; background:var(--off); border-top:1px solid var(--border); }
+.alumni[hidden] { display:none; }
+.alumni-inner { max-width:1160px; margin:0 auto; }
+.alumni-eyebrow { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+.alumni-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:300; line-height:1.05; margin-bottom:44px; }
+.alumni-title em { font-style:italic; color:var(--blue); }
+.alumni-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; }
+.alum { background:white; border:1px solid var(--border); border-radius:18px; padding:24px; transition:transform 0.3s ease, box-shadow 0.3s ease; }
+.alum:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(43,62,170,0.1); }
+.alum-top { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.alum-av { width:56px; height:56px; border-radius:50%; flex:0 0 56px; overflow:hidden; background:linear-gradient(135deg,var(--blue),var(--blue-mid)); color:white; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; }
+.alum-av img { width:100%; height:100%; object-fit:cover; }
+.alum-name { font-weight:600; font-size:1rem; color:var(--ink); line-height:1.2; }
+.alum-class { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-top:3px; }
+.alum-now { font-size:0.88rem; color:var(--ink-mid); line-height:1.6; }
+.alum-quote { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.05rem; color:var(--ink); margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
+
+/* ── Cheering students in the closing section ── */
+.closing-kids { display:flex; justify-content:center; gap:10px; margin:-24px 0 26px; min-height:90px; }
 
 /* ── Footer ── */
 footer { background:var(--ink); color:rgba(255,255,255,0.4); padding:28px 6vw; text-align:center; font-size:0.78rem; }
@@ -360,6 +387,9 @@ footer a:hover { color:white; }
   .fan-stage { --card-w:200px; --card-h:280px; height:380px; }
   .csec-headline { font-size:42px; }
 }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; transition-delay:0s !important; scroll-behavior:auto !important; }
+}
 /* ════════════════════════════════════════════════════════════════ */
 </style>
 </head>
@@ -380,7 +410,7 @@ footer a:hover { color:white; }
     <a href="./store.html">Store</a>
     <a href="./events.html">Events</a>
     <a href="./highlights.html" class="active">Highlights</a>
-    <a href="./portal.html" class="nav-staff">🔒 Staff</a>
+    <a href="./portal.html#staff" class="nav-staff">🔒 Staff</a>
   </div>
 </nav>
 
@@ -399,7 +429,7 @@ footer a:hover { color:white; }
     <div class="hero-right">
       <div class="hero-stat-stack">
         <div class="hsc">
-          <div class="hsc-num">800<sup>+</sup></div>
+          <div class="hsc-num" id="hsStudents">800<sup>+</sup></div>
           <div class="hsc-label">Students enrolled</div>
         </div>
         <div class="hsc">
@@ -468,11 +498,21 @@ footer a:hover { color:white; }
 
 </div>
 
+<!-- ALUMNI: Content Manager → 🎓 Alumni Wall -->
+<section class="alumni" id="alumni" hidden>
+  <div class="alumni-inner">
+    <div class="alumni-eyebrow">— Where Are They Now</div>
+    <h2 class="alumni-title">McGrath graduates,<br><em>out in the world.</em></h2>
+    <div class="alumni-grid" id="alumniGrid"></div>
+  </div>
+</section>
+
 <!-- CLOSING -->
 <section class="closing">
   <div class="closing-label">— McGrath High School</div>
   <h2 class="closing-title">Every year, a new chapter.<br>Every student, a legacy.</h2>
   <p class="closing-body">McGrath High School has been shaping futures for over five decades. The highlights above are only a glimpse of what happens within these walls every day.</p>
+  <div class="closing-kids" id="closingKids" aria-hidden="true"></div>
   <div class="closing-links">
     <a href="./events.html"  class="cl-btn cl-primary">Browse All Events</a>
     <a href="./portal.html"  class="cl-btn cl-ghost">Community Portal</a>
@@ -556,6 +596,11 @@ async function loadReel() {
 
 loadReel();
 
+fetch('/_data/settings.json?v=' + Date.now(), { cache: 'no-store' })
+  .then(r => r.ok ? r.json() : null)
+  .then(s => { if (s && s.students) document.getElementById('hsStudents').textContent = s.students; })
+  .catch(() => {});
+
 /* ── Scroll driver ────────────────────── */
 // Folio pattern: track each entry's position in the viewport
 // and set active when it crosses the 40% threshold
@@ -600,6 +645,46 @@ function scrollToEntry(i) {
   }
 }
 
+</script>
+
+<script src="./assets/students.js"></script>
+<script>
+/* ── Alumni wall ── */
+(function () {
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  fetch('/_data/alumni.json?v=' + Date.now(), { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      const items = (d && d.items) || [];
+      if (!items.length) return;
+      document.getElementById('alumniGrid').innerHTML = items.map(a => {
+        const initials = (a.name || '?').split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+        return `<article class="alum">
+          <div class="alum-top"><div class="alum-av">${a.photo ? `<img src="${esc(a.photo)}" alt="" loading="lazy">` : esc(initials)}</div>
+            <div><div class="alum-name">${esc(a.name)}</div>${a.class_year ? `<div class="alum-class">Class of ${esc(a.class_year)}</div>` : ''}</div></div>
+          <div class="alum-now">${esc(a.now)}</div>
+          ${a.quote ? `<div class="alum-quote">“${esc(a.quote)}”</div>` : ''}
+        </article>`;
+      }).join('');
+      document.getElementById('alumni').hidden = false;
+    })
+    .catch(() => {});
+})();
+
+/* ── Stop-motion students cheer at the end of the year in review ── */
+(function () {
+  const host = document.getElementById('closingKids');
+  if (!window.McGrathStudents || !host) return;
+  const girl = McGrathStudents.create('girl', { width: 70 });
+  const boy  = McGrathStudents.create('boy',  { width: 70 });
+  host.append(girl.el, boy.el);
+  let timer;
+  const cheer = () => { girl.play(['cheer1', 'cheer2'], 5, 4); setTimeout(() => boy.play(['cheer2', 'cheer1'], 5, 4), 200); };
+  new IntersectionObserver(([e]) => {
+    clearInterval(timer);
+    if (e.isIntersecting) { cheer(); timer = setInterval(cheer, 4500); }
+  }, { threshold: 0.4 }).observe(host);
+})();
 </script>
 
 <!-- ══ CASCADE SECTION JS ══════════════════════════════════════ -->
@@ -676,7 +761,6 @@ function scrollToEntry(i) {
     var current  = 0;
     var paused   = false;
     var elapsed  = 0;
-    var timer    = null;
     var progTimer= null;
 
     /* Build dots */
@@ -690,36 +774,36 @@ function scrollToEntry(i) {
     }
     var dots = Array.from(dotRow.querySelectorAll('.dot-ind'));
 
-    /* Build a slot map sized to N (supports any number of cards, not just 5) */
-    function buildSlotMap(n, centerIdx) {
-      var result = [];
-      for (var i = 0; i < n; i++) {
-        var offset = ((i - centerIdx) % n + n) % n;
-        /* Map offset to one of the 5 SLOTS; wrap if fewer/more cards */
-        var slot = Math.round((offset / Math.max(n - 1, 1)) * (SLOTS.length - 1));
-        result.push(slot);
-      }
-      return result;
+    /* Distance from the centre card → fan slot (2 = centre, 3/4 = right, 1/0 = left).
+       Works for any number of cards; extras wait hidden behind the centre card. */
+    function slotFor(offset, n) {
+      if (offset === 0) return 2;
+      if (offset === 1) return 3;
+      if (offset === n - 1) return 1;
+      if (offset === 2 && n > 3) return 4;
+      if (offset === n - 2 && n > 4) return 0;
+      return -1;
     }
 
     function applySlot(cardEl, slotIndex) {
-      var s = SLOTS[Math.min(slotIndex, SLOTS.length - 1)];
+      var hidden = slotIndex < 0;
+      var s = hidden ? { tx: 0, ty: 40, rot: 0, scale: 0.5, z: 0 } : SLOTS[slotIndex];
+      var k = (cardEl.offsetWidth || 280) / 280; /* smaller cards on phones → tighter fan */
       cardEl.style.transform =
-        'translateX(' + s.tx + 'px) translateY(' + s.ty + 'px) ' +
+        'translateX(' + s.tx * k + 'px) translateY(' + s.ty * k + 'px) ' +
         'rotate(' + s.rot + 'deg) scale(' + s.scale + ')';
       cardEl.style.zIndex = s.z;
-      if (slotIndex === 2) { cardEl.classList.add('is-center'); }
-      else { cardEl.classList.remove('is-center'); }
+      cardEl.style.opacity = hidden ? '0' : '1';
+      cardEl.style.pointerEvents = hidden ? 'none' : '';
+      cardEl.classList.toggle('is-center', slotIndex === 2);
     }
 
+    var MOVE = 'transform 0.72s cubic-bezier(0.38,0.72,0,1), box-shadow 0.72s cubic-bezier(0.38,0.72,0,1), opacity 0.5s ease';
     function positionCards(centerIdx, animate) {
-      var slotMap = [2, 3, 4, 0, 1];
       cards.forEach(function (card, i) {
         var offset = ((i - centerIdx) % N + N) % N;
-        var slot   = slotMap[offset % slotMap.length];
-        if (!animate) { card.style.transition = 'none'; }
-        else { card.style.transition = 'transform 0.72s cubic-bezier(0.38,0.72,0,1), box-shadow 0.72s cubic-bezier(0.38,0.72,0,1)'; }
-        applySlot(card, slot);
+        card.style.transition = animate ? MOVE : 'none';
+        applySlot(card, slotFor(offset, N));
       });
     }
 
@@ -743,21 +827,15 @@ function scrollToEntry(i) {
       progressFill.style.width = '0%';
     }
 
+    /* One clock drives both the progress bar and auto-advance, so pausing freezes both */
     function startProgress() {
       clearInterval(progTimer);
       progTimer = setInterval(function () {
-        if (paused) return;
+        if (paused || document.hidden) return;
         elapsed += TICK;
-        progressFill.style.width = Math.min((elapsed / INTERVAL) * 100, 100) + '%';
+        if (elapsed >= INTERVAL) { goTo(current + 1, true); return; }
+        progressFill.style.width = (elapsed / INTERVAL) * 100 + '%';
       }, TICK);
-    }
-
-    function startTimer() {
-      clearTimeout(timer);
-      timer = setTimeout(function tick() {
-        if (!paused) goTo(current + 1, true);
-        timer = setTimeout(tick, INTERVAL);
-      }, INTERVAL);
     }
 
     function setPaused(val) {
@@ -767,22 +845,24 @@ function scrollToEntry(i) {
     }
 
     pauseBtn.addEventListener('click', function () { setPaused(!paused); });
-    prevBtn.addEventListener('click', function () { goTo(current - 1, true); setPaused(false); startTimer(); });
-    nextBtn.addEventListener('click', function () { goTo(current + 1, true); setPaused(false); startTimer(); });
+    prevBtn.addEventListener('click', function () { goTo(current - 1, true); setPaused(false); });
+    nextBtn.addEventListener('click', function () { goTo(current + 1, true); setPaused(false); });
 
     dots.forEach(function (dot) {
-      dot.addEventListener('click', function () { goTo(parseInt(dot.dataset.idx), true); setPaused(false); startTimer(); });
+      dot.addEventListener('click', function () { goTo(parseInt(dot.dataset.idx), true); setPaused(false); });
     });
 
     cards.forEach(function (card, i) {
       card.addEventListener('click', function () {
-        if (i !== current) { goTo(i, true); setPaused(false); startTimer(); }
+        if (i !== current) { goTo(i, true); setPaused(false); }
       });
     });
 
+    /* Hover-to-pause for mouse only — on touch screens a tap would otherwise pause forever */
     var stage = document.getElementById('fanStage');
-    stage.addEventListener('mouseenter', function () { setPaused(true); });
-    stage.addEventListener('mouseleave', function () { setPaused(false); });
+    stage.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') setPaused(true); });
+    stage.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') setPaused(false); });
+    window.addEventListener('resize', function () { positionCards(current, false); });
 
     /* Entrance animation */
     cards.forEach(function (card) {
@@ -800,17 +880,10 @@ function scrollToEntry(i) {
           hasEntered = true;
           entryObs.disconnect();
           setTimeout(function () {
-            positionCards(0, false);
-            cards.forEach(function (card) { card.style.opacity = '1'; });
-            setTimeout(function () {
-              cards.forEach(function (card) {
-                card.style.transition = 'transform 0.72s cubic-bezier(0.38,0.72,0,1), box-shadow 0.72s cubic-bezier(0.38,0.72,0,1)';
-              });
-              updateTicker(0);
-              updateUI(0);
-              startTimer();
-              startProgress();
-            }, 80);
+            positionCards(0, true); /* cards rise from below into the fan */
+            updateTicker(0);
+            updateUI(0);
+            startProgress();
           }, 600);
         }
       });

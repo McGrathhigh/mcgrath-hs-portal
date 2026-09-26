@@ -1,9 +1,11 @@
 {
   "items": [
-    { "caption_tag": "Sports",         "caption_title": "Championship Season", "icon": "🏆", "deco_label": "Athletics",  "image": "" },
-    { "caption_tag": "Performing Arts","caption_title": "Annual Concert",       "icon": "🎭", "deco_label": "Arts",       "image": "" },
-    { "caption_tag": "Milestone",      "caption_title": "Class of 2026",        "icon": "🎓", "deco_label": "Graduation", "image": "" },
-    { "caption_tag": "STEM",           "caption_title": "Science Fair 2026",    "icon": "🔬", "deco_label": "Science",    "image": "" },
-    { "caption_tag": "Culture Day",    "caption_title": "Heritage & Pride",     "icon": "🎨", "deco_label": "Culture",    "image": "" }
+    {"caption_tag": "Awards", "caption_title": "Celebrating Excellence", "icon": "🏆", "deco_label": "Excellence", "image": "/images/celebrating-excellence-card.jpg"},
+    {"caption_tag": "Community", "caption_title": "Peace Day 2026", "icon": "🕊️", "deco_label": "Peace", "image": "/images/peace-day-card.jpg"},
+    {"caption_tag": "Sports", "caption_title": "Championship Season", "icon": "🏆", "deco_label": "Athletics", "image": ""},
+    {"caption_tag": "Performing Arts", "caption_title": "Annual Concert", "icon": "🎭", "deco_label": "Arts", "image": ""},
+    {"caption_tag": "Milestone", "caption_title": "Class of 2026", "icon": "🎓", "deco_label": "Graduation", "image": ""},
+    {"caption_tag": "STEM", "caption_title": "Science Fair 2026", "icon": "🔬", "deco_label": "Science", "image": ""},
+    {"caption_tag": "Culture Day", "caption_title": "Heritage & Pride", "icon": "🎨", "deco_label": "Culture", "image": ""}
   ]
 }

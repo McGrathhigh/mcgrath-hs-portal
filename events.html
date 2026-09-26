@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Events — McGrath High School</title>
+<link rel="icon" href="./images/crest.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#1C2D8A">
+<script src="./assets/site.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Figtree:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -61,7 +66,7 @@ main { max-width:1160px; margin:0 auto; padding:48px 6vw 100px; }
 /* First card spans 2 columns — Boutique featured slot */
 .event-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:20px; }
 .event-grid > .event-card:first-child { grid-column: span 2; }
-@media(max-width:700px){ .event-grid > .event-card:first-child { grid-column: span 1; } }
+@media(max-width:720px){ .event-grid > .event-card:first-child { grid-column: span 1; } }
 
 /* ── EVENT CARD — Motion pattern ── */
 .event-card {
@@ -75,6 +80,8 @@ main { max-width:1160px; margin:0 auto; padding:48px 6vw 100px; }
   cursor:pointer;
 }
 .event-card.revealed { opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+.event-card:focus-visible { outline:none; }
+.event-card:focus-visible .ec-shell { box-shadow:0 0 0 3px var(--blue); }
 
 .ec-shell { border-radius:24px; overflow:hidden; background:white; border:1px solid var(--border); transition:transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease; }
 .event-card:hover .ec-shell { transform:translateY(-4px); box-shadow:0 18px 44px rgba(43,62,170,0.12); }
@@ -150,6 +157,22 @@ main { max-width:1160px; margin:0 auto; padding:48px 6vw 100px; }
 .gs-inner { text-align:center; }
 .gs-icon { font-size:1.5rem; display:block; margin-bottom:4px; opacity:0.4; }
 .gs-label { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); }
+.gallery-slot button { display:block; width:100%; height:100%; padding:0; border:0; background:none; cursor:zoom-in; border-radius:10px; overflow:hidden; }
+.gallery-slot button:focus-visible { outline:3px solid var(--blue); outline-offset:2px; }
+
+/* ── PHOTO VIEWER (swipe / arrow keys) ── */
+.lb { position:fixed; inset:0; z-index:700; background:rgba(8,10,18,0.94); display:flex; align-items:center; justify-content:center; touch-action:pan-y; }
+.lb[hidden] { display:none; }
+.lb-fig { margin:0; max-width:min(92vw,1200px); text-align:center; }
+.lb-fig img { max-width:100%; max-height:78vh; border-radius:8px; box-shadow:0 20px 60px rgba(0,0,0,0.5); user-select:none; -webkit-user-drag:none; }
+.lb-fig figcaption { color:rgba(255,255,255,0.85); font-size:0.9rem; margin-top:14px; min-height:1.3em; }
+.lb-count { position:absolute; top:18px; left:22px; font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.14em; color:rgba(255,255,255,0.6); }
+.lb-btn { position:absolute; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; width:48px; height:48px; border-radius:50%; font-size:1.5rem; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s; }
+.lb-btn:hover { background:rgba(255,255,255,0.22); }
+.lb-close { top:14px; right:16px; }
+.lb-prev { left:16px; top:50%; transform:translateY(-50%); }
+.lb-next { right:16px; top:50%; transform:translateY(-50%); }
+@media(max-width:600px){ .lb-prev, .lb-next { top:auto; bottom:18px; transform:none; } }
 
 .modal-close-btn { width:100%; padding:13px; background:var(--off); border:1px solid var(--border); border-radius:10px; font-family:'Figtree',sans-serif; font-size:0.85rem; font-weight:600; color:var(--ink-mid); cursor:pointer; transition:all 0.22s; }
 .modal-close-btn:hover { background:var(--border); }
@@ -159,6 +182,11 @@ footer { background:var(--blue-deep); color:rgba(255,255,255,0.5); padding:32px 
 footer strong { color:white; }
 footer a { color:rgba(255,255,255,0.5); text-decoration:none; }
 footer a:hover { color:white; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; transition-delay:0s !important; scroll-behavior:auto !important; }
+  .event-card { filter:none !important; }
+}
 </style>
 </head>
 <body>
@@ -176,7 +204,7 @@ footer a:hover { color:white; }
     <a href="./store.html">Store</a>
     <a href="./events.html" class="active">Events</a>
     <a href="./highlights.html">Highlights</a>
-    <a href="./portal.html" class="nav-staff">🔒 Staff</a>
+    <a href="./portal.html#staff" class="nav-staff">🔒 Staff</a>
   </div>
 </nav>
 
@@ -214,9 +242,7 @@ footer a:hover { color:white; }
     <button class="fb-btn" data-filter="community">Community</button>
     <div class="fb-sep"></div>
     <span class="fb-label">Year:</span>
-    <button class="fb-btn active" data-year="all">All</button>
-    <button class="fb-btn" data-year="2026">2026</button>
-    <button class="fb-btn" data-year="2025">2025</button>
+    <span id="yearBtns" style="display:contents"><button class="fb-btn active" data-year="all">All</button></span>
   </div>
 </div>
 
@@ -237,11 +263,19 @@ footer a:hover { color:white; }
         <div class="modal-meta-item">Photos: <span id="mPhotos"></span></div>
       </div>
       <div class="modal-desc" id="mDesc"></div>
-      <div class="gallery-label">Event Gallery — Photos Coming Soon</div>
+      <div class="gallery-label" id="mGalleryLabel">Event Gallery — Photos Coming Soon</div>
       <div class="gallery-grid" id="mGallery"></div>
       <button class="modal-close-btn" id="modalCloseBtn">← Back to Events</button>
     </div>
   </div>
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+  <div class="lb-count" id="lbCount"></div>
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close photo viewer">×</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous photo">‹</button>
+  <figure class="lb-fig"><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next photo">›</button>
 </div>
 
 <footer>
@@ -274,6 +308,11 @@ const DEFAULT_EVENTS = [
   {id:12,year:2025,cat:'patriotic', name:"Boys' Day 2025",         date:'2025-01-31', desc:"2025 Boys' Day — recognising achievement in academics, sports, arts and leadership.",                              photos:14, icon:'🎖️', published:true,  coverImage:'', gallery:[] },
 ];
 
+// Date-only strings ("2026-01-24") are parsed as UTC by JS, which shows the previous day in Jamaica — treat them as local dates.
+function parseDate(v) {
+  return typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(v + 'T00:00:00') : new Date(v);
+}
+
 async function loadEvents() {
   try {
     const r = await fetch('/_data/events_gallery.json?v=' + Date.now(), { cache:'no-store' });
@@ -282,12 +321,12 @@ async function loadEvents() {
       if (d.items && d.items.length) {
         EVENTS = d.items.map((e, i) => ({
           id: i + 1,
-          year: parseInt(e.year) || new Date(e.date).getFullYear(),
+          year: parseInt(e.year) || parseDate(e.date).getFullYear(),
           cat: e.cat || 'academic',
           name: e.name || e.title || '',
           date: e.date || '',
           desc: e.desc || e.description || '',
-          photos: (e.gallery || []).length || e.photos || 0,
+          photos: (e.gallery || []).filter(g => g.image).length || e.photos || 0,
           icon: e.icon || '📸',
           published: e.published !== false,
           coverImage: e.coverImage || e.cover_image || '',
@@ -297,11 +336,26 @@ async function loadEvents() {
     }
   } catch {}
   if (!EVENTS.length) EVENTS = DEFAULT_EVENTS;
+  buildYearButtons();
   renderEvents();
 }
 
+function buildYearButtons() {
+  const years = [...new Set(EVENTS.filter(e => e.published).map(e => e.year))].sort((a, b) => b - a);
+  document.getElementById('yearBtns').insertAdjacentHTML('beforeend',
+    years.map(y => `<button class="fb-btn" data-year="${y}">${y}</button>`).join(''));
+  document.querySelectorAll('[data-year]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-year]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeYear = btn.dataset.year;
+      renderEvents();
+    });
+  });
+}
+
 function fmtDate(iso) {
-  try { return new Date(iso).toLocaleDateString('en-JM',{day:'numeric',month:'long',year:'numeric'}).toUpperCase(); }
+  try { return parseDate(iso).toLocaleDateString('en-JM',{day:'numeric',month:'long',year:'numeric'}).toUpperCase(); }
   catch { return iso; }
 }
 
@@ -320,8 +374,8 @@ function renderEvents() {
   const items = getFiltered();
 
   const pub = EVENTS.filter(e => e.published);
-  document.getElementById('totalEvents').textContent = pub.length + '+';
-  document.getElementById('totalPhotos').textContent = pub.reduce((a,e) => a + e.photos, 0) + '+';
+  document.getElementById('totalEvents').textContent = pub.length;
+  document.getElementById('totalPhotos').textContent = pub.reduce((a,e) => a + e.photos, 0);
 
   if (!items.length) {
     main.innerHTML = `<div class="empty"><span class="empty-icon">📅</span><p>No events found for this filter.<br><span style="color:var(--ink-soft);font-size:0.85rem">Check back as the year progresses.</span></p></div>`;
@@ -331,7 +385,7 @@ function renderEvents() {
   const years = [...new Set(items.map(e => e.year))].sort((a,b) => b - a);
 
   years.forEach(year => {
-    const yItems = items.filter(e => e.year === year);
+    const yItems = items.filter(e => e.year === year).sort((a, b) => parseDate(b.date) - parseDate(a.date)); // newest first
     const block  = document.createElement('section');
     block.className = 'year-block';
     block.innerHTML = `
@@ -348,12 +402,15 @@ function renderEvents() {
       const card = document.createElement('div');
       card.className = 'event-card';
       card.style.transitionDelay = `${i * 0.08}s`;
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `${ev.name} — view gallery`);
       card.innerHTML = `
         <div class="ec-shell">
           <div class="ec-preview">
             <div class="ec-preview-bg bg-${ev.cat}"></div>
             <div class="ec-badge-cat cat-badge-${ev.cat}">${CAT_LABELS[ev.cat]}</div>
-            <div class="ec-badge-date">${new Date(ev.date).toLocaleDateString('en-JM',{day:'numeric',month:'short'}).toUpperCase()}</div>
+            <div class="ec-badge-date">${parseDate(ev.date).toLocaleDateString('en-JM',{day:'numeric',month:'short'}).toUpperCase()}</div>
             <div class="ec-preview-content">
               ${ev.coverImage
                 ? `<img src="${ev.coverImage}" alt="${ev.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`
@@ -368,7 +425,7 @@ function renderEvents() {
           <div class="ec-body">
             <div class="ec-body-left">
               <div class="ec-title">${ev.name}</div>
-              <div class="ec-photos">📷 ${ev.photos} photos</div>
+              <div class="ec-photos">📷 ${ev.photos ? ev.photos + (ev.photos === 1 ? ' photo' : ' photos') : 'Photos coming soon'}</div>
             </div>
             <div class="ec-arrow">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -376,6 +433,7 @@ function renderEvents() {
           </div>
         </div>`;
       card.addEventListener('click', () => openModal(ev.id));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(ev.id); } });
       grid.appendChild(card);
     });
   });
@@ -415,16 +473,15 @@ function openModal(id) {
 
   document.getElementById('mTitle').textContent  = ev.name;
   document.getElementById('mDate').textContent   = fmtDate(ev.date);
-  document.getElementById('mPhotos').textContent = ev.photos + ' photos';
+  document.getElementById('mPhotos').textContent = ev.photos || 'Coming soon';
   document.getElementById('mDesc').textContent   = ev.desc;
 
-  const gallery = ev.gallery && ev.gallery.length ? ev.gallery : [];
+  const gallery = (ev.gallery || []).filter(g => g.image);
+  document.getElementById('mGalleryLabel').textContent = gallery.length ? 'Event Gallery' : 'Event Gallery — Photos Coming Soon';
   document.getElementById('mGallery').innerHTML =
     gallery.length
-      ? gallery.slice(0, 9).map((g, i) =>
-          g.image
-            ? `<div class="gallery-slot"><img src="${g.image}" alt="${g.caption || 'Photo ' + (i+1)}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;display:block;"></div>`
-            : `<div class="gallery-slot"><div class="gs-inner"><span class="gs-icon">${ev.icon}</span><span class="gs-label">${g.caption || 'Photo ' + (i+1)}</span></div></div>`
+      ? gallery.map((g, i) =>
+          `<div class="gallery-slot"><button type="button" data-photo="${i}" aria-label="Open photo ${i + 1}${g.caption ? ': ' + g.caption : ''}"><img src="${g.image}" alt="${g.caption || 'Photo ' + (i+1)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;"></button></div>`
         ).join('')
       : Array.from({ length: Math.min(ev.photos || 6, 9) }).map((_, i) => `
           <div class="gallery-slot">
@@ -434,14 +491,70 @@ function openModal(id) {
             </div>
           </div>`).join('');
 
+  document.querySelectorAll('#mGallery [data-photo]').forEach(b =>
+    b.addEventListener('click', () => openViewer(gallery, +b.dataset.photo, ev.name)));
+
+  lastFocus = document.activeElement;
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+  document.getElementById('modalCloseBtn').focus({ preventScroll: true });
 }
+let lastFocus = null;
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
+  if (lastFocus) lastFocus.focus({ preventScroll: true });
 }
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lb').hidden) return;            // the photo viewer handles its own keys
+  if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('open')) closeModal();
+});
+
+/* ── PHOTO VIEWER ─────────────────────────────── */
+const viewer = { photos: [], i: 0, title: '' };
+const lb = document.getElementById('lb');
+function showPhoto(i) {
+  const n = viewer.photos.length;
+  viewer.i = (i + n) % n;
+  const g = viewer.photos[viewer.i];
+  const img = document.getElementById('lbImg');
+  img.src = g.image;
+  img.alt = g.caption || `${viewer.title} — photo ${viewer.i + 1}`;
+  document.getElementById('lbCap').textContent = g.caption || '';
+  document.getElementById('lbCount').textContent = `${viewer.title.toUpperCase()} · ${viewer.i + 1} / ${n}`;
+  document.getElementById('lbPrev').hidden = document.getElementById('lbNext').hidden = n < 2;
+  [1, -1].forEach(d => { const nb = viewer.photos[(viewer.i + d + n) % n]; if (nb) new Image().src = nb.image; }); // preload neighbours
+}
+function openViewer(photos, i, title) {
+  viewer.photos = photos; viewer.title = title || '';
+  viewer.opener = document.activeElement;
+  showPhoto(i);
+  lb.hidden = false;
+  document.getElementById('lbClose').focus({ preventScroll: true });
+}
+function closeViewer() {
+  lb.hidden = true;
+  if (viewer.opener) viewer.opener.focus({ preventScroll: true });
+}
+document.getElementById('lbClose').addEventListener('click', closeViewer);
+document.getElementById('lbPrev').addEventListener('click', () => showPhoto(viewer.i - 1));
+document.getElementById('lbNext').addEventListener('click', () => showPhoto(viewer.i + 1));
+lb.addEventListener('click', e => { if (e.target === lb) closeViewer(); });
+document.addEventListener('keydown', e => {
+  if (lb.hidden) return;
+  if (e.key === 'Escape') closeViewer();
+  else if (e.key === 'ArrowLeft') showPhoto(viewer.i - 1);
+  else if (e.key === 'ArrowRight') showPhoto(viewer.i + 1);
+});
+// Swipe left/right on phones
+let swipeX = null;
+lb.addEventListener('pointerdown', e => { swipeX = e.clientX; });
+lb.addEventListener('pointerup', e => {
+  if (swipeX === null) return;
+  const dx = e.clientX - swipeX; swipeX = null;
+  if (Math.abs(dx) > 50 && viewer.photos.length > 1) showPhoto(viewer.i + (dx < 0 ? 1 : -1));
+});
 
 document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
 document.getElementById('modalOverlay').addEventListener('click', e => {
@@ -453,14 +566,6 @@ document.querySelectorAll('[data-filter]').forEach(btn => {
     document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     activeFilter = btn.dataset.filter;
-    renderEvents();
-  });
-});
-document.querySelectorAll('[data-year]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-year]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeYear = btn.dataset.year;
     renderEvents();
   });
 });
