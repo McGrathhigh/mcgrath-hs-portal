@@ -1,0 +1,9 @@
+{
+  "season": "2026–2027",
+  "items": [
+    { "name": "Red House", "color": "#d63031", "points": 0 },
+    { "name": "Blue House", "color": "#2B3EAA", "points": 0 },
+    { "name": "Green House", "color": "#18a06b", "points": 0 },
+    { "name": "Yellow House", "color": "#f0a500", "points": 0 }
+  ]
+}

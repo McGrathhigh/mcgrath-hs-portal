@@ -36,6 +36,28 @@ collections:
           - { label: "Phone Number",           name: "phone",           widget: "string", required: false }
           - { label: "Email Address",          name: "email",           widget: "string", required: false }
           - { label: "Office Hours",           name: "office_hours",    widget: "string", required: false }
+          - { label: "WhatsApp Number (store orders)", name: "whatsapp", widget: "string", required: false, hint: "e.g. 876-555-1234. Leave blank to hide the WhatsApp order button." }
+
+  # ── SCHOOL STATUS BANNER ─────────────────────────────
+  - name: "status"
+    label: "🚦 School Status"
+    files:
+      - name: "today"
+        label: "Today's Status Banner"
+        file: "_data/status.json"
+        fields:
+          - label: "Status"
+            name: "status"
+            widget: "select"
+            default: "open"
+            options:
+              - { label: "✅ Open — normal day (no banner)", value: "open" }
+              - { label: "⛔ Closed",                        value: "closed" }
+              - { label: "🕐 Early dismissal",               value: "early_dismissal" }
+              - { label: "🕘 Late start",                    value: "late_start" }
+              - { label: "📢 Other important notice",        value: "alert" }
+          - { label: "Message", name: "message", widget: "text", required: false, hint: "e.g. Due to the tropical storm warning, school is closed. Classes resume Monday." }
+          - { label: "Hide banner after", name: "until", widget: "datetime", required: false, hint: "Optional — the banner disappears on its own after this time." }
 
   # ── LIVE TICKER ─────────────────────────────────────
   - name: "ticker"
@@ -174,6 +196,60 @@ collections:
               - { label: "Urgent (red highlight)", name: "urgent", widget: "boolean", default: false }
               - { label: "Active (show on site)",  name: "active", widget: "boolean", default: true }
 
+  # ── LEADERSHIP MESSAGE ───────────────────────────────
+  - name: "leadership"
+    label: "🎤 Leadership Message"
+    files:
+      - name: "message"
+        label: "Leadership Message (portal + home page)"
+        file: "_data/leadership.json"
+        fields:
+          - { label: "Show on site", name: "active", widget: "boolean", default: true }
+          - { label: "Name", name: "name", widget: "string", required: false, hint: "e.g. Mrs. Jane Brown" }
+          - { label: "Title", name: "title", widget: "string", required: false, hint: "e.g. Principal" }
+          - { label: "Photo", name: "photo", widget: "image", required: false }
+          - { label: "Photo Caption", name: "caption", widget: "string", required: false, hint: "e.g. Celebrating Excellence" }
+          - { label: "Message", name: "message", widget: "text", required: false, hint: "Shown as a quote. Leave blank to show a general welcome instead." }
+
+  # ── STUDENT OF THE WEEK ──────────────────────────────
+  - name: "spotlight"
+    label: "⭐ Student of the Week"
+    files:
+      - name: "current"
+        label: "Student of the Week"
+        file: "_data/spotlight.json"
+        fields:
+          - { label: "Show on site", name: "active", widget: "boolean", default: false }
+          - { label: "Week of", name: "week_of", widget: "datetime", required: false }
+          - { label: "Student Name", name: "name", widget: "string" }
+          - { label: "Grade / Form", name: "form", widget: "string", required: false, hint: "e.g. Grade 10" }
+          - { label: "Photo", name: "photo", widget: "image", required: false, hint: "Only with parent/guardian permission. Leave blank to show a cartoon student instead." }
+          - label: "Cartoon (if no photo)"
+            name: "avatar"
+            widget: "select"
+            default: "girl"
+            options: [{ label: "Girl", value: "girl" }, { label: "Boy", value: "boy" }]
+          - { label: "Why they were chosen", name: "achievement", widget: "text" }
+          - { label: "Quote from the student", name: "quote", widget: "string", required: false }
+
+  # ── HOUSE POINTS ─────────────────────────────────────
+  - name: "houses"
+    label: "🏅 House Points"
+    files:
+      - name: "standings"
+        label: "House Points Leaderboard"
+        file: "_data/houses.json"
+        fields:
+          - { label: "Season", name: "season", widget: "string", required: false, hint: "e.g. 2026–2027" }
+          - label: "Houses"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.name}} — {{fields.points}} pts"
+            fields:
+              - { label: "House Name", name: "name", widget: "string" }
+              - { label: "Colour", name: "color", widget: "string", hint: "A hex colour, e.g. #d63031 (red), #2B3EAA (blue), #18a06b (green), #f0a500 (yellow)" }
+              - { label: "Points", name: "points", widget: "number", value_type: "int", default: 0 }
+
   # ── NEWSLETTER ISSUES ────────────────────────────────
   - name: "newsletter"
     label: "📰 Newsletter Issues"
@@ -297,6 +373,25 @@ collections:
                 widget: "select"
                 options: ["academic", "sports", "cultural", "pageant", "patriotic", "community"]
               - { label: "Year", name: "year", widget: "string", hint: "e.g. 2026" }
+
+  # ── ALUMNI WALL ──────────────────────────────────────
+  - name: "alumni"
+    label: "🎓 Alumni Wall"
+    files:
+      - name: "list"
+        label: "Where Are They Now (Highlights page)"
+        file: "_data/alumni.json"
+        fields:
+          - label: "Alumni"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.name}} — Class of {{fields.class_year}}"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Class of", name: "class_year", widget: "string", required: false, hint: "e.g. 2012" }
+              - { label: "What they do now", name: "now", widget: "text", hint: "e.g. Registered nurse at the University Hospital of the West Indies" }
+              - { label: "Quote", name: "quote", widget: "string", required: false }
+              - { label: "Photo", name: "photo", widget: "image", required: false }
 
   # ── STAFF PORTAL SETTINGS ────────────────────────────
   - name: "staff_settings"

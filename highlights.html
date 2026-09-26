@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Highlights — McGrath High School</title>
 <link rel="icon" href="./images/crest.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#1C2D8A">
+<script src="./assets/site.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Figtree:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -200,6 +204,27 @@ nav { position:sticky; top:0; z-index:200; height:68px; padding:0 6vw; display:f
 .cl-primary:hover { background:var(--off); }
 .cl-ghost { border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.75); }
 .cl-ghost:hover { border-color:white; color:white; }
+
+/* ── Alumni wall ── */
+.alumni { padding:96px 6vw; background:var(--off); border-top:1px solid var(--border); }
+.alumni[hidden] { display:none; }
+.alumni-inner { max-width:1160px; margin:0 auto; }
+.alumni-eyebrow { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+.alumni-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,4vw,3.2rem); font-weight:300; line-height:1.05; margin-bottom:44px; }
+.alumni-title em { font-style:italic; color:var(--blue); }
+.alumni-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; }
+.alum { background:white; border:1px solid var(--border); border-radius:18px; padding:24px; transition:transform 0.3s ease, box-shadow 0.3s ease; }
+.alum:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(43,62,170,0.1); }
+.alum-top { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.alum-av { width:56px; height:56px; border-radius:50%; flex:0 0 56px; overflow:hidden; background:linear-gradient(135deg,var(--blue),var(--blue-mid)); color:white; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; }
+.alum-av img { width:100%; height:100%; object-fit:cover; }
+.alum-name { font-weight:600; font-size:1rem; color:var(--ink); line-height:1.2; }
+.alum-class { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-top:3px; }
+.alum-now { font-size:0.88rem; color:var(--ink-mid); line-height:1.6; }
+.alum-quote { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.05rem; color:var(--ink); margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
+
+/* ── Cheering students in the closing section ── */
+.closing-kids { display:flex; justify-content:center; gap:10px; margin:-24px 0 26px; min-height:90px; }
 
 /* ── Footer ── */
 footer { background:var(--ink); color:rgba(255,255,255,0.4); padding:28px 6vw; text-align:center; font-size:0.78rem; }
@@ -473,11 +498,21 @@ footer a:hover { color:white; }
 
 </div>
 
+<!-- ALUMNI: Content Manager → 🎓 Alumni Wall -->
+<section class="alumni" id="alumni" hidden>
+  <div class="alumni-inner">
+    <div class="alumni-eyebrow">— Where Are They Now</div>
+    <h2 class="alumni-title">McGrath graduates,<br><em>out in the world.</em></h2>
+    <div class="alumni-grid" id="alumniGrid"></div>
+  </div>
+</section>
+
 <!-- CLOSING -->
 <section class="closing">
   <div class="closing-label">— McGrath High School</div>
   <h2 class="closing-title">Every year, a new chapter.<br>Every student, a legacy.</h2>
   <p class="closing-body">McGrath High School has been shaping futures for over five decades. The highlights above are only a glimpse of what happens within these walls every day.</p>
+  <div class="closing-kids" id="closingKids" aria-hidden="true"></div>
   <div class="closing-links">
     <a href="./events.html"  class="cl-btn cl-primary">Browse All Events</a>
     <a href="./portal.html"  class="cl-btn cl-ghost">Community Portal</a>
@@ -610,6 +645,46 @@ function scrollToEntry(i) {
   }
 }
 
+</script>
+
+<script src="./assets/students.js"></script>
+<script>
+/* ── Alumni wall ── */
+(function () {
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  fetch('/_data/alumni.json?v=' + Date.now(), { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      const items = (d && d.items) || [];
+      if (!items.length) return;
+      document.getElementById('alumniGrid').innerHTML = items.map(a => {
+        const initials = (a.name || '?').split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+        return `<article class="alum">
+          <div class="alum-top"><div class="alum-av">${a.photo ? `<img src="${esc(a.photo)}" alt="" loading="lazy">` : esc(initials)}</div>
+            <div><div class="alum-name">${esc(a.name)}</div>${a.class_year ? `<div class="alum-class">Class of ${esc(a.class_year)}</div>` : ''}</div></div>
+          <div class="alum-now">${esc(a.now)}</div>
+          ${a.quote ? `<div class="alum-quote">“${esc(a.quote)}”</div>` : ''}
+        </article>`;
+      }).join('');
+      document.getElementById('alumni').hidden = false;
+    })
+    .catch(() => {});
+})();
+
+/* ── Stop-motion students cheer at the end of the year in review ── */
+(function () {
+  const host = document.getElementById('closingKids');
+  if (!window.McGrathStudents || !host) return;
+  const girl = McGrathStudents.create('girl', { width: 70 });
+  const boy  = McGrathStudents.create('boy',  { width: 70 });
+  host.append(girl.el, boy.el);
+  let timer;
+  const cheer = () => { girl.play(['cheer1', 'cheer2'], 5, 4); setTimeout(() => boy.play(['cheer2', 'cheer1'], 5, 4), 200); };
+  new IntersectionObserver(([e]) => {
+    clearInterval(timer);
+    if (e.isIntersecting) { cheer(); timer = setInterval(cheer, 4500); }
+  }, { threshold: 0.4 }).observe(host);
+})();
 </script>
 
 <!-- ══ CASCADE SECTION JS ══════════════════════════════════════ -->

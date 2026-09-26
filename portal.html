@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>McGrath High School — Community Portal</title>
 <link rel="icon" href="./images/crest.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#0e6fa0">
+<script src="./assets/site.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--sky:#38b6e8;--sky-dark:#1a8fc4;--sky-deeper:#0e6fa0;--sky-pale:#e8f7fd;--sky-mid:#b8e4f7;--off-white:#f4fafd;--gold:#f0a500;--gold-light:#ffd060;--gold-pale:#fff9e6;--text:#0d1b2a;--text-mid:#3a5068;--text-muted:#7a96aa;--border:#d4eaf5;--success:#18a06b;--danger:#d63031;--card-shadow:0 2px 20px rgba(56,182,232,.10);--card-shadow-hover:0 8px 40px rgba(56,182,232,.22)}
@@ -405,6 +409,54 @@ section[id], #contact { scroll-margin-top: 90px; }
 .nl-error.show { display:block; }
 .btn-nl:disabled { opacity:.6; cursor:wait; }
 
+[hidden] { display: none !important; }
+
+/* ── Leadership message ── */
+.lead-card{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:44px;align-items:center;background:white;border-radius:22px;box-shadow:var(--card-shadow);padding:28px 40px 28px 28px;position:relative;overflow:hidden}
+.lead-card::after{content:'';position:absolute;right:-70px;bottom:-70px;width:280px;height:280px;background:url('./images/crest.png') center/contain no-repeat;opacity:.05;pointer-events:none}
+.lead-photo{margin:0;position:relative}
+.lead-photo img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:16px;display:block;box-shadow:0 14px 34px rgba(14,111,160,.22)}
+.lead-photo figcaption{position:absolute;left:12px;bottom:12px;background:rgba(14,111,160,.9);color:#fff;font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:20px}
+.lead-name{font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:700;color:var(--sky-deeper);line-height:1.1;margin:4px 0 4px}
+.lead-title{font-size:.78rem;font-weight:800;color:#b07800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.lead-msg{font-size:1rem;color:var(--text-mid);line-height:1.8;white-space:pre-line;max-width:640px}
+.lead-msg.quote{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-style:italic;color:var(--text);line-height:1.6}
+.lead-msg.quote::before{content:'“';display:block;font-size:3.4rem;line-height:.6;color:var(--sky);font-style:normal;margin-bottom:6px}
+
+/* ── Student of the Week ── */
+.spot{padding:26px;display:flex;gap:22px;align-items:center;background:linear-gradient(135deg,#fff 0%,var(--gold-pale) 100%)}
+.spot-photo{flex:0 0 132px;height:160px;border-radius:16px;overflow:hidden;background:linear-gradient(160deg,var(--sky-pale),var(--sky-mid));display:flex;align-items:flex-end;justify-content:center}
+.spot-photo img{width:100%;height:100%;object-fit:cover}
+.spot-photo .mcg-kid{margin-bottom:-4px}
+.spot-name{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--text);line-height:1.1}
+.spot-form{font-size:.76rem;font-weight:800;color:var(--sky-deeper);text-transform:uppercase;letter-spacing:.08em;margin:3px 0 10px}
+.spot-ach{font-size:.88rem;color:var(--text-mid);line-height:1.65;white-space:pre-line}
+.spot-quote{margin-top:10px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--text)}
+
+/* ── House points (bars grow in stepped, stop-motion frames) ── */
+.houses{padding:10px 0}
+.house{display:grid;grid-template-columns:34px 1fr 64px;align-items:center;gap:12px;padding:12px 22px}
+.house+.house{border-top:1px solid var(--border)}
+.house-rank{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--text-muted);text-align:center}
+.house-name{font-weight:800;font-size:.9rem;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.house-dot{width:12px;height:12px;border-radius:50%;flex:0 0 12px;box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(0,0,0,.08)}
+.house-track{height:12px;border-radius:6px;background:var(--sky-pale);overflow:hidden}
+.house-bar{display:block;height:100%;width:0;border-radius:6px;transition:width 1.4s steps(14)}
+.houses.go .house-bar{width:var(--w)}
+.house-pts{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:700;color:var(--sky-deeper);text-align:right}
+.house.lead .house-rank{color:#b07800}
+.houses-note{font-size:.8rem;color:var(--text-muted);padding:6px 22px 12px}
+
+/* ── Add to calendar ── */
+.ev-actions{margin-top:6px;display:flex;gap:12px;flex-wrap:wrap}
+.ev-actions a{font-size:.72rem;font-weight:800;color:var(--sky-dark);text-decoration:none;border-bottom:1.5px solid var(--sky-mid)}
+.ev-actions a:hover{color:var(--sky-deeper);border-color:var(--sky-deeper)}
+
+.app-btn{margin-top:14px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:9px 18px;border-radius:9px;font:inherit;font-weight:700;font-size:.8rem;cursor:pointer}
+.app-btn:hover{background:rgba(255,255,255,.2)}
+
+@media(max-width:768px){.lead-card{grid-template-columns:1fr;gap:20px;padding:22px}.lead-photo{max-width:280px;margin:0 auto}.spot{flex-direction:column;text-align:center}.spot-photo{flex-basis:auto;width:140px}}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
   .reveal, .char-split span { filter: none !important; }
@@ -470,6 +522,22 @@ section[id], #contact { scroll-margin-top: 90px; }
     <a href="./highlights.html" class="ql"><div class="ql-icon">🌟</div><div class="ql-label">Highlights</div></a>
     <a href="./store.html" class="ql"><div class="ql-icon">🛍️</div><div class="ql-label">School Store</div></a>
     <a href="#newsletter" class="ql"><div class="ql-icon">📰</div><div class="ql-label">Newsletter</div></a>
+    <a href="#" class="ql" data-install-app hidden><div class="ql-icon">📲</div><div class="ql-label">Get the App</div></a>
+  </div>
+</section>
+
+<section class="sec" id="leadership" hidden>
+  <div class="lead-card">
+    <figure class="lead-photo">
+      <img id="leadImg" src="./images/leader-portrait.jpg" width="640" height="800" loading="lazy" alt="A McGrath school leader addressing students at the Celebrating Excellence ceremony">
+      <figcaption id="leadCaption">Celebrating Excellence</figcaption>
+    </figure>
+    <div class="lead-text">
+      <div class="tag t-gold">🎤 From Our Leadership</div>
+      <h2 class="lead-name" id="leadName">A Message from Our Leadership</h2>
+      <div class="lead-title" id="leadTitle">McGrath High School</div>
+      <div class="lead-msg" id="leadMsg">At McGrath, leadership means walking alongside our students — celebrating every achievement, big and small, and helping each young person rise to be their best.</div>
+    </div>
   </div>
 </section>
 
@@ -481,6 +549,19 @@ section[id], #contact { scroll-margin-top: 90px; }
 <section class="sec" id="sports">
   <div class="sec-head"><div class="sec-title">Sports &amp; Competition Results</div></div>
   <div id="sportsEl"><div class="loading"><div class="spinner"></div>Loading…</div></div>
+</section>
+
+<section class="sec" id="pride">
+  <div class="g2">
+    <div id="spotlightWrap" hidden>
+      <div class="sec-head"><div class="sec-title">Student of the Week</div></div>
+      <div class="card spot" id="spotlightEl"></div>
+    </div>
+    <div>
+      <div class="sec-head"><div class="sec-title">House Points</div><span class="see-all" id="housesSeason" style="border:none"></span></div>
+      <div class="card houses" id="housesEl"><div class="loading"><div class="spinner"></div>Loading…</div></div>
+    </div>
+  </div>
 </section>
 
 <section class="sec" id="events">
@@ -613,6 +694,9 @@ section[id], #contact { scroll-margin-top: 90px; }
         <div class="sqa" onclick="window.open('/admin/#/collections/events','_blank')"><div class="sqa-icon">📅</div><div class="sqa-label">Manage Events</div></div>
         <div class="sqa" onclick="window.open('/admin/#/collections/notices','_blank')"><div class="sqa-icon">⚠️</div><div class="sqa-label">Notices</div></div>
         <div class="sqa" onclick="window.open('/admin/#/collections/ticker','_blank')"><div class="sqa-icon">📡</div><div class="sqa-label">Live Ticker</div></div>
+        <div class="sqa" onclick="window.open('/admin/#/collections/status','_blank')"><div class="sqa-icon">🚦</div><div class="sqa-label">School Status</div></div>
+        <div class="sqa" onclick="window.open('/admin/#/collections/houses','_blank')"><div class="sqa-icon">🏅</div><div class="sqa-label">House Points</div></div>
+        <div class="sqa" onclick="window.open('/admin/#/collections/spotlight','_blank')"><div class="sqa-icon">⭐</div><div class="sqa-label">Student of the Week</div></div>
       </div>
     </section>
     <section class="sec">
@@ -667,9 +751,11 @@ section[id], #contact { scroll-margin-top: 90px; }
   <img src="./images/crest.png" style="height:36px;opacity:.25;display:block;margin:0 auto 12px" alt="">
   <strong id="footerName">McGrath High School</strong> · Community Portal · © 2026<br>
   <span style="font-size:.72rem;opacity:.45;display:block;margin-top:6px">Maintained by the ICT Department · <em id="footerMotto">Striving Toward Perfection</em></span>
+  <button type="button" class="app-btn" data-install-app hidden>📲 Install the McGrath app</button>
 </footer>
 
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="./assets/students.js"></script>
 <script>
 // ── CONSTANTS ─────────────────────────────────────────
 const catTag  ={General:'t-gold',Academic:'t-sky',Community:'t-green',Important:'t-red',Arts:'t-purple',Achievement:'t-gold'};
@@ -715,11 +801,28 @@ async function loadSettings(){
   document.getElementById('heroStats').innerHTML=stats.map(([n,l])=>`<div class="hstat"><div class="hstat-num">${n}</div><div class="hstat-label">${l}</div></div>`).join('');
 }
 
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+// Events are shared by the ticker countdown and the Upcoming Events list
+const eventsData=getJSON('/_data/events.json');
+function upcoming(data){
+  const today=new Date();today.setHours(0,0,0,0);
+  return (data?.items||[]).filter(e=>e.date&&parseDate(e.date)>=today).sort((a,b)=>parseDate(a.date)-parseDate(b.date));
+}
+function countdownText(e){
+  const d=parseDate(e.date);d.setHours(0,0,0,0);
+  const today=new Date();today.setHours(0,0,0,0);
+  const days=Math.round((d-today)/864e5);
+  return days===0?`🎉 Today: ${e.title}`:days===1?`⏳ Tomorrow: ${e.title}`:`⏳ ${days} days to ${e.title}`;
+}
+
 // ── TICKER ────────────────────────────────────────────
-// Reads from /_data/ticker.json → { items: [{text, active}] }
+// Reads from /_data/ticker.json → { items: [{text, active}] }, led by a countdown to the next event
 async function loadTicker(){
-  const data=await getJSON('/_data/ticker.json');
+  const [data,ev]=await Promise.all([getJSON('/_data/ticker.json'),eventsData]);
   const items=(data?.items||[]).filter(i=>i.active!==false&&i.text);
+  const next=upcoming(ev)[0];
+  if(next)items.unshift({text:countdownText(next)});
   if(!items.length)return;
   const doubled=[...items,...items];
   document.getElementById('tickerEl').innerHTML=doubled.map(i=>`<span>${i.text}</span>`).join('');
@@ -763,19 +866,116 @@ async function loadSports(){
 // ── EVENTS ────────────────────────────────────────────
 // Reads from /_data/events.json → { items: [...] }
 async function loadEvents(){
-  const data=await getJSON('/_data/events.json');
   // Only list events from today onward; past ones belong in the Events Gallery
-  const today=new Date();today.setHours(0,0,0,0);
-  const items=(data?.items||[]).filter(e=>parseDate(e.date)>=today).sort((a,b)=>parseDate(a.date)-parseDate(b.date));
+  const items=upcoming(await eventsData);
+  upcomingList=items;
   if(!items.length){document.getElementById('eventsEl').innerHTML=empty('📅','No upcoming events right now. Browse past events in the <a href="./events.html" style="color:var(--sky-dark);font-weight:700">Events Gallery</a>.');return}
   document.getElementById('eventsEl').innerHTML=items.map(e=>{
     const d=parseDate(e.date);
     return`<div class="ev">
       <div class="ev-box${e.highlight?' highlight':''}"><div class="ev-day">${d.getDate()}</div><div class="ev-month">${d.toLocaleDateString('en-JM',{month:'short'})}</div></div>
-      <div class="ev-info"><div class="ev-name">${e.title}</div><div class="ev-meta">${e.meta||''}</div></div>
+      <div class="ev-info"><div class="ev-name">${e.title}</div><div class="ev-meta">${e.meta||''}</div>
+        <div class="ev-actions"><a href="${googleCalUrl(e)}" target="_blank" rel="noopener">＋ Google Calendar</a><a href="#" onclick="downloadIcs(${items.indexOf(e)});return false;">＋ Apple / Outlook</a></div></div>
       <div class="tag ${evTag[e.category]||'t-sky'}" style="margin:0">${e.category||''}</div>
     </div>`;
   }).join('');
+}
+
+// ── ADD TO CALENDAR ───────────────────────────────────
+// Timed events default to 2 hours; date-only events become all-day events.
+let upcomingList=[];
+function calTimes(e){
+  const d=parseDate(e.date);
+  const allDay=!/T\d/.test(e.date);
+  const pad=n=>String(n).padStart(2,'0');
+  if(allDay){
+    const end=new Date(d);end.setDate(end.getDate()+1);
+    const f=x=>`${x.getFullYear()}${pad(x.getMonth()+1)}${pad(x.getDate())}`;
+    return{allDay,start:f(d),end:f(end)};
+  }
+  const f=x=>x.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+  return{allDay,start:f(d),end:f(new Date(d.getTime()+2*36e5))};
+}
+function googleCalUrl(e){
+  const t=calTimes(e);
+  const q=new URLSearchParams({action:'TEMPLATE',text:e.title,dates:`${t.start}/${t.end}`,details:[e.meta,'McGrath High School Community Portal'].filter(Boolean).join('\n'),location:'McGrath High School'});
+  return 'https://calendar.google.com/calendar/render?'+q.toString();
+}
+function downloadIcs(i){
+  const e=upcomingList[i];if(!e)return;
+  const t=calTimes(e);
+  const icsEsc=v=>String(v||'').replace(/\\/g,'\\\\').replace(/[,;]/g,m=>'\\'+m).replace(/\n/g,'\\n');
+  const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//McGrath High School//Community Portal//EN','BEGIN:VEVENT',
+    `UID:${t.start}-${(e.title||'event').toLowerCase().replace(/[^a-z0-9]+/g,'-')}@mcgrath-high`,`DTSTAMP:${stamp}`,
+    t.allDay?`DTSTART;VALUE=DATE:${t.start}`:`DTSTART:${t.start}`,t.allDay?`DTEND;VALUE=DATE:${t.end}`:`DTEND:${t.end}`,
+    `SUMMARY:${icsEsc(e.title)}`,`DESCRIPTION:${icsEsc(e.meta)}`,'LOCATION:McGrath High School','END:VEVENT','END:VCALENDAR'];
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([lines.join('\r\n')],{type:'text/calendar'}));
+  a.download=(e.title||'event').replace(/[^\w ]+/g,'').trim().replace(/ +/g,'-')+'.ics';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+// ── LEADERSHIP MESSAGE ────────────────────────────────
+// Reads from /_data/leadership.json → { active, name, title, photo, caption, message }
+async function loadLeadership(){
+  const d=await getJSON('/_data/leadership.json');
+  if(!d||d.active===false)return;
+  if(d.photo)document.getElementById('leadImg').src=d.photo;
+  if(d.caption)set('leadCaption',d.caption);
+  if(d.name){
+    set('leadName',d.name);
+    set('leadTitle',d.title||'McGrath High School');
+    document.getElementById('leadImg').alt=d.name+(d.title?', '+d.title+',':'')+' addressing students at the Celebrating Excellence ceremony';
+  }
+  if(d.message){
+    set('leadMsg',d.message);
+    document.getElementById('leadMsg').classList.add('quote');
+  }
+  document.getElementById('leadership').hidden=false;
+}
+
+// ── STUDENT OF THE WEEK ───────────────────────────────
+// Reads from /_data/spotlight.json → { active, name, form, photo, avatar, achievement, quote, week_of }
+async function loadSpotlight(){
+  const d=await getJSON('/_data/spotlight.json');
+  if(!d||!d.active||!d.name)return;
+  const week=d.week_of?'Week of '+parseDate(d.week_of).toLocaleDateString('en-JM',{day:'numeric',month:'short'}):'This week';
+  const el=document.getElementById('spotlightEl');
+  el.innerHTML=`<div class="spot-photo">${d.photo?`<img src="${esc(d.photo)}" alt="${esc(d.name)}">`:''}</div>
+    <div><div class="tag t-gold">⭐ ${esc(week)}</div><div class="spot-name">${esc(d.name)}</div>
+    ${d.form?`<div class="spot-form">${esc(d.form)}</div>`:''}<div class="spot-ach">${esc(d.achievement)}</div>
+    ${d.quote?`<div class="spot-quote">“${esc(d.quote)}”</div>`:''}</div>`;
+  if(!d.photo&&window.McGrathStudents){             // no photo yet: our stop-motion student stands in
+    const kid=McGrathStudents.create(d.avatar==='boy'?'boy':'girl',{width:104});
+    el.querySelector('.spot-photo').appendChild(kid.el);
+    const cheer=()=>kid.play(['cheer1','cheer2'],5,3);
+    new IntersectionObserver((en,o)=>{if(en[0].isIntersecting){cheer();setInterval(cheer,7000);o.disconnect()}},{threshold:.5}).observe(el);
+  }
+  document.getElementById('spotlightWrap').hidden=false;
+}
+
+// ── HOUSE POINTS ──────────────────────────────────────
+// Reads from /_data/houses.json → { season, items: [{name, color, points}] }
+async function loadHouses(){
+  const d=await getJSON('/_data/houses.json');
+  const el=document.getElementById('housesEl');
+  const items=(d?.items||[]).map(h=>({...h,points:Number(h.points)||0})).sort((a,b)=>b.points-a.points);
+  if(!items.length){el.innerHTML=empty('🏅','House standings will appear here soon.');return}
+  if(d.season)set('housesSeason',d.season+' season');
+  const max=Math.max(1,...items.map(h=>h.points));
+  const started=items.some(h=>h.points>0);
+  let rank=0,prev=null;
+  el.innerHTML=items.map((h,i)=>{
+    if(h.points!==prev){rank=i+1;prev=h.points}
+    const lead=started&&rank===1;
+    return`<div class="house${lead?' lead':''}"><div class="house-rank">${lead?'👑':rank}</div>
+      <div><div class="house-name"><span class="house-dot" style="background:${esc(h.color||'#38b6e8')}"></span>${esc(h.name)}</div>
+      <div class="house-track"><span class="house-bar" style="--w:${Math.round(h.points/max*100)}%;background:${esc(h.color||'#38b6e8')}"></span></div></div>
+      <div class="house-pts">${h.points.toLocaleString('en-JM')}</div></div>`;
+  }).join('')+(started?'':'<div class="houses-note">Points will appear here once the season gets going.</div>');
+  new IntersectionObserver((en,o)=>{if(en[0].isIntersecting){el.classList.add('go');o.disconnect()}},{threshold:.3}).observe(el);
 }
 
 // ── NOTICES ───────────────────────────────────────────
@@ -957,7 +1157,7 @@ if(window.netlifyIdentity){
 // ── BOOT ──────────────────────────────────────────────
 async function boot(){
   await loadSettings();
-  await Promise.all([loadTicker(),loadBulletins(),loadSports(),loadEvents(),loadNotices(),loadGallery(),loadNewsletter()]);
+  await Promise.all([loadTicker(),loadLeadership(),loadBulletins(),loadSports(),loadSpotlight(),loadHouses(),loadEvents(),loadNotices(),loadGallery(),loadNewsletter()]);
 }
 boot();
 </script>

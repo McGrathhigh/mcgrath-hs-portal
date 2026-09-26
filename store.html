@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>School Store — McGrath High School</title>
 <link rel="icon" href="./images/crest.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<meta name="theme-color" content="#1C2D8A">
+<script src="./assets/site.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Figtree:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -426,6 +430,28 @@ footer strong { color: white; }
 footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
 footer a:hover { color: white; }
 
+/* Uniform "models" in the header */
+.ph-models { position: absolute; right: 0; bottom: -52px; display: flex; gap: 6px; align-items: flex-end; cursor: pointer; }
+@media (max-width: 860px) { .ph-models { display: none; } }
+
+/* Order request */
+.size-chip { background: white; font-family: inherit; color: var(--ink); }
+.size-chips.shake { animation: chipShake .36s steps(4) 1; }
+@keyframes chipShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); } 75% { transform: translateX(-3px); } }
+.qty-ctrl { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
+.qty-ctrl button { width: 38px; height: 36px; border: 0; background: var(--off); font-size: 1.1rem; cursor: pointer; color: var(--ink-mid); }
+.qty-ctrl button:hover { background: var(--blue-pale); color: var(--blue); }
+.qty-ctrl output { min-width: 44px; text-align: center; font-weight: 600; }
+.order-hint { display: none; background: #fdecea; color: #b02020; border-radius: 8px; padding: 8px 12px; font-size: 0.8rem; font-weight: 600; margin-bottom: 12px; }
+.order-hint.show { display: block; }
+.order-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.order-btn { flex: 1 1 200px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 18px; border-radius: 10px; font-weight: 700; font-size: 0.86rem; text-decoration: none; transition: filter 0.2s, transform 0.2s; }
+.order-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.order-btn.email { background: var(--blue); color: white; }
+.order-btn.wa { background: #1fa855; color: white; }
+.order-note { font-size: 0.74rem; color: var(--ink-soft); margin-bottom: 18px; line-height: 1.5; }
+[hidden] { display: none !important; }
+
 .product-card:focus-visible { outline: none; }
 .product-card:focus-visible .card-shell { box-shadow: 0 0 0 3px var(--blue); }
 
@@ -461,6 +487,7 @@ footer a:hover { color: white; }
     <div class="ph-eyebrow">— Official School Store</div>
     <h1 class="ph-title">McGrath<br>School Store</h1>
     <p class="ph-sub">Official uniforms, supplies and school merchandise. All items available for collection at the administrative office.</p>
+    <div class="ph-models" id="phModels" aria-hidden="true" title="Say hi!"></div>
   </div>
 </header>
 
@@ -525,9 +552,21 @@ footer a:hover { color: white; }
         <div class="modal-price-note">Price in JMD.<br>Contact school to confirm availability.</div>
       </div>
       <div id="mSizesSection">
-        <div class="modal-sizes-label">Available Sizes</div>
-        <div class="size-chips" id="mSizeChips"></div>
+        <div class="modal-sizes-label">Choose a Size</div>
+        <div class="size-chips" id="mSizeChips" role="group" aria-label="Size"></div>
       </div>
+      <div class="modal-sizes-label">Quantity</div>
+      <div class="qty-ctrl">
+        <button type="button" id="qtyMinus" aria-label="Decrease quantity">−</button>
+        <output id="qtyVal" aria-live="polite">1</output>
+        <button type="button" id="qtyPlus" aria-label="Increase quantity">+</button>
+      </div>
+      <div class="order-hint" id="orderHint" role="alert"></div>
+      <div class="order-btns">
+        <a class="order-btn email" id="orderEmail" href="#">✉️ Email Order Request</a>
+        <a class="order-btn wa" id="orderWa" href="#" target="_blank" rel="noopener" hidden>💬 Order on WhatsApp</a>
+      </div>
+      <p class="order-note">Opens your email or WhatsApp with the item, size and quantity already filled in — just add the student’s name and send. Items are collected at the Administrative Office.</p>
       <div class="modal-contact">
         <div class="mc-title">📋 How to Order This Item</div>
         <div class="mc-grid">
@@ -565,6 +604,7 @@ footer a:hover { color: white; }
   </span>
 </footer>
 
+<script src="./assets/students.js"></script>
 <script>
 /* ── DATA — loaded from /_data/store.json ── */
 const CATS      = { uniform:'Uniforms', pe:'PE & Sports', supplies:'Supplies', merchandise:'Merchandise' };
@@ -592,7 +632,7 @@ const DEFAULT_ITEMS = [
 ];
 
 let ITEMS = [];
-let phone = '—', email = '—', hours = 'Mon–Fri, 8am–3pm';
+let phone = '—', email = '—', hours = 'Mon–Fri, 8am–3pm', whatsapp = '';
 let activeFilter = 'all';
 
 /* ── Settings ──────────────────────────────── */
@@ -604,6 +644,9 @@ async function loadSettings() {
     phone = s.phone  || phone;
     email = s.email  || email;
     hours = s.office_hours || hours;
+    whatsapp = (s.whatsapp || '').replace(/\D/g, '');
+    if (whatsapp.length === 7) whatsapp = '1876' + whatsapp;       // local Jamaican number
+    else if (whatsapp.length === 10) whatsapp = '1' + whatsapp;     // 876-xxx-xxxx
     document.getElementById('cbPhone').textContent = phone;
     document.getElementById('cbEmail').textContent = email;
     document.getElementById('cbHours').textContent = hours;
@@ -730,16 +773,28 @@ function openModal(id) {
   const sizeSec   = document.getElementById('mSizesSection');
   const sizeChips = document.getElementById('mSizeChips');
 
+  order = { item, size: item.sizes && item.sizes.length === 1 ? item.sizes[0] : '', qty: 1 };
+  document.getElementById('qtyVal').textContent = '1';
+  document.getElementById('orderHint').classList.remove('show');
+  document.getElementById('orderEmail').hidden = !email || email === '—';
+  document.getElementById('orderWa').hidden = !whatsapp;
+
   if (item.sizes && item.sizes.length) {
     sizeSec.style.display = 'block';
-    sizeChips.innerHTML = item.sizes
-      .map(s => `<span class="size-chip">${s}</span>`)
-      .join('');
-    sizeChips.querySelectorAll('.size-chip').forEach(chip => {
+    sizeChips.innerHTML = '';
+    item.sizes.forEach(sz => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'size-chip' + (sz === order.size ? ' sel' : '');
+      chip.textContent = sz;
+      chip.setAttribute('aria-pressed', sz === order.size);
       chip.addEventListener('click', () => {
-        sizeChips.querySelectorAll('.size-chip').forEach(c => c.classList.remove('sel'));
-        chip.classList.add('sel');
+        sizeChips.querySelectorAll('.size-chip').forEach(c => { c.classList.remove('sel'); c.setAttribute('aria-pressed', 'false'); });
+        chip.classList.add('sel'); chip.setAttribute('aria-pressed', 'true');
+        order.size = sz;
+        document.getElementById('orderHint').classList.remove('show');
       });
+      sizeChips.appendChild(chip);
     });
   } else {
     sizeSec.style.display = 'none';
@@ -760,6 +815,70 @@ function closeModal() {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('open')) closeModal();
 });
+
+/* ── Order request (pre-filled email / WhatsApp) ─ */
+let order = null;
+function orderText() {
+  const it = order.item;
+  return [
+    'Hello McGrath High School,', '',
+    'I would like to order from the School Store:',
+    '• Item: ' + it.name,
+    order.size ? '• Size: ' + order.size : null,
+    '• Quantity: ' + order.qty,
+    '• Price: ' + it.price + ' each', '',
+    'Student name: ',
+    'Grade / Form: ',
+    'Parent / Guardian phone: ', '',
+    'Thank you!'
+  ].filter(l => l !== null).join('\n');
+}
+function orderReady() {
+  if (order.item.sizes && order.item.sizes.length && !order.size) {
+    const hint = document.getElementById('orderHint');
+    hint.textContent = 'Please choose a size first.';
+    hint.classList.add('show');
+    const chips = document.getElementById('mSizeChips');
+    chips.classList.remove('shake'); void chips.offsetWidth; chips.classList.add('shake');
+    return false;
+  }
+  return true;
+}
+document.getElementById('qtyMinus').addEventListener('click', () => { order.qty = Math.max(1, order.qty - 1); document.getElementById('qtyVal').textContent = order.qty; });
+document.getElementById('qtyPlus').addEventListener('click', () => { order.qty = Math.min(20, order.qty + 1); document.getElementById('qtyVal').textContent = order.qty; });
+document.getElementById('orderEmail').addEventListener('click', e => {
+  e.preventDefault();
+  if (!orderReady()) return;
+  const subject = 'Store order: ' + order.item.name + (order.size ? ' (' + order.size + ')' : '') + ' × ' + order.qty;
+  location.href = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(orderText());
+});
+document.getElementById('orderWa').addEventListener('click', e => {
+  e.preventDefault();
+  if (!orderReady()) return;
+  window.open('https://wa.me/' + whatsapp + '?text=' + encodeURIComponent(orderText()), '_blank', 'noopener');
+});
+
+/* ── Stop-motion uniform models in the header ── */
+(function () {
+  const host = document.getElementById('phModels');
+  if (!window.McGrathStudents || !host) return;
+  const girl = McGrathStudents.create('girl', { width: 104 });
+  const boy  = McGrathStudents.create('boy',  { width: 104 });
+  host.append(girl.el, boy.el);
+  const lines = ['Uniforms at the Admin Office!', 'Sky-blue tie — official!', 'Looking sharp, McGrath!'];
+  let n = 0;
+  host.addEventListener('click', () => {
+    girl.play(['wave1', 'wave2'], 5, 3); setTimeout(() => boy.play(['wave1', 'wave2'], 5, 3), 250);
+    girl.say(lines[n++ % lines.length]);
+  });
+  host.addEventListener('mouseenter', () => boy.play(['present'], 1, 1, 'present'));
+  host.addEventListener('mouseleave', () => boy.pose('stand'));
+  // Show off the uniform when the Uniforms filter is picked
+  document.querySelector('[data-cat="uniform"]').addEventListener('click', () => {
+    girl.play(['present', 'present', 'wave1', 'wave2', 'wave1'], 5, 1);
+    boy.play(['present', 'present', 'present'], 5, 1);
+  });
+})();
 
 document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
 document.getElementById('modalOverlay').addEventListener('click', e => {
