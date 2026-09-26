@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>School Store — McGrath High School</title>
+<link rel="icon" href="./images/crest.png">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Figtree:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -424,6 +425,14 @@ footer {
 footer strong { color: white; }
 footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
 footer a:hover { color: white; }
+
+.product-card:focus-visible { outline: none; }
+.product-card:focus-visible .card-shell { box-shadow: 0 0 0 3px var(--blue); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
+  .product-card { filter: none !important; }
+}
 </style>
 </head>
 <body>
@@ -442,7 +451,7 @@ footer a:hover { color: white; }
     <a href="./store.html" class="active">Store</a>
     <a href="./events.html">Events</a>
     <a href="./highlights.html">Highlights</a>
-    <a href="./portal.html" class="nav-staff">🔒 Staff</a>
+    <a href="./portal.html#staff" class="nav-staff">🔒 Staff</a>
   </div>
 </nav>
 
@@ -680,7 +689,7 @@ function renderStore(filter) {
 
       if (!oos) {
         card.addEventListener('click',  () => openModal(item.id));
-        card.addEventListener('keydown', e => { if (e.key === 'Enter') openModal(item.id); });
+        card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(item.id); } });
       }
       grid.appendChild(card);
     });
@@ -736,14 +745,21 @@ function openModal(id) {
     sizeSec.style.display = 'none';
   }
 
+  lastFocus = document.activeElement;
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+  document.getElementById('modalCloseBtn').focus({ preventScroll: true });
 }
+let lastFocus = null;
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
+  if (lastFocus) lastFocus.focus({ preventScroll: true });
 }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('open')) closeModal();
+});
 
 document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
 document.getElementById('modalOverlay').addEventListener('click', e => {

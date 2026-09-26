@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>McGrath HS — Content Manager</title>
   <link rel="icon" href="/images/crest.png">
+  <!-- Absolute config path so the CMS still finds it when opened as /admin (no trailing slash) -->
+  <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>

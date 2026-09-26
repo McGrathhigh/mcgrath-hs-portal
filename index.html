@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>McGrath High School</title>
+<link rel="icon" href="./images/crest.png">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Figtree:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -380,35 +381,6 @@ canvas#gl {
 }
 .enter-btn:hover .enter-arrow { width: 32px; }
 
-/* ─── FIGURE PLACEHOLDER — removed ─── */
-.figure-zone { display: none !important; /* removed */ } .figure-zone_UNUSED {
-  position: absolute;
-  bottom: 0;
-  right: 8vw;
-  width: 280px;
-  height: 70vh;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 1.5s ease 0.5s;
-}
-.figure-zone.vis { opacity: 1; }
-
-.figure-silhouette {
-  width: 180px;
-  height: 420px;
-  position: relative;
-}
-
-/* SVG silhouette of standing student figure */
-.figure-silhouette svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 0 60px rgba(43,62,170,0.4));
-}
-
 /* ─── AMBIENT VIGNETTE ─── */
 .vignette {
   position: fixed;
@@ -512,11 +484,15 @@ canvas#gl {
   transition: height 0.1s linear;
 }
 
+/* ─── REDUCED MOTION ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; scroll-behavior: auto !important; }
+}
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
-  .nav-links { display: none; }
+  .nav-links a:not(:last-child) { display: none; } /* keep the Portal link on phones */
   .section-dots { display: none; }
-  .figure-zone { display: none !important; /* removed */ } .figure-zone_UNUSED { display: none; }
   .achievement-grid { grid-template-columns: 1fr; max-width: 320px; }
   .stat-row { gap: 24px; }
   #s2, #s3 { justify-content: center; text-align: center; }
@@ -607,7 +583,6 @@ function crestSVGFull() {
         McGrath High School has stood as a beacon of academic excellence and character formation. Every student who passes through these halls carries forward a legacy of striving — not for adequacy, but for perfection.
       </p>
     </div>
-    </div>
   </section>
 
   <!-- Section 3: Community -->
@@ -622,15 +597,15 @@ function crestSVGFull() {
       </p>
       <div class="stat-row" id="s3stats">
         <div class="stat-item">
-          <div class="stat-num">1,240<span></span></div>
+          <div class="stat-num" id="statStudents">1,240<span></span></div>
           <div class="stat-label">Students</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num">87<span></span></div>
+          <div class="stat-num" id="statStaff">87<span></span></div>
           <div class="stat-label">Staff</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num">34<span></span></div>
+          <div class="stat-num" id="statCocurr">34<span></span></div>
           <div class="stat-label">Co-curriculars</div>
         </div>
       </div>
@@ -688,21 +663,6 @@ function crestSVGFull() {
   </section>
 
 </div><!-- end scroll-track -->
-
-<!-- ═══════════════════════════════════════════
-     THE PORTAL (hidden until Enter is clicked)
-═══════════════════════════════════════════ -->
-<div id="portal" style="display:none; background: #f4fafd; color: #0d1b2a;">
-  <div style="padding: 80px 8vw; text-align:center;">
-    <p style="font-family:'Cormorant Garamond',serif; font-size:2rem; color:#1a2575;">
-      McGrath Community Portal
-    </p>
-    <p style="margin-top:16px; color:#3a5068; font-size:0.9rem;">
-      Your existing portal content loads here.
-    </p>
-    <a href="#" onclick="hidePortal(); return false;" style="display:inline-block; margin-top:32px; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:#2B3EAA; font-family:'DM Mono',monospace; text-decoration:none; border-bottom:1px solid #2B3EAA; padding-bottom:2px;">← Back to Home</a>
-  </div>
-</div>
 
 <script>
 // ─────────────────────────────────────────────
@@ -873,7 +833,7 @@ function resizeGL() {
 
 let glSection = 0; // smooth lerp target
 function renderGL() {
-  if(!gl || !prog) { requestAnimationFrame(renderGL); return; }
+  if(!gl || !prog) return; // no WebGL: the dark page background shows instead
   const t = (Date.now() - startTime) / 1000;
   glSection += (currentSection + sectionProgress - glSection) * 0.04;
   gl.uniform1f(uTime, t);
@@ -961,7 +921,6 @@ setTimeout(() => {
 observeEl('s2ey',  'vis', 0);
 observeEl('s2h',   'vis', 150);
 observeEl('s2b',   'vis', 300);
-observeEl('fig2',  'vis', 400);
 
 // S3
 observeEl('s3ey',    'vis', 0);
@@ -985,6 +944,10 @@ observeEl('s5ey',         'vis', 0);
 // ── Ripple water effect then navigate to portal.html ──
 function rippleEnter(e) {
   e.preventDefault();
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    window.location.href = './portal.html';
+    return false;
+  }
   const btn = e.currentTarget;
   const rect = btn.getBoundingClientRect();
   const cx = e.clientX || rect.left + rect.width / 2;
@@ -1064,18 +1027,6 @@ function rippleEnter(e) {
   return false;
 }
 
-function hidePortal() {
-  document.getElementById('portal').style.display = 'none';
-  document.getElementById('scroll-track').style.display = 'block';
-  document.getElementById('stage').style.display = 'block';
-  document.querySelector('.vignette').style.display = 'block';
-  document.querySelector('.nav-overlay').style.display = 'flex';
-  document.querySelector('.section-dots').style.display = 'flex';
-  document.querySelector('.progress-line').style.display = 'block';
-  document.body.style.background = '#07090F';
-  window.scrollTo(0,0);
-}
-
 // ─────────────────────────────────────────────
 //  INIT
 // ─────────────────────────────────────────────
@@ -1086,6 +1037,28 @@ resizeGL();
 initGL();
 renderGL();
 getScrollSection();
+
+// Keep the numbers and motto in sync with Content Manager → School Settings
+fetch('/_data/settings.json?v=' + Date.now(), { cache: 'no-store' })
+  .then(r => r.ok ? r.json() : null)
+  .then(s => {
+    if (!s) return;
+    [['statStudents', s.students], ['statStaff', s.staff], ['statCocurr', s.cocurriculars]]
+      .forEach(([id, v]) => { if (v) document.getElementById(id).firstChild.nodeValue = v; });
+    if (s.motto) document.getElementById('s1Motto').textContent = s.motto;
+  })
+  .catch(() => {});
+</script>
+
+<!-- Netlify Identity: invite and password-reset e-mails link to this page.
+     The widget finishes the sign-up, then sends editors on to the Content Manager. -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+if (window.netlifyIdentity) {
+  window.netlifyIdentity.on('init', user => {
+    if (!user) window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
+  });
+}
 </script>
 </body>
 </html>
